@@ -1,3 +1,2 @@
-elpa
-*~
-recentf
+!.gitignore
+!init.el
