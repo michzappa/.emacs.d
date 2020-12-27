@@ -7,7 +7,9 @@
 ;; finally, organize and put in ORG file
 
 ;;; Code:
+;; user directory and reloading file
 (setq user-emacs-directory "~/my-emacs.d")
+(global-set-key (kbd "C-M-m") (lambda () (interactive) (load-file "~/my-emacs.d/init.el")))
 
 ;; Setting up the MELPA repo
 (require 'package)
@@ -108,12 +110,12 @@
 ;; C setup -- needs clang, llvm, cmak, and libclang-10-dev. (maybe not llvm but don't know for sure)
 (use-package irony
   :ensure t
-  :commands irony-install-server
   :config
   (add-hook 'c++-mode-hook 'irony-mode)
   (add-hook 'c-mode-hook 'irony-mode)
   (add-hook 'objc-mode-hook 'irony-mode)
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+  :commands (ivory-install-server ivory-mode))
 
 (provide 'init)
 ;;; init.el ends here
