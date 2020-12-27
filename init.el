@@ -1,8 +1,12 @@
+;;; init --- Summary
+
+;;; Commentary:
 ;; TODO
 ;; langs and flycheck
-;; use purcell/emacs.d and DOOM as inspiration/sources
+;; terminal?
 ;; finally, organize and put in ORG file
 
+;;; Code:
 (setq user-emacs-directory "~/my-emacs.d")
 
 ;; Setting up the MELPA repo
@@ -26,12 +30,7 @@
 (tool-bar-mode -1)
 (load-theme 'nord t)
 
-;; View recent files
-(recentf-mode 1)
-(setq recentf-max-menu-items 25)
-(setq recentf-max-saved-items 25)
-(global-set-key "\C-x\ \C-r" 'recentf-open-files)
-
+;; Evil mode
 ;;(require 'evil)
 ;;(evil-mode 1)
 
@@ -52,8 +51,9 @@
   :demand
   :bind (("M-x" . counsel-M-x)
          ("C-x C-f" . counsel-find-file)
+	 ("C-x C-r" . counsel-recentf)
 	 ("C-s" . swiper))
-  :config (ivy-mode 1))
+  :commands ivy-mode)
 
 ;; Sidebar file explorer
 (use-package treemacs
@@ -61,10 +61,10 @@
   :bind
   (:map global-map
 	("C-x p" . treemacs))
+  :commands (treemacs-filewatch-mode
+	     treemacs-git-mode
+	     treemacs-follow-mode)
   :config
-  (treemacs-filewatch-mode t)
-  (treemacs-git-mode 'extended)
-  (treemacs-follow-mode -1)
   (add-hook 'treemacs-mode-hook (lambda() (display-line-numbers-mode -1))))
 
 ;; Integrate git with treemacs
@@ -84,3 +84,36 @@
 (use-package treemacs-projectile
   :after (treemacs projectile)
   :ensure t)
+
+;; Flycheck for coding automplete
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
+
+;; Elixir setup - work in progress, not really using elixir rn
+(use-package elixir-mode
+  :ensure t
+  :bind (:map elixir-mode-map
+	      ("C-c C-f" . elixir-format)))
+
+;; Python setup - needs pylint and pip3 installed
+(use-package elpy
+  :ensure t
+  :config
+  (elpy-enable)
+  (setq elpy-rpc-python-command "python3")
+  ;; use flycheck instead of flymake
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules)))
+
+;; C setup -- needs clang, llvm, cmak, and libclang-10-dev. (maybe not llvm but don't know for sure)
+(use-package irony
+  :ensure t
+  :commands irony-install-server
+  :config
+  (add-hook 'c++-mode-hook 'irony-mode)
+  (add-hook 'c-mode-hook 'irony-mode)
+  (add-hook 'objc-mode-hook 'irony-mode)
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+
+(provide 'init)
+;;; init.el ends here
