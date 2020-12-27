@@ -1,8 +1,6 @@
 ;; TODO
-;; magit
 ;; lang and flycheck
 ;; show file names when searching
-;; magit
 ;; use purcell/emacs.d and DOOM as inspiration/sources
 ;; finally, organize and put in ORG file
 
