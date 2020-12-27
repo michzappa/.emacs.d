@@ -1,20 +1,30 @@
-(setq user-emacs-directory "~/.emacs.d")
+;; Heavily "inspired" by hlissner's DOOM distribution
+
+(setq user-emacs-directory "~/my-emacs.d")
 ;; (setq inhibit-startup-message t)
 (setq ring-bell-function 'ignore)
+(menu-bar-mode -1)
+(toggle-scroll-bar -1)
+(tool-bar-mode -1)
 
 (require 'package)
 (add-to-list `package-archives `("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
 
 (require 'evil)
-(evil-mode 1)
+;;(evil-mode 1)
 
 (load-theme 'nord t)
 
+(require 'nov)
 
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(setq recentf-max-saved-items 25)
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
 
-
-
+(require 'which-key)
+(which-key-mode)
 
 ;; Custom
 (custom-set-variables
