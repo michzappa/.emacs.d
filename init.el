@@ -47,14 +47,12 @@
   :ensure t)
 
 ;; Autocomplete interface
-(use-package helm
+(use-package counsel
   :ensure t
   :demand
-  :bind (("M-x" . helm-M-x)
-         ("C-x C-f" . helm-find-files)
-         ("C-x b" . helm-buffers-list)
-  :preface (require 'helm-config)
-  :config (helm-mode 1))
+  :bind (("M-x" . counsel-M-x)
+         ("C-x C-f" . counsel-find-file))
+  :config (ivy-mode 1))
 
 ;; Sidebar file explorer
 (use-package treemacs
