@@ -51,7 +51,8 @@
   :ensure t
   :demand
   :bind (("M-x" . counsel-M-x)
-         ("C-x C-f" . counsel-find-file))
+         ("C-x C-f" . counsel-find-file)
+	 ("C-s" . swiper))
   :config (ivy-mode 1))
 
 ;; Sidebar file explorer
