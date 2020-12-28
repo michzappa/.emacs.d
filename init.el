@@ -35,11 +35,11 @@
 (setq confirm-kill-processes nil)
 
 ;; Installing all the listed packages
-;; (eval-when-compile
-;;   (dolist (package '(use-package diminish bind-key))
-;;     (unless (package-installed-p package)
-;;       (package-install package))
-;;     (require package)))
+(eval-when-compile
+  (dolist (package '(use-package diminish bind-key))
+    (unless (package-installed-p package)
+      (package-install package))
+    (require package)))
 
 ;; UI Stuff
 (setq inhibit-startup-screen t)
@@ -97,26 +97,6 @@
 (global-set-key (kbd "C-x O") (lambda ()
                                 (interactive)
                                 (other-window -1))) ;; back one
-;; Evil mode
-;;(require 'evil)
-;;(evil-mode 1)
-
-;; Manage parens. Has to be turned on for specific modes?
-(use-package smartparens
-  :ensure t
-  :config
-  (require 'smartparens-config)
-  (setq sp-base-key-bindings 'paredit)
-  (setq sp-autoskip-closing-pair 'always)
-  (setq sp-hybrid-kill-entire-symbol nil)
-  (sp-use-paredit-bindings)
-  (show-smartparens-global-mode +1))
-
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-
-(require 'use-package)
-(setq use-package-verbose t)
 
 ;; highlight the current line
 (use-package hl-line
@@ -138,8 +118,7 @@
 
 ;; Magit git interface
 (use-package magit
-  :ensure t
-  :bind (("C-x g" . magit-status)))
+  :ensure tg)
 
 ;; EPub reader mode
 (use-package nov
@@ -158,7 +137,7 @@
 ;; Sidebar file explorer
 (use-package treemacs
   :ensure t
-  :bindqqq
+  :bind
   (:map global-map
 	("C-x p" . treemacs))
   :commands (treemacs-filewatch-mode
@@ -187,12 +166,12 @@
   :after (treemacs projectile)
   :ensure t)
 
-;; Flycheck for coding autocpmplete
+;; Flycheck for coding auto-complete
 (use-package flycheck
   :ensure t
   :init (global-flycheck-mode))
 
-;; Help for Elisp functionsx
+;; Help for Elisp functions
 (use-package eldoc
   :diminish eldoc-mode
   :commands turn-on-eldoc-mode
@@ -215,37 +194,6 @@
   ;; is displayed on top (happens near the bottom of windows)
   (setq company-tooltip-flip-when-above t)
   (global-company-mode))
-
-(use-package clojure-mode
-  :ensure t
-  :config
-  (add-hook 'clojure-mode-hook #'paredit-mode)
-  (add-hook 'clojure-mode-hook #'subword-mode)
-  (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode))
-
-(use-package cider
-  :ensure t
-  :config
-  (setq nrepl-log-messages t)
-  (add-hook 'cider-mode-hook #'eldoc-mode)
-  (add-hook 'cider-repl-mode-hook #'eldoc-mode)
-  (add-hook 'cider-repl-mode-hook #'paredit-mode)
-  (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode))
-
-(use-package flycheck-joker
-  :ensure t)
-
-(use-package elixir-mode
-  :ensure t
-  :config
-  (add-hook 'elixir-mode #'subword-mode))
-
-(use-package haskell-mode
-  :ensure t
-  :config
-  (add-hook 'haskell-mode-hook #'subword-mode)
-  (add-hook 'haskell-mode-hook #'interactive-haskell-mode)
-  (add-hook 'haskell-mode-hook #'haskell-doc-mode))
 
 (provide 'init)
 ;;; init.el ends here
