@@ -92,30 +92,5 @@
   :ensure t
   :init (global-flycheck-mode))
 
-;; Elixir setup - work in progress, not really using elixir rn
-(use-package elixir-mode
-  :ensure t
-  :bind (:map elixir-mode-map
-	      ("C-c C-f" . elixir-format)))
-
-;; Python setup - needs pylint and pip3 installed
-(use-package elpy
-  :ensure t
-  :config
-  (elpy-enable)
-  (setq elpy-rpc-python-command "python3")
-  ;; use flycheck instead of flymake
-  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules)))
-
-;; C setup -- needs clang, llvm, cmak, and libclang-10-dev. (maybe not llvm but don't know for sure)
-(use-package irony
-  :ensure t
-  :config
-  (add-hook 'c++-mode-hook 'irony-mode)
-  (add-hook 'c-mode-hook 'irony-mode)
-  (add-hook 'objc-mode-hook 'irony-mode)
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-  :commands (ivory-install-server ivory-mode))
-
 (provide 'init)
 ;;; init.el ends here
