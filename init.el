@@ -1,7 +1,7 @@
 ;;; init --- the init.el for my emacs config
 ;;; Commentary:
 ;; TODO
-;; more langs --  C
+;; more langs -- elixir?
 ;; terminal (eshell? other shell?)
 ;; figure out keybindings for treemacs and projectile
 
@@ -93,11 +93,11 @@
       scroll-conservatively 100000
       scroll-preserve-screen-position 1)
 
-;; Change font size binding
+;; change font size binding
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
 
-;; Keybinding to reload configuration
+;; keybinding to reload configuration
 (global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/my-emacs.d/init.el")))
 
 ;; Force Emacs to use shell path
@@ -150,11 +150,18 @@
 (use-package counsel
   :ensure t
   :demand
-  :bind (("M-x" . counsel-M-x)
-         ("C-x C-f" . counsel-find-file)
-	 ("C-x C-r" . counsel-recentf)
-	 ("C-s" . swiper))
+  :bind 
+   (
+    ;;("M-x" . counsel-M-x)
+    ("C-x C-f" . counsel-find-file)
+    ("C-x C-r" . counsel-recentf)
+    ("C-s" . swiper))
   :commands ivy-mode)
+
+(use-package smex
+  :ensure t
+  :config 
+  (global-set-key (kbd "M-x") 'smex))
 
 ;; project manager
 (use-package projectile

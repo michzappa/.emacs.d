@@ -1,5 +1,5 @@
 #+TITLE: Emacs init.el
-#+DESCRIPTION: Literate config for my hand-rolled emacs config
+#+DESCRIPTION: Literate config for my emacs
 #+PROPERTY: header-args :tangle init.el
 #+AUTHOR: Michael Zappa
 
@@ -11,7 +11,6 @@ Run org-babel-tangle to repopulate init.el.
 ;;; Commentary:
 ;; TODO
 ;; more langs -- elixir?
-;; use emacs 27 for tab mode?
 ;; terminal (eshell? other shell?)
 ;; figure out keybindings for treemacs and projectile
 #+END_SRC
@@ -112,18 +111,20 @@ Run org-babel-tangle to repopulate init.el.
 #+END_SRC 
 * Mouse and Keys
 #+BEGIN_SRC elisp
+
 ;; scrolling
 (setq scroll-margin 0
       scroll-conservatively 100000
       scroll-preserve-screen-position 1)
 
-;; Change font size binding
+;; change font size binding
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
 
-;; Keybinding to reload configuration
+;; keybinding to reload configuration
 (global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/my-emacs.d/init.el")))
 #+END_SRC
+
 * Utility Packages
 ** exec-path-from-shell
 
@@ -209,13 +210,22 @@ Run org-babel-tangle to repopulate init.el.
 (use-package counsel
   :ensure t
   :demand
-  :bind (("M-x" . counsel-M-x)
-         ("C-x C-f" . counsel-find-file)
-	 ("C-x C-r" . counsel-recentf)
-	 ("C-s" . swiper))
+  :bind 
+   (
+    ;;("M-x" . counsel-M-x)
+    ("C-x C-f" . counsel-find-file)
+    ("C-x C-r" . counsel-recentf)
+    ("C-s" . swiper))
   :commands ivy-mode)
 #+END_SRC
 
+** smex
+#+BEGIN_SRC elisp
+(use-package smex
+  :ensure t
+  :config 
+  (global-set-key (kbd "M-x") 'smex))
+#+END_SRC
 ** projectile
 
 #+BEGIN_SRC elisp
