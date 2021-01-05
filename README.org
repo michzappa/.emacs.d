@@ -1,9 +1,21 @@
+#+TITLE: Emacs init.el
+#+DESCRIPTION: Literate config for my hand-rolled emacs config
+#+PROPERTY: header-args :tangle init.el
+#+AUTHOR: Michael Zappa
+
+Run org-babel-tangle to repopulate init.el.
+
+* Table of Contents :toc:
+* Commentary
+#+BEGIN_SRC elisp
 ;;; init --- the init.el for my emacs config
 ;;; Commentary:
 ;; TODO
 ;; langs and flycheck
 ;; terminal (eshell?)
-
+#+END_SRC
+* General
+#+BEGIN_SRC elisp
 ;;; Code:
 (setq user-emacs-directory "~/my-emacs.d/user-dir")
 (global-set-key (kbd "C-M-m") (lambda () (interactive) (load-file "~/my-emacs.d/init.el")))
@@ -49,7 +61,9 @@
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
-
+#+END_SRC
+* UI
+#+BEGIN_SRC elisp
 ;; UI Stuff
 (setq inhibit-startup-screen t)
 (setq ring-bell-function 'ignore)
@@ -84,7 +98,10 @@
 
 ;; enable y/n answers
 (fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC 
 
+* Mouse and Keys
+#+BEGIN_SRC elisp
 ;; scrolling
 (setq scroll-margin 0
       scroll-conservatively 100000
@@ -98,7 +115,9 @@
 (global-set-key (kbd "C-x O") (lambda ()
                                 (interactive)
                                 (other-window -1))) ;; back one
-
+#+END_SRC
+* Utility Packages
+#+BEGIN_SRC elisp
 ;; Force Emacs to use shell path
 (use-package exec-path-from-shell
   :ensure t
@@ -171,7 +190,10 @@
 (use-package treemacs-projectile
   :after (treemacs projectile)
   :ensure t)
+#+END_SRC
 
+* Flycheck and Company
+#+BEGIN_SRC elisp
 ;; Flycheck for syntax checking
 (use-package flycheck
   :ensure t
@@ -190,7 +212,11 @@
   ;; is displayed on top (happens near the bottom of windows)
   (setq company-tooltip-flip-when-above t)
   (global-company-mode))
+#+END_SRC
 
+* Languages
+** Elisp
+#+BEGIN_SRC elisp
 ;; Help for Elisp functions
 (use-package eldoc
   :diminish eldoc-mode
@@ -201,6 +227,10 @@
     (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
     (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
     (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)))
+#+END_SRC
 
+* Provide
+#+BEGIN_SRC elisp
 (provide 'init)
 ;;; init.el ends here
+#+END_SRC
