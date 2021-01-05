@@ -50,14 +50,6 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
-;; opens new window for shell buffer - WIP
-(defun shell-other-window ()
-  "Open a `shell' in a new window."
-  (interactive)
-  (let ((buf (shell)))
-    (switch-to-buffer (other-buffer buf))
-    (switch-to-buffer-other-window buf)))
-
 ;; UI Stuff
 (setq inhibit-startup-screen t)
 (setq ring-bell-function 'ignore)
@@ -210,6 +202,13 @@
   (setq company-tooltip-flip-when-above t)
   (global-company-mode))
 
+(use-package lsp-mode
+  :ensure t)
+
+(setq lsp-prefer-capf t)
+(setq lsp-completion-provider :capf)
+(setq lsp-completion-enable t)
+
 ;; Help for Elisp functions
 (use-package eldoc
   :diminish eldoc-mode
@@ -220,6 +219,13 @@
     (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
     (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
     (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)))
+
+(use-package rust-mode
+  :ensure t
+  :hook (rust-mode . lsp))
+
+(use-package cargo
+  :hook (rust-mode . cargo-minor-mode))
 
 (provide 'init)
 ;;; init.el ends here

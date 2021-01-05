@@ -60,14 +60,6 @@ Run org-babel-tangle to repopulate init.el.
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
-
-;; opens new window for shell buffer - WIP
-(defun shell-other-window ()
-  "Open a `shell' in a new window."
-  (interactive)
-  (let ((buf (shell)))
-    (switch-to-buffer (other-buffer buf))
-    (switch-to-buffer-other-window buf)))
 #+END_SRC
 
 #+RESULTS:
@@ -237,6 +229,15 @@ Run org-babel-tangle to repopulate init.el.
 #+END_SRC
 
 * Languages
+** LSP Mode
+#+BEGIN_SRC elisp
+(use-package lsp-mode
+  :ensure t)
+
+(setq lsp-prefer-capf t)
+(setq lsp-completion-provider :capf)
+(setq lsp-completion-enable t)
+#+END_SRC
 ** Elisp
 #+BEGIN_SRC elisp
 ;; Help for Elisp functions
@@ -251,6 +252,15 @@ Run org-babel-tangle to repopulate init.el.
     (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)))
 #+END_SRC
 
+** Rust
+#+BEGIN_SRC elisp
+(use-package rust-mode
+  :ensure t
+  :hook (rust-mode . lsp))
+
+(use-package cargo
+  :hook (rust-mode . cargo-minor-mode))
+#+END_SRC
 * Provide
 #+BEGIN_SRC elisp
 (provide 'init)
