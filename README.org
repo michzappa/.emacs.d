@@ -300,13 +300,12 @@ Run org-babel-tangle to repopulate init.el.
 (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
-(setq lsp-prefer-capf t)
 (setq lsp-completion-provider :capf)
 (setq lsp-completion-enable t)
 #+END_SRC
 ** Elisp
 #+BEGIN_SRC elisp
-;; Help for Elisp functions
+;; Help for elisp functions
 (use-package eldoc
   :diminish eldoc-mode
   :commands turn-on-eldoc-mode
@@ -322,8 +321,7 @@ Run org-babel-tangle to repopulate init.el.
 ;; hook up rust-mode with the language server, which should download automatically
 (use-package rust-mode
   :ensure t
-  :hook 
-  (rust-mode . lsp))
+  :hook (rust-mode . lsp))
 
 ;; cargo minor mode for cargo keybindings
 (use-package cargo

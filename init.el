@@ -2,6 +2,10 @@
 ;;; Commentary:
 ;; TODO
 ;; more langs -- elixir?
+<<<<<<< HEAD
+=======
+;; use emacs 27 for tab mode?
+>>>>>>> e41419535da1b78c05d39ce3371fd3187db2f587
 ;; terminal (eshell? other shell?)
 ;; figure out keybindings for treemacs and projectile
 
@@ -224,7 +228,6 @@
 (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
-(setq lsp-prefer-capf t)
 (setq lsp-completion-provider :capf)
 (setq lsp-completion-enable t)
 
@@ -242,8 +245,7 @@
 ;; hook up rust-mode with the language server, which should download automatically
 (use-package rust-mode
   :ensure t
-  :hook 
-  (rust-mode . lsp))
+  :hook (rust-mode . lsp))
 
 ;; cargo minor mode for cargo keybindings
 (use-package cargo
