@@ -1,12 +1,15 @@
 ;;; init --- the init.el for my emacs config
 ;;; Commentary:
 ;; TODO
-;; more langs -- rust and C
-;; terminal (eshell?)
+;; more langs --  C
+;; terminal (eshell? other shell?)
 ;; figure out keybindings for treemacs and projectile
 
 ;;; Code:
 (setq user-emacs-directory "~/my-emacs.d/user-dir")
+
+(setq user-full-name "Michael Zappa")
+(setq user-mail-address "zapprich@gmail.com")
 
 ;; Setting up the MELPA repo
 (require 'package)
@@ -15,8 +18,12 @@
 (unless package-archive-contents
   (package-refresh-contents))
 
-(setq user-full-name "Michael Zappa")
-(setq user-mail-address "zapprich@gmail.com")
+;; Installing all the listed packages
+(eval-when-compile
+  (dolist (package '(use-package diminish bind-key))
+    (unless (package-installed-p package)
+      (package-install package))
+    (require package)))
 
 ;; Always load newest byte code
 (setq load-prefer-newer t)
@@ -30,13 +37,6 @@
 
 ;; quit Emacs directly even if there are running processes
 (setq confirm-kill-processes nil)
-
-;; Installing all the listed packages
-(eval-when-compile
-  (dolist (package '(use-package diminish bind-key))
-    (unless (package-installed-p package)
-      (package-install package))
-    (require package)))
 
 ;; Newline at end of file
 (setq require-final-newline t)
@@ -53,11 +53,13 @@
 ;; UI Stuff
 (setq inhibit-startup-screen t)
 (setq ring-bell-function 'ignore)
+;; turn off things
 (menu-bar-mode -1)
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
 (blink-cursor-mode -1)
-;;(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; initial frame maximized
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 (use-package nord-theme
   :ensure t
@@ -97,11 +99,6 @@
 
 ;; Keybinding to reload configuration
 (global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/my-emacs.d/init.el")))
-
-;; Window switching. (C-x o goes to the next window)
-(global-set-key (kbd "C-x O") (lambda ()
-                                (interactive)
-                                (other-window -1))) ;; back one
 
 ;; Force Emacs to use shell path
 (use-package exec-path-from-shell
@@ -151,6 +148,16 @@
 	 ("C-s" . swiper))
   :commands ivy-mode)
 
+;; Project manager
+(use-package projectile
+  :ensure t
+  :init
+  (setq projectile-completion-system 'ivy)
+  (setq projectile-project-search-path '("~/Projects"))
+  :config
+  (global-set-key (kbd "C-c p") 'projectile-command-map)
+  (projectile-mode +1))
+
 ;; Sidebar file explorer
 (use-package treemacs
   :ensure t
@@ -168,27 +175,17 @@
   :after (treemacs magit)
   :ensure t)
 
-;; Project manager
-(use-package projectile
-  :ensure t
-  :init
-  (setq projectile-completion-system 'ivy)
-  (setq projectile-project-search-path '("~/Projects"))
-  :config
-  (global-set-key (kbd "C-c p") 'projectile-command-map)
-  (projectile-mode +1))
-
 ;; Integrate projectile with treemacs
 (use-package treemacs-projectile
   :after (treemacs projectile)
   :ensure t)
 
-;; Flycheck for syntax checking
+;; flycheck for syntax checking
 (use-package flycheck
   :ensure t
   :init (global-flycheck-mode))
 
-;; Company for text-completion
+;; company for text-completion
 (use-package company
   :ensure t
   :config
@@ -202,8 +199,15 @@
   (setq company-tooltip-flip-when-above t)
   (global-company-mode))
 
+;; lsp-mode plus other recommended packages and configuration
 (use-package lsp-mode
   :ensure t)
+
+(use-package lsp-ui
+  :ensure t)
+
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
 (setq lsp-prefer-capf t)
 (setq lsp-completion-provider :capf)
@@ -220,11 +224,15 @@
     (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
     (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)))
 
+;; hook up rust-mode with the language server, which should download automatically
 (use-package rust-mode
   :ensure t
-  :hook (rust-mode . lsp))
+  :hook 
+  (rust-mode . lsp))
 
+;; cargo minor mode for cargo keybindings
 (use-package cargo
+  :ensure t
   :hook (rust-mode . cargo-minor-mode))
 
 (provide 'init)
