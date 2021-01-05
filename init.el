@@ -50,7 +50,7 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
-;; opens new window for shell buffer
+;; opens new window for shell buffer - WIP
 (defun shell-other-window ()
   "Open a `shell' in a new window."
   (interactive)

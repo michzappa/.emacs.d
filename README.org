@@ -5,7 +5,6 @@
 
 Run org-babel-tangle to repopulate init.el.
 
-* Table of Contents :toc:
 * Commentary
 #+BEGIN_SRC elisp
 ;;; init --- the init.el for my emacs config
