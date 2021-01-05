@@ -105,6 +105,14 @@
   :ensure t
   :commands exec-path-from-shell-initialize)
 
+;; still working out what, if any, my custom keymap will be
+  ;; (use-package crux
+  ;;   :ensure t
+  ;;   :config
+  ;;   (global-set-key (kbd "C-k") #'crux-smart-kill-line)
+  ;;   (global-set-key (kbd "C-s-RET") #'crux-smart-open-line-above)
+  ;;   (global-set-key (kbd "s-RET") #'crux-smart-open-line))
+
 ;; highlight the current line
 (use-package hl-line
   :ensure t
@@ -122,23 +130,23 @@
   (add-hook 'org-shiftdown-final-hook 'windmove-down)
   (add-hook 'org-shiftright-final-hook 'windmove-right))
 
-;; Shows possible key combinations
+;; shows possible key combinations
 (use-package which-key
   :ensure t
   :config
   (which-key-mode))
 
-;; Magit git interface
+;; magit git interface
 (use-package magit
   :ensure t)
 
-;; EPub reader mode
+;; epub reader mode
 (use-package nov
   :ensure t
   :config
   (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
 
-;; Autocomplete interface
+;; autocomplete interface for file search
 (use-package counsel
   :ensure t
   :demand
@@ -148,7 +156,7 @@
 	 ("C-s" . swiper))
   :commands ivy-mode)
 
-;; Project manager
+;; project manager
 (use-package projectile
   :ensure t
   :init
@@ -158,7 +166,7 @@
   (global-set-key (kbd "C-c p") 'projectile-command-map)
   (projectile-mode +1))
 
-;; Sidebar file explorer
+;; sidebar file explorer
 (use-package treemacs
   :ensure t
   :bind
@@ -170,12 +178,12 @@
   :config
   (add-hook 'treemacs-mode-hook (lambda() (display-line-numbers-mode -1))))
 
-;; Integrate git with treemacs
+;; integrate git with treemacs
 (use-package treemacs-magit
   :after (treemacs magit)
   :ensure t)
 
-;; Integrate projectile with treemacs
+;; integrate projectile with treemacs
 (use-package treemacs-projectile
   :after (treemacs projectile)
   :ensure t)
@@ -234,6 +242,8 @@
 (use-package cargo
   :ensure t
   :hook (rust-mode . cargo-minor-mode))
+
+(add-hook 'c-mode-hook 'lsp)
 
 (provide 'init)
 ;;; init.el ends here
