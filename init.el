@@ -2,10 +2,6 @@
 ;;; Commentary:
 ;; TODO
 ;; more langs -- elixir?
-<<<<<<< HEAD
-=======
-;; use emacs 27 for tab mode?
->>>>>>> e41419535da1b78c05d39ce3371fd3187db2f587
 ;; terminal (eshell? other shell?)
 ;; figure out keybindings for treemacs and projectile
 
@@ -231,7 +227,7 @@
 (setq lsp-completion-provider :capf)
 (setq lsp-completion-enable t)
 
-;; Help for Elisp functions
+;; Help for elisp functions
 (use-package eldoc
   :diminish eldoc-mode
   :commands turn-on-eldoc-mode
