@@ -1,7 +1,8 @@
 ;;; init --- the init.el for my emacs config
 ;;; Commentary:
 ;; TODO
-;; more langs --  C
+;; more langs -- elixir?
+;; use emacs 27 for tab mode?
 ;; terminal (eshell? other shell?)
 ;; figure out keybindings for treemacs and projectile
 
@@ -217,7 +218,6 @@
 (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
-(setq lsp-prefer-capf t)
 (setq lsp-completion-provider :capf)
 (setq lsp-completion-enable t)
 
@@ -235,8 +235,7 @@
 ;; hook up rust-mode with the language server, which should download automatically
 (use-package rust-mode
   :ensure t
-  :hook 
-  (rust-mode . lsp))
+  :hook (rust-mode . lsp))
 
 ;; cargo minor mode for cargo keybindings
 (use-package cargo
