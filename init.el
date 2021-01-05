@@ -1,12 +1,12 @@
 ;;; init --- the init.el for my emacs config
 ;;; Commentary:
 ;; TODO
-;; langs and flycheck
+;; more langs -- rust and C
 ;; terminal (eshell?)
+;; figure out keybindings for treemacs and projectile
 
 ;;; Code:
 (setq user-emacs-directory "~/my-emacs.d/user-dir")
-(global-set-key (kbd "C-M-m") (lambda () (interactive) (load-file "~/my-emacs.d/init.el")))
 
 ;; Setting up the MELPA repo
 (require 'package)
@@ -50,6 +50,14 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
+;; opens new window for shell buffer
+(defun shell-other-window ()
+  "Open a `shell' in a new window."
+  (interactive)
+  (let ((buf (shell)))
+    (switch-to-buffer (other-buffer buf))
+    (switch-to-buffer-other-window buf)))
+
 ;; UI Stuff
 (setq inhibit-startup-screen t)
 (setq ring-bell-function 'ignore)
@@ -77,7 +85,8 @@
 ;; Wrap lines at 80 characters
 (setq-default fill-column 80)
 
-;; line numbers
+;; line numbers, column number, size indication
+(global-display-line-numbers-mode)
 (line-number-mode t)
 (column-number-mode t)
 (size-indication-mode t)
@@ -90,9 +99,12 @@
       scroll-conservatively 100000
       scroll-preserve-screen-position 1)
 
-;; Font size
+;; Change font size binding
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
+
+;; Keybinding to reload configuration
+(global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/my-emacs.d/init.el")))
 
 ;; Window switching. (C-x o goes to the next window)
 (global-set-key (kbd "C-x O") (lambda ()
@@ -106,21 +118,26 @@
 
 ;; highlight the current line
 (use-package hl-line
+  :ensure t
   :config
   (global-hl-line-mode +1))
 
 (use-package windmove
+  :ensure t
   :config
   ;; use shift + arrow keys to switch between visible buffers
-  (windmove-default-keybindings))
-
-;; Keeps modeline tidy
-(use-package diminish
-  :ensure t)
+  (windmove-default-keybindings)
+  ;; Make windmove work in Org mode:
+  (add-hook 'org-shiftup-final-hook 'windmove-up)
+  (add-hook 'org-shiftleft-final-hook 'windmove-left)
+  (add-hook 'org-shiftdown-final-hook 'windmove-down)
+  (add-hook 'org-shiftright-final-hook 'windmove-right))
 
 ;; Shows possible key combinations
 (use-package which-key
-  :ensure t)
+  :ensure t
+  :config
+  (which-key-mode))
 
 ;; Magit git interface
 (use-package magit
@@ -128,7 +145,9 @@
 
 ;; EPub reader mode
 (use-package nov
-  :ensure t)
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
 
 ;; Autocomplete interface
 (use-package counsel
