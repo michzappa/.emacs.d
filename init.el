@@ -25,7 +25,7 @@
     (require package)))
 
 ;; hide auto-revert-mode indication
-(diminish 'auto-revert-mode)
+(diminish auto-revert-mode)
 
 ;; minor mode for inserting parens, braces, quotes and the like in pairs
 (electric-pair-mode)
@@ -227,7 +227,10 @@
 
 ;; lsp-mode plus other recommended packages and configuration
 (use-package lsp-mode
-  :ensure t)
+  :commands lsp
+  :ensure t
+  :config 
+  (diminish lsp-mode))
 
 (use-package lsp-ui
   :ensure t)
@@ -248,6 +251,10 @@
     (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
     (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
     (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)))
+
+(use-package elixir-mode
+  :ensure t
+  :hook (elixir-mode . lsp))
 
 ;; hook up rust-mode with the language server
 (use-package rust-mode

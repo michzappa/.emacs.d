@@ -10,8 +10,6 @@ Run org-babel-tangle to repopulate init.el.
 ;;; init --- the init.el for my emacs config
 ;;; Commentary:
 ;; TODO
-;; maybe try eglot instead of lsp-mode?
-;; more langs -- elixir?
 #+END_SRC
 * General
 ** Personal
@@ -42,9 +40,6 @@ Run org-babel-tangle to repopulate init.el.
 
 ** Misc
 #+BEGIN_SRC elisp
-
-;; hide auto-revert-mode indication
-(diminish 'auto-revert-mode)
 
 ;; minor mode for inserting parens, braces, quotes and the like in pairs
 (electric-pair-mode)
@@ -310,7 +305,10 @@ Run org-babel-tangle to repopulate init.el.
 #+BEGIN_SRC elisp
 ;; lsp-mode plus other recommended packages and configuration
 (use-package lsp-mode
-  :ensure t)
+  :commands lsp
+  :ensure t
+  :config 
+  (diminish lsp-mode))
 
 (use-package lsp-ui
   :ensure t)
@@ -334,6 +332,14 @@ Run org-babel-tangle to repopulate init.el.
     (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
     (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)))
 #+END_SRC
+** Elixir
+Needs elixir-ls https://github.com/elixir-lsp/elixir-ls.
+#+BEGIN_SRC elisp
+(use-package elixir-mode
+  :ensure t
+  :hook (elixir-mode . lsp))
+#+END_SRC
+
 ** Rust
 Needs rust language server (rls) https://github.com/rust-lang/rls.
 #+BEGIN_SRC elisp
