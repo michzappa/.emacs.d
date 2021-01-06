@@ -1,1 +1,3 @@
-user-dir
+*
+!configuration.org
+!init.el
