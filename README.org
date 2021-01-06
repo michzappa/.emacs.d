@@ -11,7 +11,7 @@ Run org-babel-tangle to repopulate init.el.
 ;;; Commentary:
 ;; TODO
 ;; more langs -- elixir?
-;; terminal (eshell? other shell?)
+;; diminish
 ;; figure out keybindings for treemacs and projectile
 #+END_SRC
 * General
@@ -43,6 +43,13 @@ Run org-babel-tangle to repopulate init.el.
 
 ** Misc
 #+BEGIN_SRC elisp
+
+;; hide auto-revert-mode indication
+(diminish 'auto-revert-mode)
+
+;; minor mode for inserting parens, braces, quotes and the like in pairs
+(electric-pair-mode)
+
 ;; Always load newest byte code
 (setq load-prefer-newer t)
 
@@ -126,6 +133,11 @@ Run org-babel-tangle to repopulate init.el.
 #+END_SRC
 
 * Utility Packages
+** diminish
+#+BEGIN_SRC elisp
+(use-package diminish
+  :ensure t)
+#+END_SRC
 ** exec-path-from-shell
 
 #+BEGIN_SRC elisp
@@ -180,6 +192,7 @@ Run org-babel-tangle to repopulate init.el.
 (use-package which-key
   :ensure t
   :config
+  (diminish 'which-key-mode)
   (which-key-mode))
 #+END_SRC
 
@@ -211,8 +224,7 @@ Run org-babel-tangle to repopulate init.el.
   :ensure t
   :demand
   :bind 
-   (
-    ;;("M-x" . counsel-M-x)
+   (("M-x" . counsel-M-x)
     ("C-x C-f" . counsel-find-file)
     ("C-x C-r" . counsel-recentf)
     ("C-s" . swiper))
@@ -220,12 +232,12 @@ Run org-babel-tangle to repopulate init.el.
 #+END_SRC
 
 ** smex
+
 #+BEGIN_SRC elisp
 (use-package smex
-  :ensure t
-  :config 
-  (global-set-key (kbd "M-x") 'smex))
+  :ensure t)
 #+END_SRC
+
 ** projectile
 
 #+BEGIN_SRC elisp
@@ -265,6 +277,7 @@ Run org-babel-tangle to repopulate init.el.
   :after (treemacs projectile)
   :ensure t)
 #+END_SRC
+
 * Flycheck and Company
 
 #+BEGIN_SRC elisp
@@ -277,6 +290,7 @@ Run org-babel-tangle to repopulate init.el.
 (use-package company
   :ensure t
   :config
+  (diminish 'company-mode)
   (setq company-idle-delay 0.5)
   (setq company-show-numbers t)
   (setq company-tooltip-limit 10)
@@ -339,3 +353,4 @@ LSP for C requires clangd.
 (provide 'init)
 ;;; init.el ends here
 #+END_SRC
+

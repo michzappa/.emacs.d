@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;; TODO
 ;; more langs -- elixir?
-;; terminal (eshell? other shell?)
+;; diminish
 ;; figure out keybindings for treemacs and projectile
 
 ;;; Code:
@@ -24,6 +24,12 @@
     (unless (package-installed-p package)
       (package-install package))
     (require package)))
+
+;; hide auto-revert-mode indication
+(diminish 'auto-revert-mode)
+
+;; minor mode for inserting parens, braces, quotes and the like in pairs
+(electric-pair-mode)
 
 ;; Always load newest byte code
 (setq load-prefer-newer t)
@@ -100,6 +106,9 @@
 ;; keybinding to reload configuration
 (global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/my-emacs.d/init.el")))
 
+(use-package diminish
+  :ensure t)
+
 ;; Force Emacs to use shell path
 (use-package exec-path-from-shell
   :ensure t
@@ -134,6 +143,7 @@
 (use-package which-key
   :ensure t
   :config
+  (diminish 'which-key-mode)
   (which-key-mode))
 
 ;; magit git interface
@@ -151,17 +161,14 @@
   :ensure t
   :demand
   :bind 
-   (
-    ;;("M-x" . counsel-M-x)
+   (("M-x" . counsel-M-x)
     ("C-x C-f" . counsel-find-file)
     ("C-x C-r" . counsel-recentf)
     ("C-s" . swiper))
   :commands ivy-mode)
 
 (use-package smex
-  :ensure t
-  :config 
-  (global-set-key (kbd "M-x") 'smex))
+  :ensure t)
 
 ;; project manager
 (use-package projectile
@@ -204,6 +211,7 @@
 (use-package company
   :ensure t
   :config
+  (diminish 'company-mode)
   (setq company-idle-delay 0.5)
   (setq company-show-numbers t)
   (setq company-tooltip-limit 10)
