@@ -11,8 +11,6 @@ Run org-babel-tangle to repopulate init.el.
 ;;; Commentary:
 ;; TODO
 ;; more langs -- elixir?
-;; diminish
-;; figure out keybindings for treemacs and projectile
 #+END_SRC
 * General
 ** Personal
