@@ -2,12 +2,6 @@
 ;;; Commentary:
 ;; TODO
 
-;;; Code:
-(setq user-emacs-directory "~/my-emacs.d/user-dir")
-
-(setq user-full-name "Michael Zappa")
-(setq user-mail-address "zapprich@gmail.com")
-
 ;; setting up the MELPA repo
 (require 'package)
 (add-to-list `package-archives `("melpa" . "http://melpa.org/packages/"))
@@ -21,6 +15,12 @@
     (unless (package-installed-p package)
       (package-install package))
     (require package)))
+
+;;; Code:
+(setq user-emacs-directory "~/my-emacs.d/user-dir")
+
+(setq user-full-name "Michael Zappa")
+(setq user-mail-address "zapprich@gmail.com")
 
 ;; minor mode for inserting parens, braces, quotes and the like in pairs
 (electric-pair-mode)
@@ -98,6 +98,17 @@
 ;; keybinding to reload configuration
 (global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/my-emacs.d/init.el")))
 
+;; autocomplete interface for search
+(use-package counsel
+  :ensure t
+  :demand
+  :bind 
+   (("M-x" . counsel-M-x)
+    ("C-x C-f" . counsel-find-file)
+    ("C-x C-r" . counsel-recentf)
+    ("C-s" . swiper))
+  :commands ivy-mode)
+
 (use-package diminish
   :ensure t)
 
@@ -112,24 +123,6 @@
   :config
   (global-hl-line-mode +1))
 
-(use-package windmove
-  :ensure t
-  :config
-  ;; use shift + arrow keys to switch between visible buffers
-  (windmove-default-keybindings)
-  ;; Make windmove work in Org mode:
-  (add-hook 'org-shiftup-final-hook 'windmove-up)
-  (add-hook 'org-shiftleft-final-hook 'windmove-left)
-  (add-hook 'org-shiftdown-final-hook 'windmove-down)
-  (add-hook 'org-shiftright-final-hook 'windmove-right))
-
-;; shows possible key combinations
-(use-package which-key
-  :ensure t
-  :config
-  (diminish 'which-key-mode)
-  (which-key-mode))
-
 ;; magit git interface
 (use-package magit
   :ensure t)
@@ -140,26 +133,6 @@
   :config
   (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
 
-;; autocomplete interface for search
-(use-package counsel
-  :ensure t
-  :demand
-  :bind 
-   (("M-x" . counsel-M-x)
-    ("C-x C-f" . counsel-find-file)
-    ("C-x C-r" . counsel-recentf)
-    ("C-s" . swiper))
-  :commands ivy-mode)
-
-;; frequency sorter to integrate with counsel
-(use-package smex
-  :ensure t)
-
-(use-package rainbow-delimiters
-  :ensure t
-  :config
-  (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
-
 ;; project manager
 (use-package projectile
   :ensure t
@@ -169,6 +142,15 @@
   :config
   (global-set-key (kbd "C-c p") 'projectile-command-map)
   (projectile-mode +1))
+
+(use-package rainbow-delimiters
+  :ensure t
+  :config
+  (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
+
+;; frequency sorter to integrate with counsel
+(use-package smex
+  :ensure t)
 
 ;; sidebar file explorer
 (use-package treemacs
@@ -191,6 +173,24 @@
 (use-package treemacs-projectile
   :after (treemacs projectile)
   :ensure t)
+
+;; shows possible key combinations
+(use-package which-key
+  :ensure t
+  :config
+  (diminish 'which-key-mode)
+  (which-key-mode))
+
+(use-package windmove
+  :ensure t
+  :config
+  ;; use shift + arrow keys to switch between visible buffers
+  (windmove-default-keybindings)
+  ;; Make windmove work in Org mode:
+  (add-hook 'org-shiftup-final-hook 'windmove-up)
+  (add-hook 'org-shiftleft-final-hook 'windmove-left)
+  (add-hook 'org-shiftdown-final-hook 'windmove-down)
+  (add-hook 'org-shiftright-final-hook 'windmove-right))
 
 ;; flycheck for syntax checking
 (use-package flycheck
@@ -228,6 +228,8 @@
 (setq lsp-completion-provider :capf)
 (setq lsp-completion-enable t)
 
+(add-hook 'c-mode-hook 'lsp)
+
 ;; Help for elisp functions
 (use-package eldoc
   :diminish eldoc-mode
@@ -252,8 +254,6 @@
 (use-package cargo
   :ensure t
   :hook (rust-mode . cargo-minor-mode))
-
-(add-hook 'c-mode-hook 'lsp)
 
 (provide 'init)
 ;;; init.el ends here

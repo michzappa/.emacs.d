@@ -12,15 +12,6 @@ Run org-babel-tangle to repopulate init.el.
 ;; TODO
 #+END_SRC
 * General
-** Personal
-#+BEGIN_SRC elisp
-;;; Code:
-(setq user-emacs-directory "~/my-emacs.d/user-dir")
-
-(setq user-full-name "Michael Zappa")
-(setq user-mail-address "zapprich@gmail.com")
-#+END_SRC
-
 ** Packages
 #+BEGIN_SRC elisp
 ;; setting up the MELPA repo
@@ -36,6 +27,14 @@ Run org-babel-tangle to repopulate init.el.
     (unless (package-installed-p package)
       (package-install package))
     (require package)))
+#+END_SRC
+** Personal
+#+BEGIN_SRC elisp
+;;; Code:
+(setq user-emacs-directory "~/my-emacs.d/user-dir")
+
+(setq user-full-name "Michael Zappa")
+(setq user-mail-address "zapprich@gmail.com")
 #+END_SRC
 
 ** Misc
@@ -123,6 +122,19 @@ Run org-babel-tangle to repopulate init.el.
 #+END_SRC
 
 * Utility Packages
+** counsel
+#+BEGIN_SRC elisp
+;; autocomplete interface for search
+(use-package counsel
+  :ensure t
+  :demand
+  :bind 
+   (("M-x" . counsel-M-x)
+    ("C-x C-f" . counsel-find-file)
+    ("C-x C-r" . counsel-recentf)
+    ("C-s" . swiper))
+  :commands ivy-mode)
+#+END_SRC
 ** diminish
 #+BEGIN_SRC elisp
 (use-package diminish
@@ -143,28 +155,6 @@ Run org-babel-tangle to repopulate init.el.
   :config
   (global-hl-line-mode +1))
 #+END_SRC
-** windmove
-#+BEGIN_SRC elisp
-(use-package windmove
-  :ensure t
-  :config
-  ;; use shift + arrow keys to switch between visible buffers
-  (windmove-default-keybindings)
-  ;; Make windmove work in Org mode:
-  (add-hook 'org-shiftup-final-hook 'windmove-up)
-  (add-hook 'org-shiftleft-final-hook 'windmove-left)
-  (add-hook 'org-shiftdown-final-hook 'windmove-down)
-  (add-hook 'org-shiftright-final-hook 'windmove-right))
-#+END_SRC
-** which-key
-#+BEGIN_SRC elisp
-;; shows possible key combinations
-(use-package which-key
-  :ensure t
-  :config
-  (diminish 'which-key-mode)
-  (which-key-mode))
-#+END_SRC
 ** magit
 #+BEGIN_SRC elisp
 ;; magit git interface
@@ -179,32 +169,6 @@ Run org-babel-tangle to repopulate init.el.
   :config
   (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
 #+END_SRC
-** counsel
-#+BEGIN_SRC elisp
-;; autocomplete interface for search
-(use-package counsel
-  :ensure t
-  :demand
-  :bind 
-   (("M-x" . counsel-M-x)
-    ("C-x C-f" . counsel-find-file)
-    ("C-x C-r" . counsel-recentf)
-    ("C-s" . swiper))
-  :commands ivy-mode)
-#+END_SRC
-** smex
-#+BEGIN_SRC elisp
-;; frequency sorter to integrate with counsel
-(use-package smex
-  :ensure t)
-#+END_SRC
-** rainbow-delimiters
-#+BEGIN_SRC elisp
-(use-package rainbow-delimiters
-  :ensure t
-  :config
-  (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
-#+END_SRC
 ** projectile
 #+BEGIN_SRC elisp
 ;; project manager
@@ -216,6 +180,19 @@ Run org-babel-tangle to repopulate init.el.
   :config
   (global-set-key (kbd "C-c p") 'projectile-command-map)
   (projectile-mode +1))
+#+END_SRC
+** rainbow-delimiters
+#+BEGIN_SRC elisp
+(use-package rainbow-delimiters
+  :ensure t
+  :config
+  (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
+#+END_SRC
+** smex
+#+BEGIN_SRC elisp
+;; frequency sorter to integrate with counsel
+(use-package smex
+  :ensure t)
 #+END_SRC
 ** treemacs
 #+BEGIN_SRC elisp
@@ -240,6 +217,28 @@ Run org-babel-tangle to repopulate init.el.
 (use-package treemacs-projectile
   :after (treemacs projectile)
   :ensure t)
+#+END_SRC
+** which-key
+#+BEGIN_SRC elisp
+;; shows possible key combinations
+(use-package which-key
+  :ensure t
+  :config
+  (diminish 'which-key-mode)
+  (which-key-mode))
+#+END_SRC
+** windmove
+#+BEGIN_SRC elisp
+(use-package windmove
+  :ensure t
+  :config
+  ;; use shift + arrow keys to switch between visible buffers
+  (windmove-default-keybindings)
+  ;; Make windmove work in Org mode:
+  (add-hook 'org-shiftup-final-hook 'windmove-up)
+  (add-hook 'org-shiftleft-final-hook 'windmove-left)
+  (add-hook 'org-shiftdown-final-hook 'windmove-down)
+  (add-hook 'org-shiftright-final-hook 'windmove-right))
 #+END_SRC
 * Flycheck and Company
 #+BEGIN_SRC elisp
@@ -282,6 +281,11 @@ Run org-babel-tangle to repopulate init.el.
 (setq lsp-completion-provider :capf)
 (setq lsp-completion-enable t)
 #+END_SRC
+** C
+Needs clangd.
+#+BEGIN_SRC elisp
+(add-hook 'c-mode-hook 'lsp)
+#+END_SRC
 ** Elisp
 #+BEGIN_SRC elisp
 ;; Help for elisp functions
@@ -314,11 +318,6 @@ Needs rust language server (rls) https://github.com/rust-lang/rls.
 (use-package cargo
   :ensure t
   :hook (rust-mode . cargo-minor-mode))
-#+END_SRC
-** C
-Needs clangd.
-#+BEGIN_SRC elisp
-(add-hook 'c-mode-hook 'lsp)
 #+END_SRC
 * Provide
 #+BEGIN_SRC elisp
