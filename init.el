@@ -155,6 +155,11 @@
 (use-package smex
   :ensure t)
 
+(use-package rainbow-delimiters
+  :ensure t
+  :config
+  (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
+
 ;; project manager
 (use-package projectile
   :ensure t

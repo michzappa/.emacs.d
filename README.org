@@ -198,6 +198,13 @@ Run org-babel-tangle to repopulate init.el.
 (use-package smex
   :ensure t)
 #+END_SRC
+** rainbow-delimiters
+#+BEGIN_SRC elisp
+(use-package rainbow-delimiters
+  :ensure t
+  :config
+  (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
+#+END_SRC
 ** projectile
 #+BEGIN_SRC elisp
 ;; project manager
