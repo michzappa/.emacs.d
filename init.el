@@ -2,8 +2,6 @@
 ;;; Commentary:
 ;; TODO
 ;; more langs -- elixir?
-;; diminish
-;; figure out keybindings for treemacs and projectile
 
 ;;; Code:
 (setq user-emacs-directory "~/my-emacs.d/user-dir")
@@ -56,9 +54,13 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
-;; UI Stuff
+;; scratch screen
 (setq inhibit-startup-screen t)
+(setq initial-scratch-message "")
+
+;; hecking bell
 (setq ring-bell-function 'ignore)
+
 ;; turn off things
 (menu-bar-mode -1)
 (toggle-scroll-bar -1)

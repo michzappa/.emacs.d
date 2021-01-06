@@ -75,10 +75,15 @@ Run org-babel-tangle to repopulate init.el.
 #+END_SRC
 
 * UI
+
 #+BEGIN_SRC elisp
-;; UI Stuff
+;; scratch screen
 (setq inhibit-startup-screen t)
+(setq initial-scratch-message "")
+
+;; hecking bell
 (setq ring-bell-function 'ignore)
+
 ;; turn off things
 (menu-bar-mode -1)
 (toggle-scroll-bar -1)
@@ -213,7 +218,7 @@ Run org-babel-tangle to repopulate init.el.
   (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
 
 #+END_SRC
-
+o
 ** counsel
 
 #+BEGIN_SRC elisp
