@@ -10,6 +10,7 @@ Run org-babel-tangle to repopulate init.el.
 ;;; init --- the init.el for my emacs config
 ;;; Commentary:
 ;; TODO
+;; maybe try eglot instead of lsp-mode?
 ;; more langs -- elixir?
 #+END_SRC
 * General
@@ -218,7 +219,7 @@ Run org-babel-tangle to repopulate init.el.
   (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
 
 #+END_SRC
-o
+
 ** counsel
 
 #+BEGIN_SRC elisp
@@ -334,8 +335,9 @@ o
     (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)))
 #+END_SRC
 ** Rust
+Needs rust language server (rls) https://github.com/rust-lang/rls.
 #+BEGIN_SRC elisp
-;; hook up rust-mode with the language server, which should download automatically
+;; hook up rust-mode with the language server
 (use-package rust-mode
   :ensure t
   :hook (rust-mode . lsp))
@@ -346,7 +348,7 @@ o
   :hook (rust-mode . cargo-minor-mode))
 #+END_SRC
 ** C
-LSP for C requires clangd.
+Needs clangd.
 #+BEGIN_SRC elisp
 (add-hook 'c-mode-hook 'lsp)
 #+END_SRC

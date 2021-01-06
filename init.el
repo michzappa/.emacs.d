@@ -1,6 +1,7 @@
 ;;; init --- the init.el for my emacs config
 ;;; Commentary:
 ;; TODO
+;; maybe try eglot instead of lsp-mode?
 ;; more langs -- elixir?
 
 ;;; Code:
@@ -248,7 +249,7 @@
     (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
     (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)))
 
-;; hook up rust-mode with the language server, which should download automatically
+;; hook up rust-mode with the language server
 (use-package rust-mode
   :ensure t
   :hook (rust-mode . lsp))
