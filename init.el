@@ -1,8 +1,6 @@
 ;;; init --- the init.el for my emacs config
 ;;; Commentary:
 ;; TODO
-;; maybe try eglot instead of lsp-mode?
-;; more langs -- elixir?
 
 ;;; Code:
 (setq user-emacs-directory "~/my-emacs.d/user-dir")
@@ -10,27 +8,24 @@
 (setq user-full-name "Michael Zappa")
 (setq user-mail-address "zapprich@gmail.com")
 
-;; Setting up the MELPA repo
+;; setting up the MELPA repo
 (require 'package)
 (add-to-list `package-archives `("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
 
-;; Installing all the listed packages
+;; installing all the listed packages
 (eval-when-compile
   (dolist (package '(use-package diminish bind-key))
     (unless (package-installed-p package)
       (package-install package))
     (require package)))
 
-;; hide auto-revert-mode indication
-(diminish auto-revert-mode)
-
 ;; minor mode for inserting parens, braces, quotes and the like in pairs
 (electric-pair-mode)
 
-;; Always load newest byte code
+;; always load newest byte code
 (setq load-prefer-newer t)
 
 ;; reduce the frequency of garbage collection by making it happen on
@@ -42,12 +37,6 @@
 
 ;; quit Emacs directly even if there are running processes
 (setq confirm-kill-processes nil)
-
-;; Newline at end of file
-(setq require-final-newline t)
-
-;; Wrap lines at 80 characters
-(setq-default fill-column 80)
 
 ;; store all backup and autosave files in the tmp dir
 (setq backup-directory-alist
@@ -82,10 +71,10 @@
                    (abbreviate-file-name (buffer-file-name))
                  "%b"))))
 
-;; Newline at end of file
+;; newline at end of file
 (setq require-final-newline t)
 
-;; Wrap lines at 80 characters
+;; wrap lines at 80 characters
 (setq-default fill-column 80)
 
 ;; line numbers, column number, size indication
@@ -116,14 +105,6 @@
 (use-package exec-path-from-shell
   :ensure t
   :commands exec-path-from-shell-initialize)
-
-;; still working out what, if any, my custom keymap will be
-  ;; (use-package crux
-  ;;   :ensure t
-  ;;   :config
-  ;;   (global-set-key (kbd "C-k") #'crux-smart-kill-line)
-  ;;   (global-set-key (kbd "C-s-RET") #'crux-smart-open-line-above)
-  ;;   (global-set-key (kbd "s-RET") #'crux-smart-open-line))
 
 ;; highlight the current line
 (use-package hl-line
@@ -159,7 +140,7 @@
   :config
   (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
 
-;; autocomplete interface for file search
+;; autocomplete interface for search
 (use-package counsel
   :ensure t
   :demand
@@ -170,6 +151,7 @@
     ("C-s" . swiper))
   :commands ivy-mode)
 
+;; frequency sorter to integrate with counsel
 (use-package smex
   :ensure t)
 
