@@ -221,6 +221,12 @@ Needs ag installed, silversearcher-ag debian package.
   (global-set-key (kbd "C-c v")  'projectile-ag)
   (projectile-mode +1))
 #+END_SRC
+** paredit
+#+BEGIN_SRC emacs-lisp
+	(use-package paredit
+		:config
+		(add-hook 'emacs-lisp-mode-hook (lambda () (setq show-paren-style 'expression))))
+#+END_SRC
 ** rainbow-delimiters
 #+BEGIN_SRC emacs-lisp
 (use-package rainbow-delimiters
