@@ -133,7 +133,7 @@ blocks.
 (global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
 
 ;; keybinding to open configuration file (this file)
-(global-set-key (kbd "C-c f") (lambda () (interactive) (find-file "~/.emacs.d/configuration.org")))
+(global-set-key (kbd "C-x f") (lambda () (interactive) (find-file "~/.emacs.d/configuration.org")))
 #+END_SRC
 
 * Utility Packages
