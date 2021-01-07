@@ -77,46 +77,49 @@ blocks.
 
 * UI
 #+BEGIN_SRC emacs-lisp
-  ;; scratch screen
-  (setq inhibit-startup-screen t)
-  (setq initial-scratch-message "")
+	;; scratch screen
+	(setq inhibit-startup-screen t)
+	(setq initial-scratch-message "")
 
-  ;; hecking bell
-  (setq ring-bell-function 'ignore)
+	;; hecking bell
+	(setq ring-bell-function 'ignore)
 
-  ;; turn off things
-  (menu-bar-mode -1)
-  (toggle-scroll-bar -1)
-  (tool-bar-mode -1)
-  (blink-cursor-mode -1)
+	;; turn off things
+	;;(menu-bar-mode -1)
+	(toggle-scroll-bar -1)
+	;;(tool-bar-mode -1)
+	(blink-cursor-mode -1)
 
-  ;; initial frame maximized
-  (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+	;; initial frame maximized
+	(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-  ; theme
-  (use-package nord-theme
-    :ensure t
-    :config
-    (load-theme 'nord t))
+	; theme
+	(use-package nord-theme
+		:ensure t
+		:config
+		(load-theme 'nord t))
 
-  ;; more useful frame title, that show either a file or a
-  ;; buffer name (if the buffer isn't visiting a file)
-  (setq frame-title-format '((:eval (projectile-project-name))))
+	;; more useful frame title, that show either a file or a
+	;; buffer name (if the buffer isn't visiting a file)
+	(setq frame-title-format '((:eval (projectile-project-name))))
 
-  ;; newline at end of file
-  (setq require-final-newline t)
+	;; newline at end of file
+	(setq require-final-newline t)
 
-  ;; wrap lines at 80 characters
-  (setq-default fill-column 80)
+	;; wrap lines at 80 characters
+	(setq-default fill-column 80)
 
-  ;; line numbers, column number, size indication
-  (global-display-line-numbers-mode)
-  (line-number-mode t)
-  (column-number-mode t)
-  (size-indication-mode t)
+  ;; wraps visual lines
+  (global-visual-line-mode)
 
-  ;; enable y/n answers
-  (fset 'yes-or-no-p 'y-or-n-p)
+	;; line numbers, column number, size indication
+	(global-display-line-numbers-mode)
+	(line-number-mode t)
+	(column-number-mode t)
+	(size-indication-mode t)
+
+	;; enable y/n answers
+	(fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC 
 * Mouse and Keys
 #+BEGIN_SRC emacs-lisp
