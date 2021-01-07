@@ -5,106 +5,109 @@
 init.el uses org-babel-load file to automatically load in the emacs-lisp 
 blocks.
 
-* Commentary
-#+BEGIN_SRC emacs-lisp
-;;; init --- the init.el for my emacs config
-;;; Commentary:
-;; TODO
-#+END_SRC
 * General
 ** Packages
 #+BEGIN_SRC emacs-lisp
-;; setting up the MELPA repo
-(require 'package)
-(add-to-list `package-archives `("melpa" . "http://melpa.org/packages/"))
-(package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
+  ;; setting up the MELPA repo
+  (require 'package)
+  (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+  (package-initialize)
 
-;; installing all the listed packages
-(eval-when-compile
-  (dolist (package '(use-package diminish bind-key))
-    (unless (package-installed-p package)
-      (package-install package))
-    (require package)))
+  ;; install use-package if not installed
+  (when (not (package-installed-p 'use-package))
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+  (unless package-archive-contents
+    (package-refresh-contents))
+
+  ;; ensure use-package by default
+  (require 'use-package-ensure)
+  (setq use-package-always-ensure t)
+
+  ;; compile packages and use newest version
+  (use-package auto-compile
+    :config (auto-compile-on-load-mode))
+
+  (setq load-prefer-newer t)
 #+END_SRC
 ** Personal
 #+BEGIN_SRC emacs-lisp
-;;; Code:
-(setq user-emacs-directory "~/.emacs.d/user-dir")
+  (setq user-emacs-directory "~/.emacs.d/user-dir")
 
-(setq user-full-name "Michael Zappa")
-(setq user-mail-address "zapprich@gmail.com")
+  (setq user-full-name "Michael Zappa")
+  (setq user-mail-address "zapprich@gmail.com")
 #+END_SRC
 
 ** Misc
 #+BEGIN_SRC emacs-lisp
-;; minor mode for inserting parens, braces, quotes and the like in pairs
-(electric-pair-mode)
+  ;; minor mode for inserting parens, braces, quotes and the like in pairs
+  (electric-pair-mode)
 
-;; always load newest byte code
-(setq load-prefer-newer t)
+  ;; pretty symbols
+  (global-prettify-symbols-mode t)
 
-;; reduce the frequency of garbage collection by making it happen on
-;; each 50MB of allocated data (the default is on every 0.76MB)
-(setq gc-cons-threshold 50000000)
+  ;; reduce the frequency of garbage collection by making it happen on
+  ;; each 50MB of allocated data (the default is on every 0.76MB)
+  (setq gc-cons-threshold 50000000)
 
-;; warn when opening files bigger than 100MB
-(setq large-file-warning-threshold 100000000)
+  ;; warn when opening files bigger than 100MB
+  (setq large-file-warning-threshold 100000000)
 
-;; quit Emacs directly even if there are running processes
-(setq confirm-kill-processes nil)
+  ;; quit Emacs directly even if there are running processes
+  (setq confirm-kill-processes nil)
 
-;; store all backup and autosave files in the tmp dir
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
+  ;; store all backup and autosave files in the tmp dir
+  (setq backup-directory-alist
+	`((".*" . ,temporary-file-directory)))
+  (setq auto-save-file-name-transforms
+	`((".*" ,temporary-file-directory t)))
 #+END_SRC
 
 * UI
 #+BEGIN_SRC emacs-lisp
-;; scratch screen
-(setq inhibit-startup-screen t)
-(setq initial-scratch-message "")
+  ;; scratch screen
+  (setq inhibit-startup-screen t)
+  (setq initial-scratch-message "")
 
-;; hecking bell
-(setq ring-bell-function 'ignore)
+  ;; hecking bell
+  (setq ring-bell-function 'ignore)
 
-;; turn off things
-(menu-bar-mode -1)
-(toggle-scroll-bar -1)
-(tool-bar-mode -1)
-(blink-cursor-mode -1)
-;; initial frame maximized
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+  ;; turn off things
+  (menu-bar-mode -1)
+  (toggle-scroll-bar -1)
+  (tool-bar-mode -1)
+  (blink-cursor-mode -1)
 
-(use-package nord-theme
-  :ensure t
-  :config
-  (load-theme 'nord t))
+  ;; initial frame maximized
+  (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-;; more useful frame title, that show either a file or a
-;; buffer name (if the buffer isn't visiting a file)
-(setq frame-title-format
-      '((:eval (if (buffer-file-name)
-                   (abbreviate-file-name (buffer-file-name))
-                 "%b"))))
+  ; theme
+  (use-package nord-theme
+    :ensure t
+    :config
+    (load-theme 'nord t))
 
-;; newline at end of file
-(setq require-final-newline t)
+  ;; more useful frame title, that show either a file or a
+  ;; buffer name (if the buffer isn't visiting a file)
+  (setq frame-title-format '((:eval (projectile-project-name)))
 
-;; wrap lines at 80 characters
-(setq-default fill-column 80)
+  ;; newline at end of file
+  (setq require-final-newline t)
 
-;; line numbers, column number, size indication
-(global-display-line-numbers-mode)
-(line-number-mode t)
-(column-number-mode t)
-(size-indication-mode t)
+  ;; wrap lines at 80 characters
+  (setq-default fill-column 80)
 
-;; enable y/n answers
-(fset 'yes-or-no-p 'y-or-n-p)
+  ;; line numbers, column number, size indication
+  (global-display-line-numbers-mode)
+  (line-number-mode t)
+  (column-number-mode t)
+  (size-indication-mode t)
+
+  ;; enable y/n answers
+  (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC 
 * Mouse and Keys
 #+BEGIN_SRC emacs-lisp
@@ -118,7 +121,10 @@ blocks.
 (global-set-key (kbd "C--") 'text-scale-decrease)
 
 ;; keybinding to reload configuration
-(global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/my-emacs.d/init.el")))
+(global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
+
+;; keybinding to open configuration file (this file)
+(global-set-key (kbd "C-c f") (lambda () (interactive) (find-file "~/.emacs.d/configuration.org")))
 #+END_SRC
 
 * Utility Packages
@@ -151,7 +157,6 @@ blocks.
 #+BEGIN_SRC emacs-lisp
 ;; highlight the current line
 (use-package hl-line
-  :ensure t
   :config
   (global-hl-line-mode +1))
 #+END_SRC
@@ -160,6 +165,15 @@ blocks.
 ;; magit git interface
 (use-package magit
   :ensure t)
+#+END_SRC
+** minions
+#+BEGIN_SRC emacs-lisp
+  ;; turns off all minor modes in modeline
+  (use-package minions
+    :config
+    (setq minions-mode-line-lighter ""
+	  minions-mode-line-delimiters '("" . ""))
+    (minions-mode 1))
 #+END_SRC
 ** nov
 #+BEGIN_SRC emacs-lisp
@@ -318,9 +332,4 @@ Needs rust language server (rls) https://github.com/rust-lang/rls.
 (use-package cargo
   :ensure t
   :hook (rust-mode . cargo-minor-mode))
-#+END_SRC
-* Provide
-#+BEGIN_SRC emacs-lisp
-(provide 'init)
-;;; init.el ends here
 #+END_SRC
