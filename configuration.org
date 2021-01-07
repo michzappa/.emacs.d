@@ -334,14 +334,23 @@ Needs clangd.
 ** Elixir
 Needs elixir-ls https://github.com/elixir-lsp/elixir-ls.
 #+BEGIN_SRC emacs-lisp
-(use-package elixir-mode
-  :hook (elixir-mode . lsp))
+	;; Elixir major mode hooked up to lsp
+	(use-package elixir-mode
+		:hook (elixir-mode . lsp))
+
+	;; minor mode for mix commands
+	(use-package mix
+		:hook (elixir-mode mix-minor-mode))
 #+END_SRC
 ** OCaml
 Needs OCaml language server https://github.com/ocaml/ocaml-lsp.
 #+BEGIN_SRC emacs-lisp
+	;; OCaml major mode
 	(use-package tuareg
 		:hook (tuareg-mode . lsp))
+
+	;; dune integration, don't know how to use
+	(use-package dune)
 #+END_SRC
 ** Python
 Needs python language server https://github.com/palantir/python-language-server.
