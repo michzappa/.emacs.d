@@ -16,7 +16,9 @@ blocks.
 	(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
 	(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 	(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-	(package-initialize)
+
+	;; emacs tells me this is unnecessary
+	;;(package-initialize)
 
 	;; install use-package if not installed
 	(when (not (package-installed-p 'use-package))
@@ -34,7 +36,7 @@ blocks.
 	(use-package auto-compile
 		:config (auto-compile-on-load-mode))
 
-  ;; use newest version of packages
+	;; use newest version of packages
 	(setq load-prefer-newer t)
 #+END_SRC
 ** Personal
@@ -162,8 +164,7 @@ Needs ag installed, silversearcher-ag debian package.
 	;; company for text-completion
 	(use-package company
 		:config
-		(global-company-mode)
-		(push 'company-lsp company-backends))
+		(global-company-mode))
 #+END_SRC
 ** counsel
 #+BEGIN_SRC emacs-lisp
