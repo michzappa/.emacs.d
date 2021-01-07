@@ -331,8 +331,14 @@ Needs elixir-ls https://github.com/elixir-lsp/elixir-ls.
 (use-package elixir-mode
   :hook (elixir-mode . lsp))
 #+END_SRC
+** OCaml
+Needs OCaml language server https://github.com/ocaml/ocaml-lsp.
+#+BEGIN_SRC emacs-lisp
+	(use-package tuareg
+		:hook (tuareg-mode . lsp))
+#+END_SRC
 ** Python
-Needs python language server.
+Needs python language server https://github.com/palantir/python-language-server.
 #+BEGIN_SRC emacs-lisp
 	(use-package python-mode
 		:config

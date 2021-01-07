@@ -15,7 +15,7 @@
  '(counsel-mode t)
  '(package-selected-packages
 	 (quote
-		(python-mode lsp-python-ms paredit org-bullets company-restclient restclient lsp-treemacs lsp-ivy auto-compile cargo rust-mode elixir-mode lsp-ui lsp-mode company flycheck which-key treemacs-projectile treemacs-magit treemacs smex rainbow-delimiters projectile nov magit exec-path-from-shell counsel nord-theme diminish use-package))))
+		(tuareg python-mode lsp-python-ms paredit org-bullets company-restclient restclient lsp-treemacs lsp-ivy auto-compile cargo rust-mode elixir-mode lsp-ui lsp-mode company flycheck which-key treemacs-projectile treemacs-magit treemacs smex rainbow-delimiters projectile nov magit exec-path-from-shell counsel nord-theme diminish use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
