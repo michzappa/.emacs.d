@@ -13,8 +13,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   (quote
-    (lsp-treemacs lsp-ivy auto-compile cargo rust-mode elixir-mode lsp-ui lsp-mode company flycheck which-key treemacs-projectile treemacs-magit treemacs smex rainbow-delimiters projectile nov magit exec-path-from-shell counsel nord-theme diminish use-package))))
+	 (quote
+		(org-bullets company-restclient restclient lsp-treemacs lsp-ivy auto-compile cargo rust-mode elixir-mode lsp-ui lsp-mode company flycheck which-key treemacs-projectile treemacs-magit treemacs smex rainbow-delimiters projectile nov magit exec-path-from-shell counsel nord-theme diminish use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

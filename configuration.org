@@ -5,6 +5,9 @@
 init.el uses org-babel-load file to automatically load in the emacs-lisp 
 blocks.
 
+* TODO organize config by purpose more? especially w/ respect to packages
+* TODO add more org config: directory, export to html, pdf, latex from hrs config
+	https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org
 * General
 ** Packages
 #+BEGIN_SRC emacs-lisp
@@ -43,6 +46,12 @@ blocks.
 
 ** Misc
 #+BEGIN_SRC emacs-lisp
+  ;; shallow tabs
+  (setq-default tab-width 2)
+
+  ;; scroll compilation output in the window
+  (setq compilation-scroll-output t)
+
   ;; minor mode for inserting parens, braces, quotes and the like in pairs
   (electric-pair-mode)
 
@@ -92,7 +101,7 @@ blocks.
 
   ;; more useful frame title, that show either a file or a
   ;; buffer name (if the buffer isn't visiting a file)
-  (setq frame-title-format '((:eval (projectile-project-name)))
+  (setq frame-title-format '((:eval (projectile-project-name))))
 
   ;; newline at end of file
   (setq require-final-newline t)
@@ -128,11 +137,30 @@ blocks.
 #+END_SRC
 
 * Utility Packages
+** ag
+Needs ag installed, silversearcher-ag debian package.
+#+BEGIN_SRC emacs-lisp
+  ;; search within projects using projectile-ag
+  (use-package ag)
+#+END_SRC
+** avy
+#+BEGIN_SRC emacs-lisp
+  ;skip around the screen
+  (use-package avy
+    :init
+    (global-set-key (kbd "C-;") 'avy-goto-char-2))
+#+END_SRC
+** company
+#+BEGIN_SRC emacs-lisp
+;; company for text-completion
+(use-package company
+  :config
+  (global-company-mode))
+#+END_SRC
 ** counsel
 #+BEGIN_SRC emacs-lisp
 ;; autocomplete interface for search
 (use-package counsel
-  :ensure t
   :demand
   :bind 
    (("M-x" . counsel-M-x)
@@ -141,17 +169,17 @@ blocks.
     ("C-s" . swiper))
   :commands ivy-mode)
 #+END_SRC
-** diminish
-#+BEGIN_SRC emacs-lisp
-(use-package diminish
-  :ensure t)
-#+END_SRC
 ** exec-path-from-shell
 #+BEGIN_SRC emacs-lisp
 ;; Force Emacs to use shell path
 (use-package exec-path-from-shell
-  :ensure t
   :commands exec-path-from-shell-initialize)
+#+END_SRC
+** flycheck
+#+BEGIN_SRC emacs-lisp
+;; flycheck for syntax checking
+(use-package flycheck
+  :init (global-flycheck-mode))
 #+END_SRC
 ** hl-line
 #+BEGIN_SRC emacs-lisp
@@ -163,8 +191,7 @@ blocks.
 ** magit
 #+BEGIN_SRC emacs-lisp
 ;; magit git interface
-(use-package magit
-  :ensure t)
+(use-package magit)
 #+END_SRC
 ** minions
 #+BEGIN_SRC emacs-lisp
@@ -179,7 +206,6 @@ blocks.
 #+BEGIN_SRC emacs-lisp
 ;; epub reader mode
 (use-package nov
-  :ensure t
   :config
   (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
 #+END_SRC
@@ -187,32 +213,36 @@ blocks.
 #+BEGIN_SRC emacs-lisp
 ;; project manager
 (use-package projectile
-  :ensure t
   :init
   (setq projectile-completion-system 'ivy)
   (setq projectile-project-search-path '("~/Projects"))
   :config
   (global-set-key (kbd "C-c p") 'projectile-command-map)
+  (global-set-key (kbd "C-c v")  'projectile-ag)
   (projectile-mode +1))
 #+END_SRC
 ** rainbow-delimiters
 #+BEGIN_SRC emacs-lisp
 (use-package rainbow-delimiters
-  :ensure t
   :config
   (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
+#+END_SRC
+** restclient
+#+BEGIN_SRC emacs-lisp
+  (use-package restclient)
+  (use-package company-restclient
+    :config
+    (add-to-list 'company-backends 'company-restclient))
 #+END_SRC
 ** smex
 #+BEGIN_SRC emacs-lisp
 ;; frequency sorter to integrate with counsel
-(use-package smex
-  :ensure t)
+(use-package smex)
 #+END_SRC
 ** treemacs
 #+BEGIN_SRC emacs-lisp
 ;; sidebar file explorer
 (use-package treemacs
-  :ensure t
   :bind
   (:map global-map
 	("C-x p" . treemacs))
@@ -236,15 +266,12 @@ blocks.
 #+BEGIN_SRC emacs-lisp
 ;; shows possible key combinations
 (use-package which-key
-  :ensure t
   :config
-  (diminish 'which-key-mode)
   (which-key-mode))
 #+END_SRC
 ** windmove
 #+BEGIN_SRC emacs-lisp
 (use-package windmove
-  :ensure t
   :config
   ;; use shift + arrow keys to switch between visible buffers
   (windmove-default-keybindings)
@@ -254,37 +281,13 @@ blocks.
   (add-hook 'org-shiftdown-final-hook 'windmove-down)
   (add-hook 'org-shiftright-final-hook 'windmove-right))
 #+END_SRC
-* Flycheck and Company
-#+BEGIN_SRC emacs-lisp
-;; flycheck for syntax checking
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode))
-
-;; company for text-completion
-(use-package company
-  :ensure t
-  :config
-  (diminish 'company-mode)
-  (setq company-idle-delay 0.5)
-  (setq company-show-numbers t)
-  (setq company-tooltip-limit 10)
-  (setq company-minimum-prefix-length 2)
-  (setq company-tooltip-align-annotations t)
-  ;; invert the navigation direction if the the completion popup-isearch-match
-  ;; is displayed on top (happens near the bottom of windows)
-  (setq company-tooltip-flip-when-above t)
-  (global-company-mode))
-#+END_SRC
 * Languages
 ** LSP Mode
 #+BEGIN_SRC emacs-lisp
 ;; lsp-mode plus other recommended packages and configuration
 (use-package lsp-mode
   :commands lsp
-  :ensure t
-  :config 
-  (diminish lsp-mode))
+  :ensure t)
 
 (use-package lsp-ui
   :ensure t)
@@ -304,7 +307,6 @@ Needs clangd.
 #+BEGIN_SRC emacs-lisp
 ;; Help for emacs-lisp functions
 (use-package eldoc
-  :diminish eldoc-mode
   :commands turn-on-eldoc-mode
   :defer t
   :init
@@ -317,7 +319,6 @@ Needs clangd.
 Needs elixir-ls https://github.com/elixir-lsp/elixir-ls.
 #+BEGIN_SRC emacs-lisp
 (use-package elixir-mode
-  :ensure t
   :hook (elixir-mode . lsp))
 #+END_SRC
 ** Rust
@@ -325,11 +326,30 @@ Needs rust language server (rls) https://github.com/rust-lang/rls.
 #+BEGIN_SRC emacs-lisp
 ;; hook up rust-mode with the language server
 (use-package rust-mode
-  :ensure t
+  :config
+  (setq rust-format-on-save t)
   :hook (rust-mode . lsp))
 
 ;; cargo minor mode for cargo keybindings
 (use-package cargo
-  :ensure t
   :hook (rust-mode . cargo-minor-mode))
+#+END_SRC
+** sh
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'shell-mode-hook
+	    (lambda ()
+	      (setq sh-basic-offset 2
+		    shr-indentation 2)))
+#+END_SRC
+* Orgmode
+#+BEGIN_SRC emacs-lisp
+	(use-package org-bullets
+		:hook (org-mode . org-bullets-mode))
+
+	;; org src blocks act more like the major mode
+	(setq org-src-fontify-natively t)
+	(setq org-src-tab-acts-natively t)
+
+	;; editing source block in same window
+	(setq org-src-window-setup 'current-window)
 #+END_SRC
