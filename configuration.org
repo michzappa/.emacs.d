@@ -5,36 +5,37 @@
 init.el uses org-babel-load file to automatically load in the emacs-lisp 
 blocks.
 
-* TODO organize config by purpose more? especially w/ respect to packages
-* TODO add more org config: directory, export to html, pdf, latex from hrs config
+- TODO organize config by purpose more? especially w/ respect to packages
+- TODO add more org config: directory, export to html, pdf, latex from hrs config
 	https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org
 * General
 ** Packages
 #+BEGIN_SRC emacs-lisp
-  ;; setting up the MELPA repo
-  (require 'package)
-  (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-  (package-initialize)
+	;; setting up the MELPA repo
+	(require 'package)
+	(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
+	(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+	(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+	(package-initialize)
 
-  ;; install use-package if not installed
-  (when (not (package-installed-p 'use-package))
-    (package-refresh-contents)
-    (package-install 'use-package))
+	;; install use-package if not installed
+	(when (not (package-installed-p 'use-package))
+		(package-refresh-contents)
+		(package-install 'use-package))
 
-  (unless package-archive-contents
-    (package-refresh-contents))
+	(unless package-archive-contents
+		(package-refresh-contents))
 
-  ;; ensure use-package by default
-  (require 'use-package-ensure)
-  (setq use-package-always-ensure t)
+	;; ensure use-package by default
+	(require 'use-package-ensure)
+	(setq use-package-always-ensure t)
 
-  ;; compile packages and use newest version
-  (use-package auto-compile
-    :config (auto-compile-on-load-mode))
+	;; compile packages
+	(use-package auto-compile
+		:config (auto-compile-on-load-mode))
 
-  (setq load-prefer-newer t)
+  ;; use newest version of packages
+	(setq load-prefer-newer t)
 #+END_SRC
 ** Personal
 #+BEGIN_SRC emacs-lisp
@@ -87,7 +88,7 @@ blocks.
 	;; turn off things
 	;;(menu-bar-mode -1)
 	(toggle-scroll-bar -1)
-	;;(tool-bar-mode -1)
+	(tool-bar-mode -1)
 	(blink-cursor-mode -1)
 
 	;; initial frame maximized
@@ -155,22 +156,22 @@ Needs ag installed, silversearcher-ag debian package.
 #+END_SRC
 ** company
 #+BEGIN_SRC emacs-lisp
-;; company for text-completion
-(use-package company
-  :config
-  (global-company-mode))
+	;; company for text-completion
+	(use-package company
+		:config
+		(global-company-mode)
+		(push 'company-lsp company-backends))
 #+END_SRC
 ** counsel
 #+BEGIN_SRC emacs-lisp
-;; autocomplete interface for search
-(use-package counsel
-  :demand
-  :bind 
-   (("M-x" . counsel-M-x)
-    ("C-x C-f" . counsel-find-file)
-    ("C-x C-r" . counsel-recentf)
-    ("C-s" . swiper))
-  :commands ivy-mode)
+	;; autocomplete interface for search
+	(use-package counsel
+		:bind
+		(("C-s" . swiper)
+		 ("C-x C-r" . counsel-recentf))
+		:config 
+		(ivy-mode)
+		(counsel-mode))
 #+END_SRC
 ** exec-path-from-shell
 #+BEGIN_SRC emacs-lisp
@@ -293,19 +294,19 @@ Needs ag installed, silversearcher-ag debian package.
 * Languages
 ** LSP Mode
 #+BEGIN_SRC emacs-lisp
-;; lsp-mode plus other recommended packages and configuration
-(use-package lsp-mode
-  :commands lsp
-  :ensure t)
+	;; lsp-mode plus other recommended packages and configuration
+	(use-package lsp-mode
+		:commands lsp)
 
-(use-package lsp-ui
-  :ensure t)
+	(use-package lsp-ui
+		:config
+		(add-hook 'lsp-mode-hook 'lsp-ui-mode))
 
-(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
-(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+	(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+	(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
-(setq lsp-completion-provider :capf)
-(setq lsp-completion-enable t)
+	(setq lsp-completion-provider :capf)
+	(setq lsp-completion-enable t)
 #+END_SRC
 ** C
 Needs clangd.
@@ -330,6 +331,13 @@ Needs elixir-ls https://github.com/elixir-lsp/elixir-ls.
 (use-package elixir-mode
   :hook (elixir-mode . lsp))
 #+END_SRC
+** Python
+Needs python language server.
+#+BEGIN_SRC emacs-lisp
+	(use-package python-mode
+		:config
+		(add-hook 'python-mode-hook 'lsp))
+#+END_SRC
 ** Rust
 Needs rust language server (rls) https://github.com/rust-lang/rls.
 #+BEGIN_SRC emacs-lisp
@@ -352,6 +360,7 @@ Needs rust language server (rls) https://github.com/rust-lang/rls.
 #+END_SRC
 * Orgmode
 #+BEGIN_SRC emacs-lisp
+	;; bullets instead of asterisks
 	(use-package org-bullets
 		:hook (org-mode . org-bullets-mode))
 
