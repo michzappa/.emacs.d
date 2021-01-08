@@ -6,8 +6,8 @@ init.el uses org-babel-load file to automatically load in the emacs-lisp
 blocks.
 
 - TODO organize config by purpose more? especially w/ respect to packages
-- TODO add more org config: directory, export to html, pdf, latex from hrs config
-	https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org
+- TODO add more org config: directory, export to html, pdf, latex from hrs config https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org
+- TODO keybindings for commenting/uncommenting
 * General
 ** Packages
 #+BEGIN_SRC emacs-lisp
@@ -49,33 +49,31 @@ blocks.
 
 ** Misc
 #+BEGIN_SRC emacs-lisp
-  ;; shallow tabs
-  (setq-default tab-width 2)
 
-  ;; scroll compilation output in the window
-  (setq compilation-scroll-output t)
+	;; scroll compilation output in the window
+	(setq compilation-scroll-output t)
 
-  ;; minor mode for inserting parens, braces, quotes and the like in pairs
-  (electric-pair-mode)
+	;; minor mode for inserting parens, braces, quotes and the like in pairs
+	(electric-pair-mode)
 
-  ;; pretty symbols
-  (global-prettify-symbols-mode t)
+	;; pretty symbols
+	(global-prettify-symbols-mode t)
 
-  ;; reduce the frequency of garbage collection by making it happen on
-  ;; each 50MB of allocated data (the default is on every 0.76MB)
-  (setq gc-cons-threshold 50000000)
+	;; reduce the frequency of garbage collection by making it happen on
+	;; each 50MB of allocated data (the default is on every 0.76MB)
+	(setq gc-cons-threshold 50000000)
 
-  ;; warn when opening files bigger than 100MB
-  (setq large-file-warning-threshold 100000000)
+	;; warn when opening files bigger than 100MB
+	(setq large-file-warning-threshold 100000000)
 
-  ;; quit Emacs directly even if there are running processes
-  (setq confirm-kill-processes nil)
+	;; quit Emacs directly even if there are running processes
+	(setq confirm-kill-processes nil)
 
-  ;; store all backup and autosave files in the tmp dir
-  (setq backup-directory-alist
-	`((".*" . ,temporary-file-directory)))
-  (setq auto-save-file-name-transforms
-	`((".*" ,temporary-file-directory t)))
+	;; store all backup and autosave files in the tmp dir
+	(setq backup-directory-alist
+				`((".*" . ,temporary-file-directory)))
+	(setq auto-save-file-name-transforms
+				`((".*" ,temporary-file-directory t)))
 #+END_SRC
 
 * UI
@@ -87,6 +85,15 @@ blocks.
 	;; hecking bell
 	(setq ring-bell-function 'ignore)
 
+	;; shallow tabs
+	(setq-default tab-width 2)
+
+	;; tab mode
+	(tab-bar-mode)
+
+	(with-eval-after-load 'org
+		(define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
+
 	;; turn off things
 	;;(menu-bar-mode -1)
 	(toggle-scroll-bar -1)
@@ -96,13 +103,12 @@ blocks.
 	;; initial frame maximized
 	(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-	; theme
+	;; nord-theme, doesn't have tab-bar support yet
 	(use-package nord-theme
-		:ensure t
 		:config
 		(load-theme 'nord t))
 
-	;; more useful frame title, that show either a file or a
+	;;more useful frame title, that show either a file or a
 	;; buffer name (if the buffer isn't visiting a file)
 	(setq frame-title-format '((:eval (projectile-project-name))))
 
@@ -112,8 +118,8 @@ blocks.
 	;; wrap lines at 80 characters
 	(setq-default fill-column 80)
 
-  ;; wraps visual lines
-  (global-visual-line-mode)
+	;; wraps visual lines
+	(global-visual-line-mode)
 
 	;; line numbers, column number, size indication
 	(global-display-line-numbers-mode)
@@ -126,23 +132,40 @@ blocks.
 #+END_SRC 
 * Mouse and Keys
 #+BEGIN_SRC emacs-lisp
-;; scrolling
-(setq scroll-margin 0
-      scroll-conservatively 100000
-      scroll-preserve-screen-position 1)
+	;; scrolling
+	(setq scroll-margin 0
+				scroll-conservatively 100000
+				scroll-preserve-screen-position 1)
 
-;; change font size binding
-(global-set-key (kbd "C-+") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
+	;; change font size binding
+	(global-set-key (kbd "C-+") 'text-scale-increase)
+	(global-set-key (kbd "C--") 'text-scale-decrease)
 
-;; keybinding to reload configuration
-(global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
+	;; keybinding to reload configuration
+	(global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
 
-;; keybinding to open configuration file (this file)
-(global-set-key (kbd "C-x f") (lambda () (interactive) (find-file "~/.emacs.d/configuration.org")))
+	;; keybinding to open configuration file (this file)
+	(global-set-key (kbd "C-x f") (lambda ()  (interactive) (find-file "~/.emacs.d/configuration.org")))
 
-;; assume I want to close current buffer with ""C-x k""
-(global-set-key (kbd "C-x k") (lambda () (interactive (kill-buffer (current-buffer)))))
+	;; assume I want to close current buffer with ""C-x k""
+	(global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
+
+	;; function for toggling comments
+	(defun comment-or-uncomment-region-or-line ()
+			"Comments or uncomments the region or the current line if there's no active region."
+			(interactive)
+			(let (beg end)
+					(if (region-active-p)
+							(setq beg (region-beginning) end (region-end))
+							(setq beg (line-beginning-position) end (line-end-position)))
+					(comment-or-uncomment-region beg end)
+					(forward-line)))
+
+	;; binding toggle-comment to "C-/" for consistency with other editors
+	(global-set-key (kbd "C-/") 'comment-or-uncomment-region-or-line)
+
+	;; replacing keybinding for undo as it is "C-/" by default
+	(global-set-key (kbd "C-.") 'undo)
 #+END_SRC
 
 * Utility Packages
