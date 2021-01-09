@@ -7,7 +7,8 @@ blocks.
 
 - TODO organize config by purpose more? especially w/ respect to packages
 - TODO add more org config: directory, export to html, pdf, latex from hrs config https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org
-- TODO keybindings for commenting/uncommenting
+- TODO de-capitalize BEGIN_SRC and END_SRC
+- TODO use more of use-package macros
 
 * Packages Setup
 Setting up the package archives and the lisp to automatically load all my packages.
@@ -331,19 +332,37 @@ Needs ag installed, silversearcher-ag debian package.
 #+BEGIN_SRC emacs-lisp
 	;; lsp-mode plus other recommended packages and configuration
 	(use-package lsp-mode
-		:commands lsp)
-
-	(use-package lsp-ui
+		:bind
+		(:map lsp-mode-map
+					(("\C-\M-b" . lsp-find-implementation)
+					 ("M-RET" . lsp-execute-code-action)))
 		:config
-		(add-hook 'lsp-mode-hook 'lsp-ui-mode)
+		;; performance enhancements
+		(setq gc-cons-threshold 100000000
+					read-process-output-max (* 1024 1024)
+					lsp-idle-delay 0.500))
+
+	;; ui features for lsp-mode
+	(use-package lsp-ui
+		:after lsp-mode
 		:bind
 		("M-i" . lsp-ui-imenu))
 
+	;; integration for lsp with ivy and treemacs
 	(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 	(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
+	;; completion provider
 	(setq lsp-completion-provider :capf)
 	(setq lsp-completion-enable t)
+
+	;; debugging mode
+	(use-package dap-mode
+		:config
+		(dap-mode t)
+		(dap-ui-mode t)
+		(dap-tooltip-mode 1)
+		(tooltip-mode 1))
 #+END_SRC
 ** C
 Needs clangd.
@@ -373,6 +392,21 @@ Needs elixir-ls https://github.com/elixir-lsp/elixir-ls.
 	(use-package mix
 		:hook (elixir-mode mix-minor-mode))
 #+END_SRC
+** Java
+	 #+begin_src emacs-lisp
+		 (use-package lsp-java
+			 :config
+			 (setq lsp-file-watch-ignored '(".ida", ".git", "build")
+						 lsp-java-import-order '["" "java" "javax" "#"])
+			 :hook (java-mode . lsp))
+
+		 ;; debugging
+		 (use-package dap-java
+			 :config
+			 (global-set-key (kbd "<f7>") 'dap-step-in)
+			 (global-set-key (kbd "<f8>") 'dap-net)
+			 (global-set-key (kbd "<f9>") 'dap-continue))
+	 #+end_src
 ** OCaml
 Needs OCaml language server https://github.com/ocaml/ocaml-lsp.
 #+BEGIN_SRC emacs-lisp
@@ -422,4 +456,7 @@ Needs rust language server (rls) https://github.com/rust-lang/rls.
 
 	;; editing source block in same window
 	(setq org-src-window-setup 'current-window)
+
+	;; for the "old-school" <s-<tab> to make src blocks
+	(require 'org-tempo)
 #+END_SRC
