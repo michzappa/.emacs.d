@@ -87,6 +87,9 @@ Miscellanious things which should be put somewhere else eventually.
 #+END_SRC
 * UI
 #+BEGIN_SRC emacs-lisp
+	;; font for more emacs icons
+	(use-package all-the-icons)
+
 	;; scratch screen
 	(setq inhibit-startup-screen t)
 	(setq initial-scratch-message "")
@@ -327,7 +330,7 @@ Needs ag installed, silversearcher-ag debian package.
   (add-hook 'org-shiftdown-final-hook 'windmove-down)
   (add-hook 'org-shiftright-final-hook 'windmove-right))
 #+END_SRC
-* Languages
+* Languages and LSP Support
 ** LSP Mode
 #+BEGIN_SRC emacs-lisp
 	;; lsp-mode plus other recommended packages and configuration
@@ -393,19 +396,16 @@ Needs elixir-ls https://github.com/elixir-lsp/elixir-ls.
 		:hook (elixir-mode mix-minor-mode))
 #+END_SRC
 ** Java
+Syntax highlighting, and the lsp highlights weird warnings. But dap-mode does seem to work.
 	 #+begin_src emacs-lisp
 		 (use-package lsp-java
-			 :config
-			 (setq lsp-file-watch-ignored '(".ida", ".git", "build")
-						 lsp-java-import-order '["" "java" "javax" "#"])
 			 :hook (java-mode . lsp))
 
 		 ;; debugging
-		 (use-package dap-java
-			 :config
+			 (require 'dap-java)
 			 (global-set-key (kbd "<f7>") 'dap-step-in)
 			 (global-set-key (kbd "<f8>") 'dap-net)
-			 (global-set-key (kbd "<f9>") 'dap-continue))
+			 (global-set-key (kbd "<f9>") 'dap-continue)
 	 #+end_src
 ** OCaml
 Needs OCaml language server https://github.com/ocaml/ocaml-lsp.
