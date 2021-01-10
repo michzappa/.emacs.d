@@ -50,40 +50,40 @@ Giving emacs my information.
 	(setq user-full-name "Michael Zappa")
 	(setq user-mail-address "zapprich@gmail.com")
 #+END_SRC
-
 * Misc
 Miscellanious things which should be put somewhere else eventually.
 #+BEGIN_SRC emacs-lisp
-	;; scroll compilation output in the window
-	(setq compilation-scroll-output t)
+	 ;; scroll compilation output in the window
+	 (setq compilation-scroll-output t)
 
-	;; minor mode for inserting parens, braces, quotes and the like in pairs. turned "<> off for org mode since it makes the shortcut for org blocks difficult."
-	(electric-pair-mode)
-	(add-hook 'org-mode-hook
-						(lambda () (setq-local electric-pair-inhibit-predicate
-															`(lambda (c)
-																 (if (eq c ?<)
-																		 t
-																	 (electric-pair-inhibit-predicate c))))))
+	 ;; minor mode for inserting parens, braces, quotes and the like in pairs.
+	 ;;turned "<> off for org mode since it makes the shortcut for org blocks difficult."
+	 (electric-pair-mode)
+	 (add-hook 'org-mode-hook
+						 (lambda () (setq-local electric-pair-inhibit-predicate
+															 `(lambda (c)
+																	(if (eq c ?<)
+																			t
+																		(electric-pair-inhibit-predicate c))))))
 
-	;; pretty symbols
-	(global-prettify-symbols-mode t)
+	 ;; pretty symbols like lambda
+	 (global-prettify-symbols-mode t)
 
-	;; reduce the frequency of garbage collection by making it happen on
-	;; each 50MB of allocated data (the default is on every 0.76MB)
-	(setq gc-cons-threshold 50000000)
+	 ;; reduce the frequency of garbage collection by making it happen on
+	 ;; each 50MB of allocated data (the default is on every 0.76MB)
+	 (setq gc-cons-threshold 50000000)
 
-	;; warn when opening files bigger than 100MB
-	(setq large-file-warning-threshold 100000000)
+	 ;; warn when opening files bigger than 100MB
+	 (setq large-file-warning-threshold 100000000)
 
-	;; quit Emacs directly even if there are running processes
-	(setq confirm-kill-processes nil)
+	 ;; quit Emacs directly even if there are running processes
+	 (setq confirm-kill-processes nil)
 
-	;; store all backup and autosave files in the tmp dir
-	(setq backup-directory-alist
-				`((".*" . ,temporary-file-directory)))
-	(setq auto-save-file-name-transforms
-				`((".*" ,temporary-file-directory t)))
+	 ;; store all backup and autosave files in the tmp dir
+	 (setq backup-directory-alist
+				 `((".*" . ,temporary-file-directory)))
+	 (setq auto-save-file-name-transforms
+				 `((".*" ,temporary-file-directory t)))
 #+END_SRC
 * UI
 #+BEGIN_SRC emacs-lisp
@@ -179,7 +179,6 @@ Miscellanious things which should be put somewhere else eventually.
 	;; replacing keybinding for undo as it is "C-/" by default
 	(global-set-key (kbd "C-.") 'undo)
 #+END_SRC
-
 * Utility Packages
 ** ag
 Needs ag installed, silversearcher-ag debian package.
