@@ -129,7 +129,7 @@ Miscellanious things which should be put somewhere else eventually.
 	(setq require-final-newline t)
 
 	;; wrap lines at 80 characters
-	(setq-default fill-column 80)
+	(setq-default fill-column 100)
 
 	;; wraps visual lines
 	(global-visual-line-mode)
@@ -333,39 +333,37 @@ Needs ag installed, silversearcher-ag debian package.
 * Languages and LSP Support
 ** LSP Mode
 #+begin_src emacs-lisp
-	;; lsp-mode plus other recommended packages and configuration
-	(use-package lsp-mode
-		:bind
-		(:map lsp-mode-map
-					(("\C-\M-b" . lsp-find-implementation)
-					 ("M-RET" . lsp-execute-code-action)))
-		:config
-		;; performance enhancements
-		(setq gc-cons-threshold 100000000
-					read-process-output-max (* 1024 1024)
-					lsp-idle-delay 0.500))
+		;; lsp-mode plus other recommended packages and configuration
+		(use-package lsp-mode
+			:bind
+			(:map lsp-mode-map
+						(("\C-\M-b" . lsp-find-implementation)
+						 ("M-RET" . lsp-execute-code-action))))
 
-	;; ui features for lsp-mode
-	(use-package lsp-ui
-		:after lsp-mode
-		:bind
-		("M-i" . lsp-ui-imenu))
+		;; ui features for lsp-mode
+		(use-package lsp-ui
+			:after lsp-mode
+			:bind
+			("M-i" . lsp-ui-imenu))
 
-	;; integration for lsp with ivy and treemacs
-	(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
-	(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+		;; integration for lsp with ivy and treemacs
+		(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+		(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
-	;; completion provider
-	(setq lsp-completion-provider :capf)
-	(setq lsp-completion-enable t)
+		;; completion provider
+		(setq lsp-completion-provider :capf)
+		(setq lsp-completion-enable t)
 
-	;; debugging mode
-	(use-package dap-mode
-		:config
-		(dap-mode t)
-		(dap-ui-mode t)
-		(dap-tooltip-mode 1)
-		(tooltip-mode 1))
+		;; debugging mode
+		(use-package dap-mode
+			:config
+			(global-set-key (kbd "<f7>") 'dap-step-in)
+			(global-set-key (kbd "<f8>") 'dap-net)
+			(global-set-key (kbd "<f9>") 'dap-continue))
+			(dap-mode t)
+			(dap-ui-mode t)
+			(dap-tooltip-mode 1)
+			(tooltip-mode 1))
 #+end_src
 ** C
 Needs clangd.
