@@ -395,18 +395,6 @@ Needs elixir-ls https://github.com/elixir-lsp/elixir-ls.
 	(use-package mix
 		:hook (elixir-mode mix-minor-mode))
 #+END_SRC
-** Java
-Syntax highlighting, and the lsp highlights weird warnings. But dap-mode does seem to work.
-	 #+begin_src emacs-lisp
-		 (use-package lsp-java
-			 :hook (java-mode . lsp))
-
-		 ;; debugging
-			 (require 'dap-java)
-			 (global-set-key (kbd "<f7>") 'dap-step-in)
-			 (global-set-key (kbd "<f8>") 'dap-net)
-			 (global-set-key (kbd "<f9>") 'dap-continue)
-	 #+end_src
 ** OCaml
 Needs OCaml language server https://github.com/ocaml/ocaml-lsp.
 #+BEGIN_SRC emacs-lisp
