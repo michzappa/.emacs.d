@@ -47,7 +47,7 @@ Giving emacs my information.
 	(setq user-mail-address "zapprich@gmail.com")
 #+END_SRC
 * Misc
-Miscellanious things which should be put somewhere else eventually.
+Miscellanious things which might be put somewhere else eventually.
 #+begin_src emacs-lisp
 	 ;; scroll compilation output in the window
 	 (setq compilation-scroll-output t)
@@ -82,6 +82,7 @@ Miscellanious things which should be put somewhere else eventually.
 				 `((".*" ,temporary-file-directory t)))
 #+END_SRC
 * UI
+General UI configuration.
 #+begin_src emacs-lisp
 	;; font for more emacs icons
 	(use-package all-the-icons)
@@ -144,6 +145,7 @@ Miscellanious things which should be put somewhere else eventually.
 	(fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC 
 * Mouse and Keys
+Mouse and keyboard settings which don't belong to any specific package.
 #+begin_src emacs-lisp
 	;; scrolling
 	(setq scroll-margin 0
@@ -181,12 +183,6 @@ Miscellanious things which should be put somewhere else eventually.
 	(global-set-key (kbd "C-.") 'undo)
 #+END_SRC
 * Utility Packages
-** ag
-Needs ag installed, silversearcher-ag debian package.
-#+begin_src emacs-lisp
-  ;; search within projects using projectile-ag
-  (use-package ag)
-#+END_SRC
 ** avy
 #+begin_src emacs-lisp
   ;skip around the screen
@@ -214,15 +210,17 @@ Needs ag installed, silversearcher-ag debian package.
 #+end_src
 ** exec-path-from-shell
 #+begin_src emacs-lisp
-;; Force Emacs to use shell path
-(use-package exec-path-from-shell
-  :commands exec-path-from-shell-initialize)
+	;; Force Emacs to use shell path
+	(use-package exec-path-from-shell
+		:config
+		(exec-path-from-shell-initialize))
 #+end_src
 ** flycheck
 #+begin_src emacs-lisp
-;; flycheck for syntax checking
-(use-package flycheck
-  :init (global-flycheck-mode))
+	;; flycheck for syntax checking
+	(use-package flycheck
+		:config
+		(global-flycheck-mode))
 #+end_src
 ** hl-line
 #+begin_src emacs-lisp
@@ -253,16 +251,18 @@ Needs ag installed, silversearcher-ag debian package.
   (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
 #+end_src
 ** projectile
+Install ag, silversearcher-ag package on debian.
 #+begin_src emacs-lisp
-;; project manager
-(use-package projectile
-  :init
-  (setq projectile-completion-system 'ivy)
-  (setq projectile-project-search-path '("~/Projects"))
-  :config
-  (global-set-key (kbd "C-c p") 'projectile-command-map)
-  (global-set-key (kbd "C-c v")  'projectile-ag)
-  (projectile-mode +1))
+	;; project manager
+	(use-package projectile
+		:init
+		(setq projectile-completion-system 'ivy)
+		(setq projectile-project-search-path '("~/Projects"))
+		(use-package ag)
+		:config
+		(global-set-key (kbd "C-c p") 'projectile-command-map)
+		(global-set-key (kbd "C-c v")  'projectile-ag)
+		(projectile-mode +1))
 #+end_src
 ** paredit
 #+begin_src emacs-lisp
@@ -272,9 +272,9 @@ Needs ag installed, silversearcher-ag debian package.
 #+end_src
 ** rainbow-delimiters
 #+begin_src emacs-lisp
-(use-package rainbow-delimiters
-  :config
-  (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
+	(use-package rainbow-delimiters
+		:hook
+		(emacs-lisp-mode-hook . rainbow-delimiters-mode))
 #+end_src
 ** restclient
 #+begin_src emacs-lisp
@@ -285,50 +285,50 @@ Needs ag installed, silversearcher-ag debian package.
 #+end_src
 ** smex
 #+begin_src emacs-lisp
-;; frequency sorter to integrate with counsel
-(use-package smex)
+	;; frequency sorter to integrate with counsel
+	(use-package smex)
 #+end_src
 ** treemacs
-#+begin_src emacs-lisp
-;; sidebar file explorer
-(use-package treemacs
-  :bind
-  (:map global-map
-	("C-x p" . treemacs))
-  :commands (treemacs-filewatch-mode
-	     treemacs-git-mode
-	     treemacs-follow-mode)
-  :config
-  (add-hook 'treemacs-mode-hook (lambda() (display-line-numbers-mode -1))))
+  #+begin_src emacs-lisp
+		;; sidebar file explorer
+		(use-package treemacs
+			:bind
+			("C-x p" . treemacs)
+			:commands
+			(treemacs-filewatch-mode
+			 treemacs-git-mode
+			 treemacs-follow-mode)
+			:config
+			(add-hook 'treemacs-mode-hook (lambda() (display-line-numbers-mode -1))))
 
-;; integrate git with treemacs
-(use-package treemacs-magit
-  :after (treemacs magit)
-  :ensure t)
+		;; integrate git with treemacs
+		(use-package treemacs-magit
+			:after (treemacs magit)
+			:ensure t)
 
-;; integrate projectile with treemacs
-(use-package treemacs-projectile
-  :after (treemacs projectile)
-  :ensure t)
-#+end_src
+		;; integrate projectile with treemacs
+		(use-package treemacs-projectile
+			:after (treemacs projectile)
+			:ensure t)
+  #+end_src
 ** which-key
 #+begin_src emacs-lisp
-;; shows possible key combinations
-(use-package which-key
-  :config
-  (which-key-mode))
+	;; shows possible key combinations
+	(use-package which-key
+		:config
+		(which-key-mode))
 #+end_src
 ** windmove
 #+begin_src emacs-lisp
-(use-package windmove
-  :config
-  ;; use shift + arrow keys to switch between visible buffers
-  (windmove-default-keybindings)
-  ;; Make windmove work in Org mode:
-  (add-hook 'org-shiftup-final-hook 'windmove-up)
-  (add-hook 'org-shiftleft-final-hook 'windmove-left)
-  (add-hook 'org-shiftdown-final-hook 'windmove-down)
-  (add-hook 'org-shiftright-final-hook 'windmove-right))
+	(use-package windmove
+		:config
+		;; use shift + arrow keys to switch between visible buffers
+		(windmove-default-keybindings)
+		;; Make windmove work in org-mode
+		(add-hook 'org-shiftup-final-hook 'windmove-up)
+		(add-hook 'org-shiftleft-final-hook 'windmove-left)
+		(add-hook 'org-shiftdown-final-hook 'windmove-down)
+		(add-hook 'org-shiftright-final-hook 'windmove-right))
 #+end_src
 * Languages and LSP Support
 ** LSP Mode
@@ -368,19 +368,16 @@ Needs ag installed, silversearcher-ag debian package.
 ** C
 Needs clangd.
 #+begin_src emacs-lisp
-(add-hook 'c-mode-hook 'lsp)
+	(add-hook 'c-mode-hook 'lsp)
 #+end_src
 ** Elisp
 #+begin_src emacs-lisp
-;; Help for emacs-lisp functions
-(use-package eldoc
-  :commands turn-on-eldoc-mode
-  :defer t
-  :init
-  (progn
-    (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-    (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-    (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)))
+	;; Help for emacs-lisp functions
+	(use-package eldoc
+		:config
+		(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+		(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+		(add-hook 'ielm-mode-hook 'turn-on-eldoc-mode))
 #+end_src
 ** Elixir
 Needs elixir-ls https://github.com/elixir-lsp/elixir-ls.
@@ -441,15 +438,15 @@ Needs python language server https://github.com/palantir/python-language-server.
 ** Rust
 Needs rust language server (rls) https://github.com/rust-lang/rls.
 #+begin_src emacs-lisp
-;; hook up rust-mode with the language server
-(use-package rust-mode
-  :config
-  (setq rust-format-on-save t)
-  :hook (rust-mode . lsp))
+	;; hook up rust-mode with the language server
+	(use-package rust-mode
+		:config
+		(setq rust-format-on-save t)
+		:hook (rust-mode . lsp))
 
-;; cargo minor mode for cargo keybindings
-(use-package cargo
-  :hook (rust-mode . cargo-minor-mode))
+	;; cargo minor mode for cargo keybindings
+	(use-package cargo
+		:hook (rust-mode . cargo-minor-mode))
 #+end_src
 ** sh
 #+begin_src emacs-lisp
