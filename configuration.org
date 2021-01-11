@@ -430,25 +430,6 @@ Needs OCaml language server https://github.com/ocaml/ocaml-lsp.
 						 ("C-c m c" . mvn-compile)
 						 ("C-c m t" . mvn-test)
 						 ("C-c m j" . mvn-jar))))
-
-		;; gradle minor mode
-		(use-package gradle-mode
-			:hook (java-mode . gradle-mode)
-			:config
-			(define-key gradle-mode-map (kbd "C-c C-r") 'build-and-run))
-
-		;; lsp flags the gradle wrapper so we have to specify the checksum
-		(setq lsp-java-imports-gradle-wrapper-checksums [(
-			 :sha256 "504b38a11c466aecb2f5c0b0d8ce0ed7ffa810bf70b9b7a599c570051be8fb4e"
-							 :allowed t)])
-
-		;; adding a shortcut to "build" and automatically "run"
-		(defun build-and-run ()
-			(interactive)
-			(gradle-run "build run"))
-
-		;; groovy mode for working with .gradle files
-		(use-package groovy-mode)
  #+end_src
 ** Python
 Needs python language server https://github.com/palantir/python-language-server.
