@@ -1,4 +1,4 @@
-#+TITLE: Literate Emacs Configuration
+#+TITLE: Emacs Configuration
 #+DESCRIPTION: Literate config for my emacs
 #+AUTHOR: Michael Zappa
 
@@ -337,7 +337,7 @@ Needs ag installed, silversearcher-ag debian package.
 		(use-package lsp-mode
 			:bind
 			(:map lsp-mode-map
-						(("\C-\M-b" . lsp-find-implementation)
+						(("C-M-b" . lsp-find-implementation)
 						 ("M-RET" . lsp-execute-code-action))))
 
 		;; ui features for lsp-mode
@@ -405,34 +405,50 @@ Needs OCaml language server https://github.com/ocaml/ocaml-lsp.
 #+end_src
 ** Java
 #+begin_src emacs-lisp
-	(use-package lsp-java
-		:hook (java-mode . lsp))
+		(use-package lsp-java
+			:hook (java-mode . lsp))
 
-	;; debugging
-	(require 'dap-java)
+		;; debugging
+		(require 'dap-java)
 
-	;; commenting this out because I cannot really figure out either maven or gradle for use through emacs
-	;; ;; maven minor mode
-	;; (use-package mvn)
+	;; function to build jar from maven project
+	(defun mvn-jar ()
+		(interactive)
+		(mvn "package"))
 
-	;; ;; gradle minor mode
-	;; (use-package gradle-mode
-	;; 	:hook (java-mode . gradle-mode))
+	;; function to run the main class defined for the maven project
+	(defun mvn-run ()
+		(interactive)
+		(mvn "compile exec:java"))
 
-	;; ;; lsp flags the gradle wrapper so we have to specify the checksum
-	;; (setq lsp-java-imports-gradle-wrapper-checksums [(
-	;; 	 :sha256 "504b38a11c466aecb2f5c0b0d8ce0ed7ffa810bf70b9b7a599c570051be8fb4e"
-	;; 					 :allowed t)])
+		;; maven minor mode
+		(use-package mvn
+			:bind
+			(:map java-mode-map
+						(("C-c M" . mvn)
+						 ("C-c m r" . mvn-run)
+						 ("C-c m c" . mvn-compile)
+						 ("C-c m t" . mvn-test)
+						 ("C-c m j" . mvn-jar))))
 
-	;; ;; adding a shortcut to "build" and automatically "run"
-	;; (defun build-and-run ()
-	;; 	(interactive)
-	;; 	(gradle-run "build run"))
+		;; gradle minor mode
+		(use-package gradle-mode
+			:hook (java-mode . gradle-mode)
+			:config
+			(define-key gradle-mode-map (kbd "C-c C-r") 'build-and-run))
 
-	;; (define-key gradle-mode-map (kbd "C-c C-r") 'build-and-run)
+		;; lsp flags the gradle wrapper so we have to specify the checksum
+		(setq lsp-java-imports-gradle-wrapper-checksums [(
+			 :sha256 "504b38a11c466aecb2f5c0b0d8ce0ed7ffa810bf70b9b7a599c570051be8fb4e"
+							 :allowed t)])
 
-	;; ;; groovy mode for working with .gradle files
-	;; (use-package groovy-mode)
+		;; adding a shortcut to "build" and automatically "run"
+		(defun build-and-run ()
+			(interactive)
+			(gradle-run "build run"))
+
+		;; groovy mode for working with .gradle files
+		(use-package groovy-mode)
  #+end_src
 ** Python
 Needs python language server https://github.com/palantir/python-language-server.
@@ -461,6 +477,16 @@ Needs rust language server (rls) https://github.com/rust-lang/rls.
 	      (setq sh-basic-offset 2
 		    shr-indentation 2)))
 #+end_src
+* Elfeed RSS Reader
+	#+begin_src emacs-lisp
+		(use-package elfeed
+			:bind ("C-x w" . elfeed)
+
+			:config
+			(use-package elfeed-org
+				:init
+				(elfeed-org)))
+	#+end_src
 * Orgmode
 #+begin_src emacs-lisp
 	;; bullets instead of asterisks
