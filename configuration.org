@@ -6,12 +6,13 @@ init.el uses org-babel-load file to automatically load in the emacs-lisp
 blocks.
 
 - TODO add more org config: directory, export to html, pdf, latex from hrs config https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org
-- TODO hydra - magit, window-management, multiple-cursors (and then figure out multiple cursors), projectiles
-- TODO maybe go through and redo all the src blocks for unifomrmity? yikes
+- TODO hydra? - magit, window-management, multiple-cursors (and then figure out multiple cursors)
+- TODO maybe go through and redo all the src blocks for uniformity? yikes
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag
 - clangd
+- texlive-latex-extra, texlive-extra-utils
 ** Other Sources
 - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls.
 - OCaml Language Server:  https://github.com/ocaml/ocaml-lsp
@@ -495,7 +496,7 @@ RSS reader using an org-mode file for configuration.
 			(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
   #+end_src
 * Hydra
-** Bindd
+** Binding
 	#+begin_src emacs-lisp
 		(use-package hydra
 			:bind
@@ -550,7 +551,7 @@ Hydra bindings for language server commands.
 			 ("i"   projectile-ibuffer "ibuffer")
 			 ("K"   projectile-kill-buffers "kill all buffers")
 
-			 ("c"   projectile-invalidate-cache "clear cache" :column "Cache")
+			 ("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
 			 ("x"   projectile-remove-known-project "remove known project")
 			 ("X"   projectile-cleanup-known-projects "cleanup projects")
 			 ("z"   projectile-cache-current-file "cache current project")
@@ -597,3 +598,20 @@ Hydra bindings for managing tab-bar-mode in emacs 27.
 			(define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
   #+end_src
   
+* AUCTeX
+	#+begin_src emacs-lisp
+		(use-package auctex
+			:defer t
+			:config
+				(setq TeX-auto-save t)
+				(setq TeX-parse-self t)
+				(setq TeX-PDF-mode t)
+				(setq-default TeX-master nil)
+
+				(add-hook 'LaTeX-mode-hook 'visual-line-mode)
+				(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+				(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+
+				(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+				(setq reftex-plug-into-AUCTeX t))
+	#+end_src
