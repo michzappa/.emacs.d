@@ -7,7 +7,6 @@ blocks.
 
 - TODO add more org config: directory, export to html, pdf, latex from hrs config https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org
 - TODO hydra - magit, window-management, multiple-cursors (and then figure out multiple cursors), projectiles
-- TODO might be able to get rid of format-all since lsp format also works.
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag
@@ -330,12 +329,6 @@ Packages and configuration related to displaying, editing, and formatting text f
 		:config
 		(add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
   #+end_src
-** format-all
-	 #+begin_src emacs-lisp
-		 (use-package format-all
-			 :bind
-			 ("C-c f" . format-all-buffer))
-	 #+end_src
 ** Formatting Configuration
 	 #+begin_src emacs-lisp
 		 ;; wraps visual lines
