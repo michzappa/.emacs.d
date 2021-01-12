@@ -8,6 +8,8 @@ blocks.
 - TODO add more org config: directory, export to html, pdf, latex from hrs config https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org
 - TODO hydra? - magit, window-management, multiple-cursors (and then figure out multiple cursors)
 - TODO maybe go through and redo all the src blocks for uniformity? yikes
+- TODO look into pinning packages? But maybe the package-archive-priorities take care of that.
+
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag
@@ -25,8 +27,16 @@ Setting up the package archives and the lisp to automatically load all my packag
 		;; setting up the MELPA and other repos
 		(require 'package)
 		(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
-		(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+		(add-to-list 'package-archives '("melpa" . "https://stable.melpa.org/packages/") t)
+		(add-to-list 'package-archives '("melpa-unstable" . "https://melpa.org/packages/") t)
 		(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+
+
+		(setq package-archive-priorities
+					'(("melpa" . 50)
+						("gnu" . 10)
+						("org" . 10)
+						("melpa-unstable" . 0)))
 
 		;; install use-package if not installed
 		(when (not (package-installed-p 'use-package))
@@ -616,6 +626,8 @@ Hydra bindings for managing tab-bar-mode in emacs 27.
 				(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
 				(setq reftex-plug-into-AUCTeX t))
 
+		(use-package pdf-tools)
+
 		;; to use pdfview with auctex
 		 (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
 				TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
@@ -624,8 +636,4 @@ Hydra bindings for managing tab-bar-mode in emacs 27.
 		 ;; to have the buffer refresh after compilation
 		 (add-hook 'TeX-after-compilation-finished-functions
 						#'TeX-revert-document-buffer)
-	#+end_src
-* PDF-Tools
-	#+begin_src emacs-lisp
-		(use-package pdf-tools)
 	#+end_src
