@@ -5,10 +5,19 @@
 init.el uses org-babel-load file to automatically load in the emacs-lisp 
 blocks.
 
-- TODO organize config by purpose more? especially w/ respect to packages
 - TODO add more org config: directory, export to html, pdf, latex from hrs config https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org
-- TODO make separate list of all the packages or other things which need to be installed outside emacs (language servers, etc)
+- TODO hydra - magit, window-management, multiple-cursors (and then figure out multiple cursors), projectiles
+- TODO might be able to get rid of format-all since lsp format also works.
 
+* Things to Install
+** Apt Packages (or equivalent)
+- silversearcher-ag
+- clangd
+** Other Sources
+- Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls.
+- OCaml Language Server:  https://github.com/ocaml/ocaml-lsp
+- Python Language Server:  https://github.com/palantir/python-language-server
+- Rust Language Server:  https://github.com/rust-lang/rls
 * Packages Setup
 Setting up the package archives and the lisp to automatically load all my packages.
 #+begin_src emacs-lisp
@@ -206,7 +215,8 @@ Packages and configuration related to user interaction.
 		 ("C-x C-r" . counsel-recentf))
 		:config 
 		(ivy-mode)
-		(counsel-mode))
+		(counsel-mode)
+		(use-package ivy-hydra))
 #+end_src
 ** exec-path-from-shell
 #+begin_src emacs-lisp
@@ -252,7 +262,6 @@ Packages and configuration related to managing projects.
 	(use-package magit)
 #+end_src
 ** projectile
-Install ag, silversearcher-ag package on debian.
 #+begin_src emacs-lisp
 	;; project manager
 	(use-package projectile
@@ -391,7 +400,6 @@ Needs clangd.
 		(add-hook 'ielm-mode-hook 'turn-on-eldoc-mode))
 #+end_src
 ** Elixir
-Needs elixir-ls https://github.com/elixir-lsp/elixir-ls.
 #+begin_src emacs-lisp
 	;; Elixir major mode hooked up to lsp
 	(use-package elixir-mode
@@ -402,7 +410,6 @@ Needs elixir-ls https://github.com/elixir-lsp/elixir-ls.
 		:hook (elixir-mode mix-minor-mode))
 #+end_src
 ** OCaml
-Needs OCaml language server https://github.com/ocaml/ocaml-lsp.
 #+begin_src emacs-lisp
 	;; OCaml major mode
 	(use-package tuareg
@@ -441,19 +448,17 @@ Needs OCaml language server https://github.com/ocaml/ocaml-lsp.
 						(("C-c M" . mvn)
 						 ("C-c m r" . mvn-run)
 						 ("C-c m c" . mvn-compile)
-						 ("C-c m t" . mvn-test)
-						 ("C-c m T" . mvn-test-all)
+						 ("C-c m T" . mvn-test) ;; asks for specific test class to run
+						 ("C-c m t" . mvn-test-all)
 						 ("C-c m j" . mvn-jar))))
  #+end_src
 ** Python
-Needs python language server https://github.com/palantir/python-language-server.
 #+begin_src emacs-lisp
 	(use-package python-mode
 		:config
 		(add-hook 'python-mode-hook 'lsp))
 #+end_src
 ** Rust
-Needs rust language server (rls) https://github.com/rust-lang/rls.
 #+begin_src emacs-lisp
 	;; hook up rust-mode with the language server
 	(use-package rust-mode
@@ -490,6 +495,51 @@ RSS reader using an org-mode file for configuration.
 		:config
 		(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
 #+end_src
+* Hydra
+	#+begin_src emacs-lisp
+		(use-package hydra
+			:bind
+			(("C-x t" . hydra-tab-bar/body)
+			 ("C-x l" . hydra-lsp/body)))
+	#+end_src
+** hydra-lsp
+Hydra bindings for language server commands.
+	 #+begin_src emacs-lisp
+		 (defhydra hydra-lsp (:exit t :hint nil)
+			 "Language Server Operations"
+	
+			 ("f" lsp-format-buffer "format" :column "Buffer")
+			 ("m" lsp-ui-imenu "imenu")
+			 ("x" lsp-execute-code-action "execute action")
+
+			 ("M-r" lsp-restart-workspace "restart" :column "Server")
+			 ("S" lsp-shutdown-workspace "shutdown")
+			 ("M-s" lsp-describe-session "describe session")
+
+			 ("d" lsp-find-declaration "declaration" :column "Symbol")
+			 ("D" lsp-ui-peek-find-definitions "definition")
+			 ("R" lsp-ui-peek-find-references "references")
+			 ("i" lsp-ui-peek-find-implementation "implementation" :column "Symbol")
+			 ("t" lsp-find-type-definition "type")
+			 ("s" lsp-signature-help "signature")
+			 ("o" lsp-describe-thing-at-point "documentation" :column "Symbol")
+			 ("r" lsp-rename "rename"))
+	 #+end_src
+** hydra-tab-bar
+Hydra bindings for managing tab-bar-mode in emacs 27.
+	 #+begin_src emacs-lisp
+		 (defhydra hydra-tab-bar (:exit t :hint nil)
+			 "Tab Bar Operations"
+			 ("t" tab-new "Create a new tab" :column "Creation")
+			 ("d" dired-other-tab "Open Dired in another tab")
+			 ("f" find-file-other-tab "Find file in another tab")
+			 ("0" tab-close "Close current tab")
+			 ("m" tab-move "Move current tab" :column "Management")
+			 ("r" tab-rename "Rename Tab")
+			 ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
+			 ("l" tab-next "Next Tab")
+			 ("j" tab-previous "Previous Tab"))
+	 #+end_src
 * Orgmode
 #+begin_src emacs-lisp
 	;; bullets instead of asterisks
