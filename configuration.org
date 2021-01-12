@@ -7,6 +7,7 @@ blocks.
 
 - TODO organize config by purpose more? especially w/ respect to packages
 - TODO add more org config: directory, export to html, pdf, latex from hrs config https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org
+- TODO make separate list of all the packages or other things which need to be installed outside emacs (language servers, etc)
 
 * Packages Setup
 Setting up the package archives and the lisp to automatically load all my packages.
@@ -48,40 +49,44 @@ Giving emacs my information.
 * Misc
 Miscellanious things which might be put somewhere else eventually.
 #+begin_src emacs-lisp
-	 ;; scroll compilation output in the window
-	 (setq compilation-scroll-output t)
+	;; scroll compilation output in the window
+	(setq compilation-scroll-output t)
 
-	 ;; minor mode for inserting parens, braces, quotes and the like in pairs.
-	 ;;turned "<> off for org mode since it makes the shortcut for org blocks difficult."
-	 (electric-pair-mode)
-	 (add-hook 'org-mode-hook
-						 (lambda () (setq-local electric-pair-inhibit-predicate
-															 `(lambda (c)
-																	(if (eq c ?<)
-																			t
-																		(electric-pair-inhibit-predicate c))))))
+	;; minor mode for inserting parens, braces, quotes and the like in pairs.
+	;;turned "<> off for org mode since it makes the shortcut for org blocks difficult."
+	(electric-pair-mode)
+	(add-hook 'org-mode-hook
+						(lambda () (setq-local electric-pair-inhibit-predicate
+															`(lambda (c)
+																 (if (eq c ?<)
+																		 t
+																	 (electric-pair-inhibit-predicate c))))))
 
-	 ;; pretty symbols like lambda
-	 (global-prettify-symbols-mode t)
+	;; pretty symbols like lambda
+	(global-prettify-symbols-mode t)
 
-	 ;; reduce the frequency of garbage collection by making it happen on
-	 ;; each 50MB of allocated data (the default is on every 0.76MB)
-	 (setq gc-cons-threshold 50000000)
+	;; reduce the frequency of garbage collection by making it happen on
+	;; each 50MB of allocated data (the default is on every 0.76MB)
+	(setq gc-cons-threshold 50000000)
 
-	 ;; warn when opening files bigger than 100MB
-	 (setq large-file-warning-threshold 100000000)
+	;; warn when opening files bigger than 100MB
+	(setq large-file-warning-threshold 100000000)
 
-	 ;; quit Emacs directly even if there are running processes
-	 (setq confirm-kill-processes nil)
+	;; quit Emacs directly even if there are running processes
+	(setq confirm-kill-processes nil)
 
-	 ;; store all backup and autosave files in the tmp dir
-	 (setq backup-directory-alist
-				 `((".*" . ,temporary-file-directory)))
-	 (setq auto-save-file-name-transforms
-				 `((".*" ,temporary-file-directory t)))
+	;; store all backup and autosave files in the tmp dir
+	(setq backup-directory-alist
+				`((".*" . ,temporary-file-directory)))
+	(setq auto-save-file-name-transforms
+				`((".*" ,temporary-file-directory t)))
+
+	;; Add color formatting to *compilation* buffer
+	(add-hook 'compilation-filter-hook
+		(lambda () (ansi-color-apply-on-region (point-min) (point-max))))
 #+END_SRC
 * User Interface
-Paclages and configuration related to modifying the user-interface.
+Packages and configuration related to modifying the user-interface.
 ** all-the-icons
 	 #+begin_src emacs-lisp
 		 ;; font for more emacs icons
@@ -283,8 +288,8 @@ Install ag, silversearcher-ag package on debian.
 			:after (treemacs projectile)
 			:ensure t)
   #+end_src
-* Files
-Packages and configuration related to displaying, editing, and formatting files.
+* Text Files
+Packages and configuration related to displaying, editing, and formatting text files.
 ** company
 #+begin_src emacs-lisp
 	;; company for text-completion
@@ -318,6 +323,12 @@ Packages and configuration related to displaying, editing, and formatting files.
 		:config
 		(add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
 #+end_src
+** format-all
+	 #+begin_src emacs-lisp
+		 (use-package format-all
+			 :bind
+			 ("C-c f" . format-all-buffer))
+	 #+end_src
 ** Formatting Configuration
 	 #+begin_src emacs-lisp
 		 ;; wraps visual lines
@@ -402,11 +413,11 @@ Needs OCaml language server https://github.com/ocaml/ocaml-lsp.
 #+end_src
 ** Java
 #+begin_src emacs-lisp
-		(use-package lsp-java
-			:hook (java-mode . lsp))
+	(use-package lsp-java
+		:hook (java-mode . lsp))
 
-		;; debugging
-		(require 'dap-java)
+	;; debugging
+	(require 'dap-java)
 
 	;; function to build jar from maven project
 	(defun mvn-jar ()
@@ -418,6 +429,11 @@ Needs OCaml language server https://github.com/ocaml/ocaml-lsp.
 		(interactive)
 		(mvn "compile exec:java"))
 
+	;; function to test all test classes
+	(defun mvn-test-all ()
+		(interactive)
+		(mvn "test"))
+
 		;; maven minor mode
 		(use-package mvn
 			:bind
@@ -426,6 +442,7 @@ Needs OCaml language server https://github.com/ocaml/ocaml-lsp.
 						 ("C-c m r" . mvn-run)
 						 ("C-c m c" . mvn-compile)
 						 ("C-c m t" . mvn-test)
+						 ("C-c m T" . mvn-test-all)
 						 ("C-c m j" . mvn-jar))))
  #+end_src
 ** Python
@@ -456,6 +473,7 @@ Needs rust language server (rls) https://github.com/rust-lang/rls.
 		    shr-indentation 2)))
 #+end_src
 * Elfeed RSS Reader
+RSS reader using an org-mode file for configuration.
 	#+begin_src emacs-lisp
 		(use-package elfeed
 			:bind ("C-x w" . elfeed)
