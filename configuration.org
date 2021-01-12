@@ -13,6 +13,7 @@ blocks.
 - silversearcher-ag
 - clangd
 - texlive-latex-extra, texlive-extra-utils
+- libpng-dev zlib1g-dev libpoppler-glib-dev libpoppler-private-devm imagemagick
 ** Other Sources
 - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls.
 - OCaml Language Server:  https://github.com/ocaml/ocaml-lsp
@@ -614,4 +615,17 @@ Hydra bindings for managing tab-bar-mode in emacs 27.
 
 				(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
 				(setq reftex-plug-into-AUCTeX t))
+
+		;; to use pdfview with auctex
+		 (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+				TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+				TeX-source-correlate-start-server t) ;; not sure if last line is neccessary
+
+		 ;; to have the buffer refresh after compilation
+		 (add-hook 'TeX-after-compilation-finished-functions
+						#'TeX-revert-document-buffer)
+	#+end_src
+* PDF-Tools
+	#+begin_src emacs-lisp
+		(use-package pdf-tools)
 	#+end_src
