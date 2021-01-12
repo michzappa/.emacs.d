@@ -538,40 +538,27 @@ Hydra bindings for language server commands.
 			 ("q"  nil                                      "cancel" :color blue))
 
 		 (defhydra hydra-projectile (:color amaranth)
-			 "
-					PROJECTILE: %(projectile-project-root)
+			 "PROJECTILE: %(projectile-project-root)"
+	
+			 ("ff" projectile-find-file "file" :column "Find File")
+			 ("s-f"  projectile-find-file-dwim "file dwim")
+			 ("fd"  projectile-find-file-in-directory "file curr dir")
+			 ("r"   projectile-recentf "recent file")
+			 ("d"   projectile-find-dir "dir")
+	
+			 ("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
+			 ("i"   projectile-ibuffer "ibuffer")
+			 ("K"   projectile-kill-buffers "kill all buffers")
 
-					Find File            Search/Tags          Buffers                Cache
-		 ------------------------------------------------------------------------------------------
-		 _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache clear
-			_ff_: file dwim                              _b_: switch to buffer  _x_: remove known project
-			_fd_: file curr dir                        _s-k_: Kill all buffers  _X_: cleanup non-existing
-			 _r_: recent file                                               ^^^^_z_: cache current
-			 _d_: dir
+			 ("c"   projectile-invalidate-cache "clear cache" :column "Cache")
+			 ("x"   projectile-remove-known-project "remove known project")
+			 ("X"   projectile-cleanup-known-projects "cleanup projects")
+			 ("z"   projectile-cache-current-file "cache current project")
+	
+			 ("a"   projectile-ag "ag" :column "Project")
+			 ("s-p" projectile-switch-project "switch project" :column "Project")
 
-		 "
-			 ("a"   projectile-ag)
-			 ("b"   projectile-switch-to-buffer)
-			 ("c"   projectile-invalidate-cache)
-			 ("d"   projectile-find-dir)
-			 ("s-f" projectile-find-file)
-			 ("ff"  projectile-find-file-dwim)
-			 ("fd"  projectile-find-file-in-directory)
-			 ;;("g"   ggtags-update-tags)
-			 ;; ("s-g" ggtags-update-tags)
-			 ("i"   projectile-ibuffer)
-			 ("K"   projectile-kill-buffers)
-			 ("s-k" projectile-kill-buffers)
-			 ;;("m"   projectile-multi-occur)
-			 ;;("o"   projectile-multi-occur)
-			 ("s-p" projectile-switch-project "switch project")
-			 ("p"   projectile-switch-project)
-			 ("s"   projectile-switch-project)
-			 ("r"   projectile-recentf)
-			 ("x"   projectile-remove-known-project)
-			 ("X"   projectile-cleanup-known-projects)
-			 ("z"   projectile-cache-current-file)
-			 ("`"   hydra-projectile-other-window/body "other window")
+			 ("`"   hydra-projectile-other-window/body "other window" :color blue :column "Other")
 			 ("q"   nil "exit" :color blue))
 	 #+end_src
 ** hydra-tab-bar
