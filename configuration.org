@@ -7,6 +7,7 @@ blocks.
 
 - TODO add more org config: directory, export to html, pdf, latex from hrs config https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org
 - TODO hydra - magit, window-management, multiple-cursors (and then figure out multiple cursors), projectiles
+- TODO maybe go through and redo all the src blocks for unifomrmity? yikes
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag
@@ -266,6 +267,7 @@ Packages and configuration related to managing projects.
 			(setq projectile-completion-system 'ivy)
 			(setq projectile-project-search-path '("~/Projects"))
 			(use-package ag)
+			(use-package ibuffer-projectile)
 			:config
 			(global-set-key (kbd "C-c p") 'projectile-command-map)
 			(global-set-key (kbd "C-c v")  'projectile-ag)
@@ -329,6 +331,12 @@ Packages and configuration related to displaying, editing, and formatting text f
 		:config
 		(add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
   #+end_src
+** format-all
+	 #+begin_src emacs-lisp
+		 (use-package format-all
+			 :bind
+			 ("C-c f" . format-all-buffer))
+	 #+end_src
 ** Formatting Configuration
 	 #+begin_src emacs-lisp
 		 ;; wraps visual lines
@@ -487,18 +495,20 @@ RSS reader using an org-mode file for configuration.
 			(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
   #+end_src
 * Hydra
+** Bindd
 	#+begin_src emacs-lisp
 		(use-package hydra
 			:bind
 			(("C-x t" . hydra-tab-bar/body)
-			 ("C-x l" . hydra-lsp/body)))
+			 ("C-c l" . hydra-lsp/body)
+			 ("C-c p" . hydra-projectile/body)))
 	#+end_src
 ** hydra-lsp
 Hydra bindings for language server commands.
 	 #+begin_src emacs-lisp
-		 (defhydra hydra-lsp (:exit t :hint nil)
+		 (defhydra hydra-lsp (:color amaranth)
 			 "Language Server Operations"
-	
+
 			 ("f" lsp-format-buffer "format" :column "Buffer")
 			 ("m" lsp-ui-imenu "imenu")
 			 ("x" lsp-execute-code-action "execute action")
@@ -514,22 +524,71 @@ Hydra bindings for language server commands.
 			 ("t" lsp-find-type-definition "type")
 			 ("s" lsp-signature-help "signature")
 			 ("o" lsp-describe-thing-at-point "documentation" :column "Symbol")
-			 ("r" lsp-rename "rename"))
+			 ("r" lsp-rename "rename")
+			 ("q" nil "exit" :color blue))
+	 #+end_src
+** hydra-projectile
+	 #+begin_src emacs-lisp 
+		 (defhydra hydra-projectile-other-window (:color amaranth)
+			 "projectile-other-window"
+			 ("f"  projectile-find-file-other-window        "file" :column "Find File")
+			 ("g"  projectile-find-file-dwim-other-window   "file dwim")
+			 ("d"  projectile-find-dir-other-window         "dir")
+			 ("b"  projectile-switch-to-buffer-other-window "buffer")
+			 ("q"  nil                                      "cancel" :color blue))
+
+		 (defhydra hydra-projectile (:color amaranth)
+			 "
+					PROJECTILE: %(projectile-project-root)
+
+					Find File            Search/Tags          Buffers                Cache
+		 ------------------------------------------------------------------------------------------
+		 _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache clear
+			_ff_: file dwim                              _b_: switch to buffer  _x_: remove known project
+			_fd_: file curr dir                        _s-k_: Kill all buffers  _X_: cleanup non-existing
+			 _r_: recent file                                               ^^^^_z_: cache current
+			 _d_: dir
+
+		 "
+			 ("a"   projectile-ag)
+			 ("b"   projectile-switch-to-buffer)
+			 ("c"   projectile-invalidate-cache)
+			 ("d"   projectile-find-dir)
+			 ("s-f" projectile-find-file)
+			 ("ff"  projectile-find-file-dwim)
+			 ("fd"  projectile-find-file-in-directory)
+			 ;;("g"   ggtags-update-tags)
+			 ;; ("s-g" ggtags-update-tags)
+			 ("i"   projectile-ibuffer)
+			 ("K"   projectile-kill-buffers)
+			 ("s-k" projectile-kill-buffers)
+			 ;;("m"   projectile-multi-occur)
+			 ;;("o"   projectile-multi-occur)
+			 ("s-p" projectile-switch-project "switch project")
+			 ("p"   projectile-switch-project)
+			 ("s"   projectile-switch-project)
+			 ("r"   projectile-recentf)
+			 ("x"   projectile-remove-known-project)
+			 ("X"   projectile-cleanup-known-projects)
+			 ("z"   projectile-cache-current-file)
+			 ("`"   hydra-projectile-other-window/body "other window")
+			 ("q"   nil "exit" :color blue))
 	 #+end_src
 ** hydra-tab-bar
 Hydra bindings for managing tab-bar-mode in emacs 27.
 	 #+begin_src emacs-lisp
-		 (defhydra hydra-tab-bar (:exit t :hint nil)
-			 "Tab Bar Operations"
-			 ("t" tab-new "Create a new tab" :column "Creation")
-			 ("d" dired-other-tab "Open Dired in another tab")
-			 ("f" find-file-other-tab "Find file in another tab")
-			 ("0" tab-close "Close current tab")
-			 ("m" tab-move "Move current tab" :column "Management")
-			 ("r" tab-rename "Rename Tab")
-			 ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
-			 ("l" tab-next "Next Tab")
-			 ("j" tab-previous "Previous Tab"))
+					(defhydra hydra-tab-bar (:color amaranth)
+						"Tab Bar Operations"
+						("t" tab-new "Create a new tab" :column "Creation")
+						("d" dired-other-tab "Open Dired in another tab")
+						("f" find-file-other-tab "Find file in another tab")
+						("0" tab-close "Close current tab")
+						("m" tab-move "Move current tab" :column "Management")
+						("r" tab-rename "Rename Tab")
+						("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
+						("l" tab-next "Next Tab")
+						("j" tab-previous "Previous Tab")
+						("q" nil "exit" :color blue))
 	 #+end_src
 * Orgmode
   #+begin_src emacs-lisp
