@@ -385,8 +385,7 @@ Packages and configuration related to displaying, editing, and formatting text f
      ;; wrap lines at 80 characters
      (setq-default fill-column 100)
 
-     ;; indicate undesireable whitespace
-     (setq-default show-trailing-whitespace 't)
+     ;; delete trailing whitespace when saving.
      (add-hook 'before-save-hook 'delete-trailing-whitespace)
    #+end_src
 * Elfeed RSS Reader
@@ -744,7 +743,7 @@ Currently not doing web development, by my estimation I will need these basic pa
 													 (shell-command "firefox")))
 
 							;; shortcut for eshell
-							([s-<return>] . (lambda ()
+							([s-return] . (lambda ()
 																(interactive)
 																(eshell)))
 
