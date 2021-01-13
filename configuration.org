@@ -3,7 +3,7 @@
 #+AUTHOR: Michael Zappa
 
 init.el uses org-babel-load file to automatically load in the emacs-lisp
-blocks. Emacs 27.x.
+blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and might not even be).
 
 - TODO add more org config: directory, export to html, pdf, latex from hrs config https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org
   -Maybe don't need to do this since using AUCTeX. Still want to use org-mode more.
@@ -15,11 +15,11 @@ blocks. Emacs 27.x.
 - emacs from scratch repo: https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Desktop-01.org
 * Things to Install
 ** Apt Packages (or equivalent)
-- silversearcher-ag
-- clangd
-- texlive-latex-extra, texlive-extra-utils
-- libpng-dev zlib1g-dev libpoppler-glib-dev libpoppler-private-devm imagemagick
-- nodejs
+- silversearcher-ag (projectile-ag)
+- clangd (C lsp-mode)
+- texlive-latex-extra, texlive-extra-utils (AUCTeX)
+- libpng-dev zlib1g-dev libpoppler-glib-dev libpoppler-private-devm imagemagick (pdf-tools)
+- nodejs (tide-mode)
 ** Other Sources
 - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls.
 - OCaml Language Server:  https://github.com/ocaml/ocaml-lsp
@@ -715,17 +715,11 @@ Currently not doing web development, by my estimation I will need these basic pa
 
 			;; These keys should always pass through to Emacs
 			(setq exwm-input-prefix-keys
-				'(?\C-x
-					?\C-u
-					?\C-h
-					?\C-g
-					?\M-x
-					;;?\M-`
-					;;?\M-&
-					;;?\M-:
-					;;?\C-\M-j  ;; Buffer list
-					;;?\C-\
-					))
+						'(?\C-x
+							?\C-u
+							?\C-h
+							?\C-g
+							?\M-x))
 
 			;; Ctrl+Q will enable the next key to be sent directly
 			(define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
@@ -757,26 +751,34 @@ Currently not doing web development, by my estimation I will need these basic pa
 							;;                (interactive)
 							;;                (exwm-workspace-switch-create ,i))))
 							;;          (number-sequence 0 9))
-							)))
+							([XF86AudioLowerVolume] . (lambda ()
+																					(interactive)
+																					(shell-command "amixer -D pulse sset Master 5%+")))
+							([XF86AudioRaiseVolume] . (lambda ()
+																					(interactive)
+																					(shell-command "amixer -D pulse sset Master 5%+")))
+							([XF86AudioMute] . (lambda ()
+																	 (interactive)
+																	 (shell-command "amixer -D pulse sset Master 5%+"))))))
 
-		;; function to turn on all the exwm stuff
-		(defun enable-exwm ()
-			(exwm-enable)
-			(exwm-init)
+			;; function to turn on all the exwm stuff
+			(defun enable-exwm ()
+				(exwm-enable)
+				(exwm-init)
 
-			;; exwm system tray
-			(require 'exwm-systemtray)
-			(exwm-systemtray-enable)
+				;; exwm system tray
+				(require 'exwm-systemtray)
+				(exwm-systemtray-enable)
 
-			;; ensure screen updates with xrandr will refresh EXWM frames
-			(require 'exwm-randr)
-			(exwm-randr-enable)
+				;; ensure screen updates with xrandr will refresh EXWM frames
+				(require 'exwm-randr)
+				(exwm-randr-enable)
 
-			;; use default super+shift keybindings
-			(windmove-swap-states-default-keybindings)
+				;; use default super+shift keybindings
+				(windmove-swap-states-default-keybindings)
 
-			;; remap capsLock to ctrl
-			(start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/Xmodmap"))
+				;; remap capsLock to ctrl
+				(start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/Xmodmap"))
 
-		(if exwm-enabled (enable-exwm) ())
+			(if exwm-enabled (enable-exwm) ())
   #+end_src
