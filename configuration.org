@@ -12,6 +12,7 @@ blocks. Emacs 27.x.
 - TODO evaluate need for treemacs/actually making it work as desired (opens current project only)
 - TODO go through https://github.com/daviwil/dotfiles/blob/master/Emacs.org
 - TODO further exwm configuration by copying from daviwil and customizing.
+- emacs from scratch repo: https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Desktop-01.org
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag
@@ -698,76 +699,84 @@ Currently not doing web development, by my estimation I will need these basic pa
    #+end_src
 * EXWM
   #+begin_src emacs-lisp
-    ;; should exwm be enabled?
-    (setq exwm-enabled (and (eq window-system 'x)
-                            (seq-contains command-line-args "--use-exwm")))
+		;; should exwm be enabled?
+		(setq exwm-enabled (and (eq window-system 'x)
+														(seq-contains command-line-args "--use-exwm")))
 
-    (use-package exwm
-      :if exwm-enabled
-      :config
-      (setq exwm-workspace-number 1)
+		(use-package exwm
+			:if exwm-enabled
+			:config
+			(setq exwm-workspace-number 1)
 
-      ;; When window "class" updates, use it to set the buffer name
-      (defun exwm-update-class ()
-        (exwm-workspace-rename-buffer exwm-class-name))
-      (add-hook 'exwm-update-class-hook #'exwm-update-class)
+			;; When window "class" updates, use it to set the buffer name
+			(defun exwm-update-class ()
+				(exwm-workspace-rename-buffer exwm-class-name))
+			(add-hook 'exwm-update-class-hook #'exwm-update-class)
 
-      ;; These keys should always pass through to Emacs
-      (setq exwm-input-prefix-keys
-        '(?\C-x
-          ?\C-u
-          ?\C-h
-          ?\M-x
-          ?\M-`
-          ?\M-&
-          ?\M-:
-          ?\C-\M-j  ;; Buffer list
-          ?\C-\ ))  ;; Ctrl+Space
+			;; These keys should always pass through to Emacs
+			(setq exwm-input-prefix-keys
+				'(?\C-x
+					?\C-u
+					?\C-h
+					?\C-g
+					?\M-x
+					;;?\M-`
+					;;?\M-&
+					;;?\M-:
+					;;?\C-\M-j  ;; Buffer list
+					;;?\C-\
+					))
 
-      ;; Ctrl+Q will enable the next key to be sent directly
-      (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
+			;; Ctrl+Q will enable the next key to be sent directly
+			(define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
 
-      ;; Set up global key bindings.  These always work, no matter the input state!
-      ;; Keep in mind that changing this list after EXWM initializes has no effect.
-      (setq exwm-input-global-keys
-            `(
-              ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
-              ([?\s-r] . exwm-reset)
+			;; Set up global key bindings.  These always work, no matter the input state!
+			;; Keep in mind that changing this list after EXWM initializes has no effect.
+			(setq exwm-input-global-keys
+						`(
+							;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+							([?\s-r] . exwm-reset)
 
-              ([?\s-/] . (lambda ()
-                           (interactive)
-                           (counsel-linux-app)))
+							;; general app launcher
+							([?\s-/] . (lambda ()
+													 (interactive)
+													 (counsel-linux-app)))
 
-              ;; Switch workspace
-              ;;([?\s-w] . exwm-workspace-switch)
+							;; shortcut for firefox
+							([?\s-x] . (lambda ()
+													 (interactive)
+													 (shell-command "firefox")))
 
-              ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
-              ;; ,@(mapcar (lambda (i)
-              ;;            `(,(kbd (format "s-%d" i)) .
-              ;;              (lambda ()
-              ;;                (interactive)
-              ;;                (exwm-workspace-switch-create ,i))))
-              ;;          (number-sequence 0 9))
-              )))
+							;; Switch workspace
+							;;([?\s-w] . exwm-workspace-switch)
 
-    ;; function to turn on all the exwm stuff
-    (defun enable-exwm ()
-      (exwm-enable)
-      (exwm-init)
+							;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
+							;; ,@(mapcar (lambda (i)
+							;;            `(,(kbd (format "s-%d" i)) .
+							;;              (lambda ()
+							;;                (interactive)
+							;;                (exwm-workspace-switch-create ,i))))
+							;;          (number-sequence 0 9))
+							)))
 
-      ;; exwm system tray
-      (require 'exwm-systemtray)
-      (exwm-systemtray-enable)
+		;; function to turn on all the exwm stuff
+		(defun enable-exwm ()
+			(exwm-enable)
+			(exwm-init)
 
-      ;; ensure screen updates with xrandr will refresh EXWM frames
-      (require 'exwm-randr)
-      (exwm-randr-enable)
+			;; exwm system tray
+			(require 'exwm-systemtray)
+			(exwm-systemtray-enable)
 
-      ;; use default super+shift keybindings
-      (windmove-swap-states-default-keybindings)
+			;; ensure screen updates with xrandr will refresh EXWM frames
+			(require 'exwm-randr)
+			(exwm-randr-enable)
 
-      ;; remap capsLock to ctrl
-      (start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/Xmodmap"))
+			;; use default super+shift keybindings
+			(windmove-swap-states-default-keybindings)
 
-    (if exwm-enabled (enable-exwm) ())
+			;; remap capsLock to ctrl
+			(start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/Xmodmap"))
+
+		(if exwm-enabled (enable-exwm) ())
   #+end_src
