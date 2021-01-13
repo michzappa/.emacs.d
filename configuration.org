@@ -74,49 +74,49 @@ Giving emacs my information.
 * Misc
 Miscellanious things which might be put somewhere else eventually.
   #+begin_src emacs-lisp
-    ;; scroll compilation output in the window
-    (setq compilation-scroll-output t)
+		;; scroll compilation output in the window
+		(setq compilation-scroll-output t)
 
-    ;; minor mode for inserting parens, braces, quotes and the like in pairs.
-    ;;turned "<> off for org mode since it makes the shortcut for org blocks difficult."
-    (electric-pair-mode)
-    (add-hook 'org-mode-hook
-              (lambda () (setq-local electric-pair-inhibit-predicate
-                                (lambda (c)
-                                  (if (eq c ?<)
-                                      t
-                                    (electric-pair-inhibit-predicate c))))))
+		;; minor mode for inserting parens, braces, quotes and the like in pairs.
+		;;turned "<> off for org mode since it makes the shortcut for org blocks difficult."
+		(electric-pair-mode)
+		(add-hook 'org-mode-hook
+							(lambda () (setq-local electric-pair-inhibit-predicate
+																(lambda (c)
+																	(if (eq c ?<)
+																			t
+																		(electric-pair-inhibit-predicate c))))))
 
-    ;; pretty symbols like lambda
-    (global-prettify-symbols-mode t)
+		;; pretty symbols like lambda
+		(global-prettify-symbols-mode t)
 
-    ;; reduce the frequency of garbage collection by making it happen on
-    ;; each 50MB of allocated data (the default is on every 0.76MB)
-    (setq gc-cons-threshold 50000000)
+		;; reduce the frequency of garbage collection by making it happen on
+		;; each 50MB of allocated data (the default is on every 0.76MB)
+		(setq gc-cons-threshold 50000000)
 
-    ;; warn when opening files bigger than 100MB
-    (setq large-file-warning-threshold 100000000)
+		;; warn when opening files bigger than 100MB
+		(setq large-file-warning-threshold 100000000)
 
-    ;; quit Emacs directly even if there are running processes
-    (setq confirm-kill-processes nil)
+		;; quit Emacs directly even if there are running processes
+		(setq confirm-kill-processes nil)
 
-    ;; store all backup and autosave files in the tmp dir
-    (setq backup-directory-alist
-          `((".*" . ,temporary-file-directory)))
-    (setq auto-save-file-name-transforms
-          `((".*" ,temporary-file-directory t)))
+		;; store all backup and autosave files in the tmp dir
+		(setq backup-directory-alist
+					`((".*" . ,temporary-file-directory)))
+		(setq auto-save-file-name-transforms
+					`((".*" ,temporary-file-directory t)))
 
-    ;; Add color formatting to *compilation* buffer
-    (add-hook 'compilation-filter-hook
-              (lambda () (ansi-color-apply-on-region (point-min) (point-max))))
+		;; Add color formatting to *compilation* buffer
+		(add-hook 'compilation-filter-hook
+							(lambda () (ansi-color-apply-on-region (point-min) (point-max))))
 
-    (defun sudo ()
-      "Use TRAMP to `sudo' the current buffer"
-      (interactive)
-      (when buffer-file-name
-        (find-alternate-file
-         (concat "/sudo:root@localhost:"
-                 buffer-file-name))))
+		(defun sudo ()
+			"Use TRAMP to `sudo' the current buffer"
+			(interactive)
+			(when buffer-file-name
+				(find-alternate-file
+				 (concat "/sudo:root@localhost:"
+								 buffer-file-name))))
   #+end_src
 * User Interface
 Packages and configuration related to modifying the user-interface.
@@ -127,12 +127,12 @@ Packages and configuration related to modifying the user-interface.
   #+end_src
 ** minions
   #+begin_src emacs-lisp
-    ;; turns off all minor modes in modeline
-    (use-package minions
-      :config
-      (setq minions-mode-line-lighter ""
-      minions-mode-line-delimiters '("" . ""))
-      (minions-mode 1))
+		;; turns off all minor modes in modeline
+		(use-package minions
+			:config
+			(setq minions-mode-line-lighter ""
+						minions-mode-line-delimiters '("" . ""))
+			(minions-mode 1))
   #+end_src
 ** Startup Configuration
   #+begin_src emacs-lisp
@@ -172,53 +172,53 @@ Packages and configuration related to modifying the user-interface.
   #+end_src
 ** Frames Configuration
   #+begin_src emacs-lisp
-    ;;more useful frame title, that show either a file or a
-    ;; buffer name (if the buffer isn't visiting a file)
-    (setq frame-title-format '((:eval (projectile-project-name))))
+		;;more useful frame title, that show either a file or a
+		;; buffer name (if the buffer isn't visiting a file)
+		(setq frame-title-format '((:eval (projectile-project-name))))
 
-    ;; line numbers, column number, size indication
-    (global-display-line-numbers-mode)
-    (line-number-mode t)
-    (column-number-mode t)
-    (size-indication-mode t)
+		;; line numbers, column number, size indication
+		(global-display-line-numbers-mode)
+		(line-number-mode t)
+		(column-number-mode t)
+		(size-indication-mode t)
   #+end_src
 * Mouse and Keys
 Mouse and keyboard settings which don't belong to any specific package.
   #+begin_src emacs-lisp
-    ;; scrolling
-    (setq scroll-margin 0
-          scroll-conservatively 100000
-          scroll-preserve-screen-position 1)
+		;; scrolling
+		(setq scroll-margin 0
+					scroll-conservatively 100000
+					scroll-preserve-screen-position 1)
 
-    ;; change font size binding
-    (global-set-key (kbd "C-+") 'text-scale-increase)
-    (global-set-key (kbd "C--") 'text-scale-decrease)
+		;; change font size binding
+		(global-set-key (kbd "C-+") 'text-scale-increase)
+		(global-set-key (kbd "C--") 'text-scale-decrease)
 
-    ;; keybinding to reload configuration
-    (global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
+		;; keybinding to reload configuration
+		(global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
 
-    ;; keybinding to open configuration file (this file)
-    (global-set-key (kbd "C-c n") (lambda ()  (interactive) (find-file "~/.emacs.d/configuration.org")))
+		;; keybinding to open configuration file (this file)
+		(global-set-key (kbd "C-c n") (lambda ()  (interactive) (find-file "~/.emacs.d/configuration.org")))
 
-    ;; assume I want to close current buffer with ""C-x k""
-    (global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
+		;; assume I want to close current buffer with ""C-x k""
+		(global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
 
-    ;; function for toggling comments
-    (defun comment-or-uncomment-region-or-line ()
-        "Comments or uncomments the region or the current line if there's no active region."
-        (interactive)
-        (let (beg end)
-            (if (region-active-p)
-                (setq beg (region-beginning) end (region-end))
-                (setq beg (line-beginning-position) end (line-end-position)))
-            (comment-or-uncomment-region beg end)
-            (forward-line)))
+		;; function for toggling comments
+		(defun comment-or-uncomment-region-or-line ()
+			"Comments or uncomments the region or the current line if there's no active region."
+			(interactive)
+			(let (beg end)
+				(if (region-active-p)
+						(setq beg (region-beginning) end (region-end))
+					(setq beg (line-beginning-position) end (line-end-position)))
+				(comment-or-uncomment-region beg end)
+				(forward-line)))
 
-    ;; binding toggle-comment to "C-/" for consistency with other editors
-    (global-set-key (kbd "C-/") 'comment-or-uncomment-region-or-line)
+		;; binding toggle-comment to "C-/" for consistency with other editors
+		(global-set-key (kbd "C-/") 'comment-or-uncomment-region-or-line)
 
-    ;; replacing keybinding for undo as it is "C-/" by default
-    (global-set-key (kbd "C-.") 'undo)
+		;; replacing keybinding for undo as it is "C-/" by default
+		(global-set-key (kbd "C-.") 'undo)
   #+end_src
 * User Interaction
 Packages and configuration related to user interaction.
@@ -231,15 +231,15 @@ Packages and configuration related to user interaction.
   #+end_src
 ** counsel
   #+begin_src emacs-lisp
-    ;; autocomplete interface for search
-    (use-package counsel
-      :bind
-      (("C-s" . swiper)
-       ("C-x C-r" . counsel-recentf))
-      :config
-      (ivy-mode)
-      (counsel-mode)
-      (use-package ivy-hydra))
+		;; autocomplete interface for search
+		(use-package counsel
+			:bind
+			(("C-s" . swiper)
+			 ("C-x C-r" . counsel-recentf))
+			:config
+			(ivy-mode)
+			(counsel-mode)
+			(use-package ivy-hydra))
   #+end_src
 ** exec-path-from-shell
   #+begin_src emacs-lisp
@@ -262,27 +262,27 @@ Packages and configuration related to user interaction.
   #+end_src
 ** windmove
   #+begin_src emacs-lisp
-    (use-package windmove
-      ;; default keybindings are S-s-<direction>, but super doesn't get past GNOME shell
-      :bind
-      (("C-S-<left>" . windmove-swap-states-left)
-       ("C-S-<right>" . windmove-swap-states-right)
-       ("C-S-<up>" . windmove-swap-states-up)
-       ("C-S-<down>" . windmove-swap-states-down))
-      :config
-      ;; use shift + arrow keys to switch between visible buffers
-      (windmove-default-keybindings)
+		(use-package windmove
+			;; default keybindings are S-s-<direction>, but super doesn't get past GNOME shell
+			:bind
+			(("C-S-<left>" . windmove-swap-states-left)
+			 ("C-S-<right>" . windmove-swap-states-right)
+			 ("C-S-<up>" . windmove-swap-states-up)
+			 ("C-S-<down>" . windmove-swap-states-down))
+			:config
+			;; use shift + arrow keys to switch between visible buffers
+			(windmove-default-keybindings)
 
-      ;; Make windmove work in org-mode.
-      (add-hook 'org-shiftup-final-hook 'windmove-up)
-      (add-hook 'org-shiftleft-final-hook 'windmove-left)
-      (add-hook 'org-shiftdown-final-hook 'windmove-down)
-      (add-hook 'org-shiftright-final-hook 'windmove-right)
+			;; Make windmove work in org-mode.
+			(add-hook 'org-shiftup-final-hook 'windmove-up)
+			(add-hook 'org-shiftleft-final-hook 'windmove-left)
+			(add-hook 'org-shiftdown-final-hook 'windmove-down)
+			(add-hook 'org-shiftright-final-hook 'windmove-right)
 
-      (add-hook 'org-shiftcontrolup-final-hook 'windmove-swap-states-up)
-      (add-hook 'org-shiftcontrolleft-final-hook 'windmove-swap-states-left)
-      (add-hook 'org-shiftcontroldown-final-hook 'windmove-swap-states-down)
-      (add-hook 'org-shiftcontrolright-final-hook 'windmove-swap-states-right))
+			(add-hook 'org-shiftcontrolup-final-hook 'windmove-swap-states-up)
+			(add-hook 'org-shiftcontrolleft-final-hook 'windmove-swap-states-left)
+			(add-hook 'org-shiftcontroldown-final-hook 'windmove-swap-states-down)
+			(add-hook 'org-shiftcontrolright-final-hook 'windmove-swap-states-right))
   #+end_src
 ** Yes/No Question Configuration
    #+begin_src emacs-lisp
@@ -298,40 +298,40 @@ Packages and configuration related to managing projects.
   #+end_src
 ** projectile
   #+begin_src emacs-lisp
-    ;; project manager
-    (use-package projectile
-      :init
-      (setq projectile-completion-system 'ivy)
-      (setq projectile-project-search-path '("~/Projects"))
-      (use-package ag)
-      (use-package ibuffer-projectile)
-      :config
-      (global-set-key (kbd "C-c p") 'projectile-command-map)
-      (global-set-key (kbd "C-c v")  'projectile-ag)
-      (projectile-mode +1))
+		;; project manager
+		(use-package projectile
+			:init
+			(setq projectile-completion-system 'ivy)
+			(setq projectile-project-search-path '("~/Projects"))
+			(use-package ag)
+			(use-package ibuffer-projectile)
+			:config
+			(global-set-key (kbd "C-c p") 'projectile-command-map)
+			(global-set-key (kbd "C-c v")  'projectile-ag)
+			(projectile-mode +1))
   #+end_src
 ** treemacs
   #+begin_src emacs-lisp
-    ;; sidebar file explorer
-    (use-package treemacs
-      :bind
-      ("C-c C-c t" . treemacs)
-      :commands
-      (treemacs-filewatch-mode
-       treemacs-git-mode
-       treemacs-follow-mode)
-      :config
-      (add-hook 'treemacs-mode-hook (lambda() (display-line-numbers-mode -1))))
+		;; sidebar file explorer
+		(use-package treemacs
+			:bind
+			("C-c C-c t" . treemacs)
+			:commands
+			(treemacs-filewatch-mode
+			 treemacs-git-mode
+			 treemacs-follow-mode)
+			:config
+			(add-hook 'treemacs-mode-hook (lambda() (display-line-numbers-mode -1))))
 
-    ;; integrate git with treemacs
-    (use-package treemacs-magit
-      :after (treemacs magit)
-      :ensure t)
+		;; integrate git with treemacs
+		(use-package treemacs-magit
+			:after (treemacs magit)
+			:ensure t)
 
-    ;; integrate projectile with treemacs
-    (use-package treemacs-projectile
-      :after (treemacs projectile)
-      :ensure t)
+		;; integrate projectile with treemacs
+		(use-package treemacs-projectile
+			:after (treemacs projectile)
+			:ensure t)
   #+end_src
 * Text Files
 Packages and configuration related to displaying, editing, and formatting text files.
@@ -536,67 +536,70 @@ Hydra bindings for moving windows with windmove.
   #+end_src
 * AUCTeX
   #+begin_src emacs-lisp
-    (use-package auctex
-      :defer t
-      :config
-        (setq TeX-auto-save t)
-        (setq TeX-parse-self t)
-        (setq TeX-PDF-mode t)
-        (setq-default TeX-master nil)
+		(use-package auctex
+			:defer t
+			:config
+			(setq TeX-auto-save t
+						TeX-parse-self t
+						TeX-PDF-mode t)
+			(setq-default TeX-master nil)
 
-        (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-        (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-        (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+			(add-hook 'LaTeX-mode-hook 'visual-line-mode)
+			(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+			(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 
-        (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-        (setq reftex-plug-into-AUCTeX t))
+			(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+			(setq reftex-plug-into-AUCTeX t))
 
-    (use-package pdf-tools)
+		(use-package pdf-tools)
 
-    ;; to use pdfview with auctex
-    (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-        TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
-        TeX-source-correlate-start-server t) ;; not sure if last line is neccessary
+		;; to use pdfview with auctex
+		(setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+					TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+					TeX-source-correlate-start-server t)
 
-    ;; to have the buffer refresh after compilation
-    (add-hook 'TeX-after-compilation-finished-functions
-            #'TeX-revert-document-buffer)
+		;; overview of all compilation errors
+		(setq TeX-error-overview-open-after-TeX-run t)
+
+		;; to have the buffer refresh after compilation
+		(add-hook 'TeX-after-compilation-finished-functions
+							#'TeX-revert-document-buffer)
   #+end_src
 * Languages and LSP Support
 Packages and configuration related to language major/minor modes and language servers.
 ** LSP Mode
   #+begin_src emacs-lisp
-    ;; lsp-mode plus other recommended packages and configuration
-    (use-package lsp-mode
-      :bind
-      (:map lsp-mode-map
-            (("C-M-b" . lsp-find-implementation)
-             ("M-RET" . lsp-execute-code-action))))
+		;; lsp-mode plus other recommended packages and configuration
+		(use-package lsp-mode
+			:bind
+			(:map lsp-mode-map
+						(("C-M-b" . lsp-find-implementation)
+						 ("M-RET" . lsp-execute-code-action))))
 
-    ;; ui features for lsp-mode
-    (use-package lsp-ui
-      :after lsp-mode
-      :bind
-      ("M-i" . lsp-ui-imenu))
+		;; ui features for lsp-mode
+		(use-package lsp-ui
+			:after lsp-mode
+			:bind
+			("M-i" . lsp-ui-imenu))
 
-    ;; integration for lsp with ivy and treemacs
-    (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
-    (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+		;; integration for lsp with ivy and treemacs
+		(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+		(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
-    ;; completion provider
-    (setq lsp-completion-provider :capf)
-    (setq lsp-completion-enable t)
+		;; completion provider
+		(setq lsp-completion-provider :capf)
+		(setq lsp-completion-enable t)
 
-    ;; debugging mode
-    (use-package dap-mode
-      :config
-      (global-set-key (kbd "<f7>") 'dap-step-in)
-      (global-set-key (kbd "<f8>") 'dap-net)
-      (global-set-key (kbd "<f9>") 'dap-continue)
-      (dap-mode t)
-      (dap-ui-mode t)
-      (dap-tooltip-mode 1)
-      (tooltip-mode 1))
+		;; debugging mode
+		(use-package dap-mode
+			:config
+			(global-set-key (kbd "<f7>") 'dap-step-in)
+			(global-set-key (kbd "<f8>") 'dap-net)
+			(global-set-key (kbd "<f9>") 'dap-continue)
+			(dap-mode t)
+			(dap-ui-mode t)
+			(dap-tooltip-mode 1)
+			(tooltip-mode 1))
   #+end_src
 ** C
 Needs clangd.
@@ -698,6 +701,7 @@ Currently not doing web development, by my estimation I will need these basic pa
      (use-package tide)
    #+end_src
 * EXWM
+Configuration for using emacs as an X window manager.
   #+begin_src emacs-lisp
 		;; should exwm be enabled?
 		(setq exwm-enabled (and (eq window-system 'x)
@@ -744,8 +748,8 @@ Currently not doing web development, by my estimation I will need these basic pa
 
 							;; shortcut for eshell
 							([s-return] . (lambda ()
-																(interactive)
-																(eshell)))
+															(interactive)
+															(eshell)))
 
 							;; switch workspace
 							;;([?\s-w] . exwm-workspace-switch)
