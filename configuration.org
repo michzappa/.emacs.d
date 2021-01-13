@@ -9,6 +9,7 @@ blocks.
 - TODO hydra? - magit, window-management, multiple-cursors (and then figure out multiple cursors)
 - TODO maybe go through and redo all the src blocks for uniformity? yikes
 - TODO look into pinning packages? But maybe the package-archive-priorities take care of that.
+- TODO evaluate need for treemacs/actually making it work as desired (opens current project only)
 
 * Things to Install
 ** Apt Packages (or equivalent)
@@ -290,7 +291,7 @@ Packages and configuration related to managing projects.
 		;; sidebar file explorer
 		(use-package treemacs
 			:bind
-			("C-x p" . treemacs)
+			("C-c C-c t" . treemacs)
 			:commands
 			(treemacs-filewatch-mode
 			 treemacs-git-mode
@@ -551,13 +552,13 @@ Hydra bindings for language server commands.
 
 		 (defhydra hydra-projectile (:color amaranth)
 			 "PROJECTILE: %(projectile-project-root)"
-	
+
 			 ("ff" projectile-find-file "file" :column "Find File")
 			 ("s-f"  projectile-find-file-dwim "file dwim")
 			 ("fd"  projectile-find-file-in-directory "file curr dir")
 			 ("r"   projectile-recentf "recent file")
 			 ("d"   projectile-find-dir "dir")
-	
+
 			 ("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
 			 ("i"   projectile-ibuffer "ibuffer")
 			 ("K"   projectile-kill-buffers "kill all buffers")
@@ -566,9 +567,10 @@ Hydra bindings for language server commands.
 			 ("x"   projectile-remove-known-project "remove known project")
 			 ("X"   projectile-cleanup-known-projects "cleanup projects")
 			 ("z"   projectile-cache-current-file "cache current project")
-	
+
 			 ("a"   projectile-ag "ag" :column "Project")
 			 ("s-p" projectile-switch-project "switch project" :column "Project")
+			 ("p"   treemacs-projectile "treemacs")
 
 			 ("`"   hydra-projectile-other-window/body "other window" :color blue :column "Other")
 			 ("q"   nil "exit" :color blue))
