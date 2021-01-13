@@ -268,18 +268,18 @@ Packages and configuration related to user interaction.
 			 ("C-S-<down>" . windmove-swap-states-down))
 			:config
 			;; use shift + arrow keys to switch between visible buffers
-			(windmove-default-keybindings))
+			(windmove-default-keybindings)
 
-			;; ;; Make windmove work in org-mode. Commenting out to use more org-mode features.
-			;; (add-hook 'org-shiftup-final-hook 'windmove-up)
-			;; (add-hook 'org-shiftleft-final-hook 'windmove-left)
-			;; (add-hook 'org-shiftdown-final-hook 'windmove-down)
-			;; (add-hook 'org-shiftright-final-hook 'windmove-right)
+			;; Make windmove work in org-mode.
+			(add-hook 'org-shiftup-final-hook 'windmove-up)
+			(add-hook 'org-shiftleft-final-hook 'windmove-left)
+			(add-hook 'org-shiftdown-final-hook 'windmove-down)
+			(add-hook 'org-shiftright-final-hook 'windmove-right)
 
-			;; (add-hook 'org-shiftcontrolup-final-hook 'windmove-swap-states-up)
-			;; (add-hook 'org-shiftcontrolleft-final-hook 'windmove-swap-states-left)
-			;; (add-hook 'org-shiftcontroldown-final-hook 'windmove-swap-states-down)
-			;; (add-hook 'org-shiftcontrolright-final-hook 'windmove-swap-states-right)
+			(add-hook 'org-shiftcontrolup-final-hook 'windmove-swap-states-up)
+			(add-hook 'org-shiftcontrolleft-final-hook 'windmove-swap-states-left)
+			(add-hook 'org-shiftcontroldown-final-hook 'windmove-swap-states-down)
+			(add-hook 'org-shiftcontrolright-final-hook 'windmove-swap-states-right))
   #+end_src
 ** Yes/No Question Configuration
    #+begin_src emacs-lisp
@@ -409,11 +409,12 @@ RSS reader using an org-mode file for configuration.
 * Hydra
 ** Binding
   #+begin_src emacs-lisp
-    (use-package hydra
-      :bind
-      (("C-x t" . hydra-tab-bar/body)
-       ("C-c l" . hydra-lsp/body)
-       ("C-c p" . hydra-projectile/body)))
+		(use-package hydra
+			:bind
+			(("C-x t" . hydra-tab-bar/body)
+			 ("C-c l" . hydra-lsp/body)
+			 ("C-c p" . hydra-projectile/body)
+			 ("C-c w" . hydra-windmove/body)))
   #+end_src
 ** hydra-lsp
 Hydra bindings for language server commands.
@@ -477,19 +478,36 @@ Hydra bindings for language server commands.
 ** hydra-tab-bar
 Hydra bindings for managing tab-bar-mode in emacs 27.
    #+begin_src emacs-lisp
-          (defhydra hydra-tab-bar (:color amaranth)
-            "Tab Bar Operations"
-            ("t" tab-new "Create a new tab" :column "Creation")
-            ("d" dired-other-tab "Open Dired in another tab")
-            ("f" find-file-other-tab "Find file in another tab")
-            ("0" tab-close "Close current tab")
-            ("m" tab-move "Move current tab" :column "Management")
-            ("r" tab-rename "Rename Tab")
-            ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
-            ("l" tab-next "Next Tab")
-            ("j" tab-previous "Previous Tab")
-            ("q" nil "exit" :color blue))
+		 (defhydra hydra-tab-bar (:color amaranth)
+			 "Tab Bar Operations"
+			 ("t" tab-new "Create a new tab" :column "Creation")
+			 ("d" dired-other-tab "Open Dired in another tab")
+			 ("f" find-file-other-tab "Find file in another tab")
+			 ("0" tab-close "Close current tab")
+			 ("m" tab-move "Move current tab" :column "Management")
+			 ("r" tab-rename "Rename Tab")
+			 ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
+			 ("l" tab-next "Next Tab")
+			 ("j" tab-previous "Previous Tab")
+			 ("q" nil "exit" :color blue))
    #+end_src
+** hydra-windmove
+Hydra bindings for moving windows with windmove.
+	 #+begin_src emacs-lisp
+		 (defhydra hydra-windmove (:color amaranth)
+			 "Windmove Operations"
+			 ("<left>" windmove-left "left" :column "Change window")
+			 ("<right>" windmove-right "right")
+			 ("<up>" windmove-up "up")
+			 ("<down>" windmove-down "down")
+
+			 ("C-<left>" windmove-swap-states-left "move left" :column "Move window")
+			 ("C-<right>" windmove-swap-states-right "move right")
+			 ("C-<up>" windmove-swap-states-up "move up")
+			 ("C-<down>" windmove-swap-states-down "move down")
+
+			 ("q" nil "exit" :color blue))
+	 #+end_src
 * Orgmode
   #+begin_src emacs-lisp
 		;; bullets instead of asterisks
@@ -510,8 +528,10 @@ Hydra bindings for managing tab-bar-mode in emacs 27.
 		;; change tabs from org-mode
 		(with-eval-after-load 'org
 			(define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
-  #+end_src
 
+		(setq org-support-shift-select t)
+		(setq org-replace-disputed-keys t)
+  #+end_src
 * AUCTeX
   #+begin_src emacs-lisp
     (use-package auctex
