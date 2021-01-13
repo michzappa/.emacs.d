@@ -105,7 +105,15 @@ Miscellanious things which might be put somewhere else eventually.
 
 		;; Add color formatting to *compilation* buffer
 		(add-hook 'compilation-filter-hook
-			(lambda () (ansi-color-apply-on-region (point-min) (point-max))))
+							(lambda () (ansi-color-apply-on-region (point-min) (point-max))))
+
+		(defun sudo ()
+			"Use TRAMP to `sudo' the current buffer"
+			(interactive)
+			(when buffer-file-name
+				(find-alternate-file
+				 (concat "/sudo:root@localhost:"
+								 buffer-file-name))))
   #+end_src
 * User Interface
 Packages and configuration related to modifying the user-interface.
@@ -378,7 +386,9 @@ RSS reader using an org-mode file for configuration.
 		;; epub reader mode
 		(use-package nov
 			:config
-			(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
+			(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+			:hook
+			(nove-mode . visual-line-mode))
   #+end_src
 * Hydra
 ** Binding
