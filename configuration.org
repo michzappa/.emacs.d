@@ -260,27 +260,27 @@ Packages and configuration related to user interaction.
   #+end_src
 ** windmove
   #+begin_src emacs-lisp
-		(use-package windmove
-			;; default keybindings are S-s-<direction>, but super doesn't get past the window manager (GNOME) on my computer
-			:bind
-			(("C-S-<left>" . windmove-swap-states-left)
-			 ("C-S-<right>" . windmove-swap-states-right)
-			 ("C-S-<up>" . windmove-swap-states-up)
-			 ("C-S-<down>" . windmove-swap-states-down))
-			:config
-			;; use shift + arrow keys to switch between visible buffers
-			(windmove-default-keybindings)
+    (use-package windmove
+      ;; default keybindings are S-s-<direction>, but super doesn't get past GNOME shell
+      :bind
+      (("C-S-<left>" . windmove-swap-states-left)
+       ("C-S-<right>" . windmove-swap-states-right)
+       ("C-S-<up>" . windmove-swap-states-up)
+       ("C-S-<down>" . windmove-swap-states-down))
+      :config
+      ;; use shift + arrow keys to switch between visible buffers
+      (windmove-default-keybindings)
 
-			;; Make windmove work in org-mode.
-			(add-hook 'org-shiftup-final-hook 'windmove-up)
-			(add-hook 'org-shiftleft-final-hook 'windmove-left)
-			(add-hook 'org-shiftdown-final-hook 'windmove-down)
-			(add-hook 'org-shiftright-final-hook 'windmove-right)
+      ;; Make windmove work in org-mode.
+      (add-hook 'org-shiftup-final-hook 'windmove-up)
+      (add-hook 'org-shiftleft-final-hook 'windmove-left)
+      (add-hook 'org-shiftdown-final-hook 'windmove-down)
+      (add-hook 'org-shiftright-final-hook 'windmove-right)
 
-			(add-hook 'org-shiftcontrolup-final-hook 'windmove-swap-states-up)
-			(add-hook 'org-shiftcontrolleft-final-hook 'windmove-swap-states-left)
-			(add-hook 'org-shiftcontroldown-final-hook 'windmove-swap-states-down)
-			(add-hook 'org-shiftcontrolright-final-hook 'windmove-swap-states-right))
+      (add-hook 'org-shiftcontrolup-final-hook 'windmove-swap-states-up)
+      (add-hook 'org-shiftcontrolleft-final-hook 'windmove-swap-states-left)
+      (add-hook 'org-shiftcontroldown-final-hook 'windmove-swap-states-down)
+      (add-hook 'org-shiftcontrolright-final-hook 'windmove-swap-states-right))
   #+end_src
 ** Yes/No Question Configuration
    #+begin_src emacs-lisp
@@ -410,12 +410,12 @@ RSS reader using an org-mode file for configuration.
 * Hydra
 ** Binding
   #+begin_src emacs-lisp
-		(use-package hydra
-			:bind
-			(("C-x t" . hydra-tab-bar/body)
-			 ("C-c l" . hydra-lsp/body)
-			 ("C-c p" . hydra-projectile/body)
-			 ("C-x w" . hydra-windmove/body)))
+    (use-package hydra
+      :bind
+      (("C-x t" . hydra-tab-bar/body)
+       ("C-c l" . hydra-lsp/body)
+       ("C-c p" . hydra-projectile/body)
+       ("C-x w" . hydra-windmove/body)))
   #+end_src
 ** hydra-lsp
 Hydra bindings for language server commands.
@@ -479,59 +479,59 @@ Hydra bindings for language server commands.
 ** hydra-tab-bar
 Hydra bindings for managing tab-bar-mode in emacs 27.
    #+begin_src emacs-lisp
-		 (defhydra hydra-tab-bar (:color amaranth)
-			 "Tab Bar Operations"
-			 ("t" tab-new "Create a new tab" :column "Creation")
-			 ("d" dired-other-tab "Open Dired in another tab")
-			 ("f" find-file-other-tab "Find file in another tab")
-			 ("0" tab-close "Close current tab")
-			 ("m" tab-move "Move current tab" :column "Management")
-			 ("r" tab-rename "Rename Tab")
-			 ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
-			 ("l" tab-next "Next Tab")
-			 ("j" tab-previous "Previous Tab")
-			 ("q" nil "exit" :color blue))
+     (defhydra hydra-tab-bar (:color amaranth)
+       "Tab Bar Operations"
+       ("t" tab-new "Create a new tab" :column "Creation")
+       ("d" dired-other-tab "Open Dired in another tab")
+       ("f" find-file-other-tab "Find file in another tab")
+       ("0" tab-close "Close current tab")
+       ("m" tab-move "Move current tab" :column "Management")
+       ("r" tab-rename "Rename Tab")
+       ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
+       ("l" tab-next "Next Tab")
+       ("j" tab-previous "Previous Tab")
+       ("q" nil "exit" :color blue))
    #+end_src
 ** hydra-windmove
 Hydra bindings for moving windows with windmove.
-	 #+begin_src emacs-lisp
-		 (defhydra hydra-windmove (:color amaranth)
-			 "Windmove Operations"
-			 ("<left>" windmove-left "left" :column "Change window")
-			 ("<right>" windmove-right "right")
-			 ("<up>" windmove-up "up")
-			 ("<down>" windmove-down "down")
+   #+begin_src emacs-lisp
+     (defhydra hydra-windmove (:color amaranth)
+       "Windmove Operations"
+       ("<left>" windmove-left "left" :column "Change window")
+       ("<right>" windmove-right "right")
+       ("<up>" windmove-up "up")
+       ("<down>" windmove-down "down")
 
-			 ("C-<left>" windmove-swap-states-left "move left" :column "Move window")
-			 ("C-<right>" windmove-swap-states-right "move right")
-			 ("C-<up>" windmove-swap-states-up "move up")
-			 ("C-<down>" windmove-swap-states-down "move down")
+       ("C-<left>" windmove-swap-states-left "move left" :column "Move window")
+       ("C-<right>" windmove-swap-states-right "move right")
+       ("C-<up>" windmove-swap-states-up "move up")
+       ("C-<down>" windmove-swap-states-down "move down")
 
-			 ("q" nil "exit" :color blue))
-	 #+end_src
+       ("q" nil "exit" :color blue))
+   #+end_src
 * Orgmode
   #+begin_src emacs-lisp
-		;; bullets instead of asterisks
-		(use-package org-bullets
-			:hook (org-mode . org-bullets-mode))
+    ;; bullets instead of asterisks
+    (use-package org-bullets
+      :hook (org-mode . org-bullets-mode))
 
-		;; org src blocks act more like the major mode
-		(setq org-src-fontify-natively t)
-		(setq org-src-tab-acts-natively t)
+    ;; org src blocks act more like the major mode
+    (setq org-src-fontify-natively t)
+    (setq org-src-tab-acts-natively t)
 
-		;; editing source block in same window
-		(setq org-src-window-setup 'current-window)
+    ;; editing source block in same window
+    (setq org-src-window-setup 'current-window)
 
-		;; for the "old-school" <s-<tab> to make src blocks
-		(require 'org-tempo)
-		(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+    ;; for the "old-school" <s-<tab> to make src blocks
+    (require 'org-tempo)
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 
-		;; change tabs from org-mode
-		(with-eval-after-load 'org
-			(define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
+    ;; change tabs from org-mode
+    (with-eval-after-load 'org
+      (define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
 
-		(setq org-support-shift-select t)
-		(setq org-replace-disputed-keys t)
+    (setq org-support-shift-select t)
+    (setq org-replace-disputed-keys t)
   #+end_src
 * AUCTeX
   #+begin_src emacs-lisp
@@ -697,87 +697,77 @@ Currently not doing web development, by my estimation I will need these basic pa
      (use-package tide)
    #+end_src
 * EXWM
-	#+begin_src emacs-lisp
-		;; should exwm be enabled?
-		(setq exwm-enabled (and (eq window-system 'x)
-														(seq-contains command-line-args "--use-exwm")))
+  #+begin_src emacs-lisp
+    ;; should exwm be enabled?
+    (setq exwm-enabled (and (eq window-system 'x)
+                            (seq-contains command-line-args "--use-exwm")))
 
-		(defun exwm-update-class ()
-			(exwm-workspace-rename-buffer exwm-class-name))
+    (use-package exwm
+      :if exwm-enabled
+      :config
+      (setq exwm-workspace-number 1)
 
-		(use-package exwm
-			:config
-			(setq exwm-workspace-number 1)
+      ;; When window "class" updates, use it to set the buffer name
+      (defun exwm-update-class ()
+        (exwm-workspace-rename-buffer exwm-class-name))
+      (add-hook 'exwm-update-class-hook #'exwm-update-class)
 
-			;; When window "class" updates, use it to set the buffer name
-			;; (add-hook 'exwm-update-class-hook #'efs/exwm-update-class)
+      ;; These keys should always pass through to Emacs
+      (setq exwm-input-prefix-keys
+        '(?\C-x
+          ?\C-u
+          ?\C-h
+          ?\M-x
+          ?\M-`
+          ?\M-&
+          ?\M-:
+          ?\C-\M-j  ;; Buffer list
+          ?\C-\ ))  ;; Ctrl+Space
 
-			;; These keys should always pass through to Emacs
-			(setq exwm-input-prefix-keys
-				'(?\C-x
-					?\C-u
-					?\C-h
-					?\M-x
-					?\M-`
-					?\M-&
-					?\M-:
-					?\C-\M-j  ;; Buffer list
-					?\C-\ ))  ;; Ctrl+Space
+      ;; Ctrl+Q will enable the next key to be sent directly
+      (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
 
-			;; Ctrl+Q will enable the next key to be sent directly
-			(define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
+      ;; Set up global key bindings.  These always work, no matter the input state!
+      ;; Keep in mind that changing this list after EXWM initializes has no effect.
+      (setq exwm-input-global-keys
+            `(
+              ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+              ([?\s-r] . exwm-reset)
 
-			;; Set up global key bindings.  These always work, no matter the input state!
-			;; Keep in mind that changing this list after EXWM initializes has no effect.
-			(setq exwm-input-global-keys
-						`(
-							;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
-							([?\s-r] . exwm-reset)
+              ([?\s-/] . (lambda ()
+                           (interactive)
+                           (counsel-linux-app)))
 
-							;; Move between windows
-							;;([s-left] . windmove-left)
-							;;([s-right] . windmove-right)
-							;;([s-up] . windmove-up)
-							;;([s-down] . windmove-down)
+              ;; Switch workspace
+              ;;([?\s-w] . exwm-workspace-switch)
 
-							;; Launch applications via shell command
-							;; ([?\s-&] . (lambda (command)
-							;; 						 (interactive (list (read-shell-command "$ ")))
-							;; 						 (start-process-shell-command command nil command)))
-							([?\s-/] . (lambda ()
-													 (interactive)
-													 (counsel-linux-app)))
+              ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
+              ;; ,@(mapcar (lambda (i)
+              ;;            `(,(kbd (format "s-%d" i)) .
+              ;;              (lambda ()
+              ;;                (interactive)
+              ;;                (exwm-workspace-switch-create ,i))))
+              ;;          (number-sequence 0 9))
+              )))
 
-							;; Switch workspace
-							;;([?\s-w] . exwm-workspace-switch)
+    ;; function to turn on all the exwm stuff
+    (defun enable-exwm ()
+      (exwm-enable)
+      (exwm-init)
 
-							;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
-							;; ,@(mapcar (lambda (i)
-							;; 						`(,(kbd (format "s-%d" i)) .
-							;; 							(lambda ()
-							;; 								(interactive)
-							;; 								(exwm-workspace-switch-create ,i))))
-							;; 					(number-sequence 0 9))
-							)))
+      ;; exwm system tray
+      (require 'exwm-systemtray)
+      (exwm-systemtray-enable)
 
+      ;; ensure screen updates with xrandr will refresh EXWM frames
+      (require 'exwm-randr)
+      (exwm-randr-enable)
 
+      ;; use default super+shift keybindings
+      (windmove-swap-states-default-keybindings)
 
-		;; exwm system tray
-		(require 'exwm-systemtray)
+      ;; remap capsLock to ctrl
+      (start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/Xmodmap"))
 
-		;; Ensure screen updates with xrandr will refresh EXWM frames
-		(require 'exwm-randr)
-
-		(defun enable-exwm ()
-			(exwm-enable)
-			(exwm-init)
-			(exwm-systemtray-enable)
-			(exwm-randr-enable)
-			;; Remap CapsLock to Ctrl
-			(start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/Xmodmap"))
-
-		(if exwm-enabled (enable-exwm) ())
-	#+end_src
-
-	#+RESULTS:
-	: #<process xmodmap>
+    (if exwm-enabled (enable-exwm) ())
+  #+end_src
