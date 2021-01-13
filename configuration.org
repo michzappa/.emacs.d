@@ -17,6 +17,7 @@ blocks.
 - clangd
 - texlive-latex-extra, texlive-extra-utils
 - libpng-dev zlib1g-dev libpoppler-glib-dev libpoppler-private-devm imagemagick
+- nodejs
 ** Other Sources
 - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls.
 - OCaml Language Server:  https://github.com/ocaml/ocaml-lsp
@@ -361,6 +362,156 @@ Packages and configuration related to displaying, editing, and formatting text f
 		 ;; wrap lines at 80 characters
 		 (setq-default fill-column 100)
 	 #+end_src
+* Elfeed RSS Reader
+RSS reader using an org-mode file for configuration.
+	#+begin_src emacs-lisp
+		(use-package elfeed
+			:bind ("C-x w" . elfeed)
+
+			:config
+			(use-package elfeed-org
+				:init
+				(elfeed-org)))
+	#+end_src
+* Nov EPub Reader
+  #+begin_src emacs-lisp
+		;; epub reader mode
+		(use-package nov
+			:config
+			(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
+  #+end_src
+* Hydra
+** Binding
+	#+begin_src emacs-lisp
+		(use-package hydra
+			:bind
+			(("C-x t" . hydra-tab-bar/body)
+			 ("C-c l" . hydra-lsp/body)
+			 ("C-c p" . hydra-projectile/body)))
+	#+end_src
+** hydra-lsp
+Hydra bindings for language server commands.
+	 #+begin_src emacs-lisp
+		 (defhydra hydra-lsp (:color amaranth)
+			 "Language Server Operations"
+
+			 ("f" lsp-format-buffer "format" :column "Buffer")
+			 ("m" lsp-ui-imenu "imenu")
+			 ("x" lsp-execute-code-action "execute action")
+
+			 ("M-r" lsp-restart-workspace "restart" :column "Server")
+			 ("S" lsp-shutdown-workspace "shutdown")
+			 ("M-s" lsp-describe-session "describe session")
+
+			 ("d" lsp-find-declaration "declaration" :column "Symbol")
+			 ("D" lsp-ui-peek-find-definitions "definition")
+			 ("R" lsp-ui-peek-find-references "references")
+			 ("i" lsp-ui-peek-find-implementation "implementation" :column "Symbol")
+			 ("t" lsp-find-type-definition "type")
+			 ("s" lsp-signature-help "signature")
+			 ("o" lsp-describe-thing-at-point "documentation" :column "Symbol")
+			 ("r" lsp-rename "rename")
+			 ("q" nil "exit" :color blue))
+	 #+end_src
+** hydra-projectile
+	 #+begin_src emacs-lisp 
+		 (defhydra hydra-projectile-other-window (:color amaranth)
+			 "projectile-other-window"
+			 ("f"  projectile-find-file-other-window        "file" :column "Find File")
+			 ("g"  projectile-find-file-dwim-other-window   "file dwim")
+			 ("d"  projectile-find-dir-other-window         "dir")
+			 ("b"  projectile-switch-to-buffer-other-window "buffer")
+			 ("q"  nil                                      "cancel" :color blue))
+
+		 (defhydra hydra-projectile (:color amaranth)
+			 "PROJECTILE: %(projectile-project-root)"
+
+			 ("ff" projectile-find-file "file" :column "Find File")
+			 ("s-f"  projectile-find-file-dwim "file dwim")
+			 ("fd"  projectile-find-file-in-directory "file curr dir")
+			 ("r"   projectile-recentf "recent file")
+			 ("d"   projectile-find-dir "dir")
+
+			 ("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
+			 ("i"   projectile-ibuffer "ibuffer")
+			 ("K"   projectile-kill-buffers "kill all buffers")
+
+			 ("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
+			 ("x"   projectile-remove-known-project "remove known project")
+			 ("X"   projectile-cleanup-known-projects "cleanup projects")
+			 ("z"   projectile-cache-current-file "cache current project")
+
+			 ("a"   projectile-ag "ag" :column "Project")
+			 ("P" projectile-switch-project "switch project" :column "Project")
+			 ("p"   treemacs-projectile "treemacs")
+
+			 ("`"   hydra-projectile-other-window/body "other window" :color blue :column "Other")
+			 ("q"   nil "exit" :color blue))
+	 #+end_src
+** hydra-tab-bar
+Hydra bindings for managing tab-bar-mode in emacs 27.
+	 #+begin_src emacs-lisp
+					(defhydra hydra-tab-bar (:color amaranth)
+						"Tab Bar Operations"
+						("t" tab-new "Create a new tab" :column "Creation")
+						("d" dired-other-tab "Open Dired in another tab")
+						("f" find-file-other-tab "Find file in another tab")
+						("0" tab-close "Close current tab")
+						("m" tab-move "Move current tab" :column "Management")
+						("r" tab-rename "Rename Tab")
+						("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
+						("l" tab-next "Next Tab")
+						("j" tab-previous "Previous Tab")
+						("q" nil "exit" :color blue))
+	 #+end_src
+* Orgmode
+  #+begin_src emacs-lisp
+		;; bullets instead of asterisks
+		(use-package org-bullets
+			:hook (org-mode . org-bullets-mode))
+
+		;; org src blocks act more like the major mode
+		(setq org-src-fontify-natively t)
+		(setq org-src-tab-acts-natively t)
+
+		;; editing source block in same window
+		(setq org-src-window-setup 'current-window)
+
+		;; for the "old-school" <s-<tab> to make src blocks
+		(require 'org-tempo)
+
+		(with-eval-after-load 'org
+			(define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
+  #+end_src
+  
+* AUCTeX
+	#+begin_src emacs-lisp
+		(use-package auctex
+			:defer t
+			:config
+				(setq TeX-auto-save t)
+				(setq TeX-parse-self t)
+				(setq TeX-PDF-mode t)
+				(setq-default TeX-master nil)
+
+				(add-hook 'LaTeX-mode-hook 'visual-line-mode)
+				(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+				(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+
+				(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+				(setq reftex-plug-into-AUCTeX t))
+
+		(use-package pdf-tools)
+
+		;; to use pdfview with auctex
+		 (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+				TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+				TeX-source-correlate-start-server t) ;; not sure if last line is neccessary
+
+		 ;; to have the buffer refresh after compilation
+		 (add-hook 'TeX-after-compilation-finished-functions
+						#'TeX-revert-document-buffer)
+	#+end_src
 * Languages and LSP Support
 Packages and configuration related to language major/minor modes and language servers.
 ** LSP Mode
@@ -489,153 +640,10 @@ Needs clangd.
 					(setq sh-basic-offset 2
 					shr-indentation 2)))
   #+end_src
-* Elfeed RSS Reader
-RSS reader using an org-mode file for configuration.
-	#+begin_src emacs-lisp
-		(use-package elfeed
-			:bind ("C-x w" . elfeed)
-
-			:config
-			(use-package elfeed-org
-				:init
-				(elfeed-org)))
-	#+end_src
-* Nov EPub Reader
-  #+begin_src emacs-lisp
-		;; epub reader mode
-		(use-package nov
-			:config
-			(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
-  #+end_src
-* Hydra
-** Binding
-	#+begin_src emacs-lisp
-		(use-package hydra
-			:bind
-			(("C-x t" . hydra-tab-bar/body)
-			 ("C-c l" . hydra-lsp/body)
-			 ("C-c p" . hydra-projectile/body)))
-	#+end_src
-** hydra-lsp
-Hydra bindings for language server commands.
+** Web Dev
+Currently not doing web development, by my estimation I will need these basic packages.
 	 #+begin_src emacs-lisp
-		 (defhydra hydra-lsp (:color amaranth)
-			 "Language Server Operations"
-
-			 ("f" lsp-format-buffer "format" :column "Buffer")
-			 ("m" lsp-ui-imenu "imenu")
-			 ("x" lsp-execute-code-action "execute action")
-
-			 ("M-r" lsp-restart-workspace "restart" :column "Server")
-			 ("S" lsp-shutdown-workspace "shutdown")
-			 ("M-s" lsp-describe-session "describe session")
-
-			 ("d" lsp-find-declaration "declaration" :column "Symbol")
-			 ("D" lsp-ui-peek-find-definitions "definition")
-			 ("R" lsp-ui-peek-find-references "references")
-			 ("i" lsp-ui-peek-find-implementation "implementation" :column "Symbol")
-			 ("t" lsp-find-type-definition "type")
-			 ("s" lsp-signature-help "signature")
-			 ("o" lsp-describe-thing-at-point "documentation" :column "Symbol")
-			 ("r" lsp-rename "rename")
-			 ("q" nil "exit" :color blue))
+		 (use-package web-mode)
+		 (use-package typescript-mode)
+		 (use-package tide)
 	 #+end_src
-** hydra-projectile
-	 #+begin_src emacs-lisp 
-		 (defhydra hydra-projectile-other-window (:color amaranth)
-			 "projectile-other-window"
-			 ("f"  projectile-find-file-other-window        "file" :column "Find File")
-			 ("g"  projectile-find-file-dwim-other-window   "file dwim")
-			 ("d"  projectile-find-dir-other-window         "dir")
-			 ("b"  projectile-switch-to-buffer-other-window "buffer")
-			 ("q"  nil                                      "cancel" :color blue))
-
-		 (defhydra hydra-projectile (:color amaranth)
-			 "PROJECTILE: %(projectile-project-root)"
-
-			 ("ff" projectile-find-file "file" :column "Find File")
-			 ("s-f"  projectile-find-file-dwim "file dwim")
-			 ("fd"  projectile-find-file-in-directory "file curr dir")
-			 ("r"   projectile-recentf "recent file")
-			 ("d"   projectile-find-dir "dir")
-
-			 ("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
-			 ("i"   projectile-ibuffer "ibuffer")
-			 ("K"   projectile-kill-buffers "kill all buffers")
-
-			 ("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
-			 ("x"   projectile-remove-known-project "remove known project")
-			 ("X"   projectile-cleanup-known-projects "cleanup projects")
-			 ("z"   projectile-cache-current-file "cache current project")
-
-			 ("a"   projectile-ag "ag" :column "Project")
-			 ("s-p" projectile-switch-project "switch project" :column "Project")
-			 ("p"   treemacs-projectile "treemacs")
-
-			 ("`"   hydra-projectile-other-window/body "other window" :color blue :column "Other")
-			 ("q"   nil "exit" :color blue))
-	 #+end_src
-** hydra-tab-bar
-Hydra bindings for managing tab-bar-mode in emacs 27.
-	 #+begin_src emacs-lisp
-					(defhydra hydra-tab-bar (:color amaranth)
-						"Tab Bar Operations"
-						("t" tab-new "Create a new tab" :column "Creation")
-						("d" dired-other-tab "Open Dired in another tab")
-						("f" find-file-other-tab "Find file in another tab")
-						("0" tab-close "Close current tab")
-						("m" tab-move "Move current tab" :column "Management")
-						("r" tab-rename "Rename Tab")
-						("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
-						("l" tab-next "Next Tab")
-						("j" tab-previous "Previous Tab")
-						("q" nil "exit" :color blue))
-	 #+end_src
-* Orgmode
-  #+begin_src emacs-lisp
-		;; bullets instead of asterisks
-		(use-package org-bullets
-			:hook (org-mode . org-bullets-mode))
-
-		;; org src blocks act more like the major mode
-		(setq org-src-fontify-natively t)
-		(setq org-src-tab-acts-natively t)
-
-		;; editing source block in same window
-		(setq org-src-window-setup 'current-window)
-
-		;; for the "old-school" <s-<tab> to make src blocks
-		(require 'org-tempo)
-
-		(with-eval-after-load 'org
-			(define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
-  #+end_src
-  
-* AUCTeX
-	#+begin_src emacs-lisp
-		(use-package auctex
-			:defer t
-			:config
-				(setq TeX-auto-save t)
-				(setq TeX-parse-self t)
-				(setq TeX-PDF-mode t)
-				(setq-default TeX-master nil)
-
-				(add-hook 'LaTeX-mode-hook 'visual-line-mode)
-				(add-hook 'LaTeX-mode-hook 'flyspell-mode)
-				(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-
-				(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-				(setq reftex-plug-into-AUCTeX t))
-
-		(use-package pdf-tools)
-
-		;; to use pdfview with auctex
-		 (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-				TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
-				TeX-source-correlate-start-server t) ;; not sure if last line is neccessary
-
-		 ;; to have the buffer refresh after compilation
-		 (add-hook 'TeX-after-compilation-finished-functions
-						#'TeX-revert-document-buffer)
-	#+end_src
