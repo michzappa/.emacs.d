@@ -26,634 +26,640 @@ blocks.
 * Packages Setup
 Setting up the package archives and the lisp to automatically load all my packages.
   #+begin_src emacs-lisp
-		;; setting up the MELPA and other repos
-		(require 'package)
-		(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
-		(add-to-list 'package-archives '("melpa" . "https://stable.melpa.org/packages/") t)
-		(add-to-list 'package-archives '("melpa-unstable" . "https://melpa.org/packages/") t)
-		(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+    ;; setting up the MELPA and other repos
+    (require 'package)
+    (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
+    (add-to-list 'package-archives '("melpa" . "https://stable.melpa.org/packages/") t)
+    (add-to-list 'package-archives '("melpa-unstable" . "https://melpa.org/packages/") t)
+    (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
 
-		(setq package-archive-priorities
-					'(("melpa" . 50)
-						("gnu" . 10)
-						("org" . 10)
-						("melpa-unstable" . 0)))
+    (setq package-archive-priorities
+          '(("melpa" . 50)
+            ("gnu" . 10)
+            ("org" . 10)
+            ("melpa-unstable" . 0)))
 
-		;; install use-package if not installed
-		(when (not (package-installed-p 'use-package))
-			(package-refresh-contents)
-			(package-install 'use-package))
+    ;; install use-package if not installed
+    (when (not (package-installed-p 'use-package))
+      (package-refresh-contents)
+      (package-install 'use-package))
 
-		(unless package-archive-contents
-			(package-refresh-contents))
+    (unless package-archive-contents
+      (package-refresh-contents))
 
-		;; ensure use-package by default
-		(require 'use-package-ensure)
-		(setq use-package-always-ensure t)
+    ;; ensure use-package by default
+    (require 'use-package-ensure)
+    (setq use-package-always-ensure t)
 
-		;; compile packages
-		(use-package auto-compile
-			:config (auto-compile-on-load-mode))
+    ;; compile packages
+    (use-package auto-compile
+      :config (auto-compile-on-load-mode))
 
-		;; use newest version of packages
-		(setq load-prefer-newer t)
+    ;; use newest version of packages
+    (setq load-prefer-newer t)
   #+end_src
 * Personal
 Giving emacs my information.
   #+begin_src emacs-lisp
-		(setq user-emacs-directory "~/.emacs.d/user-dir")
-		(setq custom-file "~/.emacs.d/custom.el")
+    (setq user-emacs-directory "~/.emacs.d/user-dir")
+    (setq custom-file "~/.emacs.d/custom.el")
 
-		(setq user-full-name "Michael Zappa")
-		(setq user-mail-address "zapprich@gmail.com")
+    (setq user-full-name "Michael Zappa")
+    (setq user-mail-address "zapprich@gmail.com")
   #+end_src
 * Misc
 Miscellanious things which might be put somewhere else eventually.
   #+begin_src emacs-lisp
-		;; scroll compilation output in the window
-		(setq compilation-scroll-output t)
+    ;; scroll compilation output in the window
+    (setq compilation-scroll-output t)
 
-		;; minor mode for inserting parens, braces, quotes and the like in pairs.
-		;;turned "<> off for org mode since it makes the shortcut for org blocks difficult."
-		(electric-pair-mode)
-		(add-hook 'org-mode-hook
-							(lambda () (setq-local electric-pair-inhibit-predicate
-																(lambda (c)
-																	(if (eq c ?<)
-																			t
-																		(electric-pair-inhibit-predicate c))))))
+    ;; minor mode for inserting parens, braces, quotes and the like in pairs.
+    ;;turned "<> off for org mode since it makes the shortcut for org blocks difficult."
+    (electric-pair-mode)
+    (add-hook 'org-mode-hook
+              (lambda () (setq-local electric-pair-inhibit-predicate
+                                (lambda (c)
+                                  (if (eq c ?<)
+                                      t
+                                    (electric-pair-inhibit-predicate c))))))
 
-		;; pretty symbols like lambda
-		(global-prettify-symbols-mode t)
+    ;; pretty symbols like lambda
+    (global-prettify-symbols-mode t)
 
-		;; reduce the frequency of garbage collection by making it happen on
-		;; each 50MB of allocated data (the default is on every 0.76MB)
-		(setq gc-cons-threshold 50000000)
+    ;; reduce the frequency of garbage collection by making it happen on
+    ;; each 50MB of allocated data (the default is on every 0.76MB)
+    (setq gc-cons-threshold 50000000)
 
-		;; warn when opening files bigger than 100MB
-		(setq large-file-warning-threshold 100000000)
+    ;; warn when opening files bigger than 100MB
+    (setq large-file-warning-threshold 100000000)
 
-		;; quit Emacs directly even if there are running processes
-		(setq confirm-kill-processes nil)
+    ;; quit Emacs directly even if there are running processes
+    (setq confirm-kill-processes nil)
 
-		;; store all backup and autosave files in the tmp dir
-		(setq backup-directory-alist
-					`((".*" . ,temporary-file-directory)))
-		(setq auto-save-file-name-transforms
-					`((".*" ,temporary-file-directory t)))
+    ;; store all backup and autosave files in the tmp dir
+    (setq backup-directory-alist
+          `((".*" . ,temporary-file-directory)))
+    (setq auto-save-file-name-transforms
+          `((".*" ,temporary-file-directory t)))
 
-		;; Add color formatting to *compilation* buffer
-		(add-hook 'compilation-filter-hook
-							(lambda () (ansi-color-apply-on-region (point-min) (point-max))))
+    ;; Add color formatting to *compilation* buffer
+    (add-hook 'compilation-filter-hook
+              (lambda () (ansi-color-apply-on-region (point-min) (point-max))))
 
-		(defun sudo ()
-			"Use TRAMP to `sudo' the current buffer"
-			(interactive)
-			(when buffer-file-name
-				(find-alternate-file
-				 (concat "/sudo:root@localhost:"
-								 buffer-file-name))))
+    (defun sudo ()
+      "Use TRAMP to `sudo' the current buffer"
+      (interactive)
+      (when buffer-file-name
+        (find-alternate-file
+         (concat "/sudo:root@localhost:"
+                 buffer-file-name))))
   #+end_src
 * User Interface
 Packages and configuration related to modifying the user-interface.
 ** all-the-icons
   #+begin_src emacs-lisp
-		;; font for more emacs icons
-		(use-package all-the-icons)	 
+    ;; font for more emacs icons
+    (use-package all-the-icons)  
   #+end_src
 ** minions
   #+begin_src emacs-lisp
-		;; turns off all minor modes in modeline
-		(use-package minions
-			:config
-			(setq minions-mode-line-lighter ""
-			minions-mode-line-delimiters '("" . ""))
-			(minions-mode 1))
+    ;; turns off all minor modes in modeline
+    (use-package minions
+      :config
+      (setq minions-mode-line-lighter ""
+      minions-mode-line-delimiters '("" . ""))
+      (minions-mode 1))
   #+end_src
 ** Startup Configuration
   #+begin_src emacs-lisp
-		;; scratch screen
-		(setq inhibit-startup-screen t)
-		(setq initial-scratch-message "")
+    ;; scratch screen
+    (setq inhibit-startup-screen t)
+    (setq initial-scratch-message "")
 
-		;; hecking bell
-		(setq ring-bell-function 'ignore)
+    ;; hecking bell
+    (setq ring-bell-function 'ignore)
 
-		;; shallow tabs
-		(setq-default tab-width 2)
+    ;; shallow tabs
+    (setq-default tab-width 2)
 
-		;; tab mode
-		(tab-bar-mode)
+    ;; tab mode
+    (tab-bar-mode)
 
-		;; turn off things
-		;;(menu-bar-mode -1)
-		(toggle-scroll-bar -1)
-		(tool-bar-mode -1)
-		(blink-cursor-mode -1)
+    ;; turn off things
+    ;;(menu-bar-mode -1)
+    (toggle-scroll-bar -1)
+    (tool-bar-mode -1)
+    (blink-cursor-mode -1)
 
-		;; initial frame maximized
-		(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+    ;; initial frame maximized
+    (add-to-list 'initial-frame-alist '(fullscreen . maximized))
   #+end_src 
 ** Theme Configuration
   #+begin_src emacs-lisp
-		;; ;; nord-theme, doesn't have tab-bar support yet
-		;; (use-package nord-theme
-		;; 	:config
-		;; 	(load-theme 'nord t))
+    ;; ;; nord-theme, doesn't have tab-bar support yet
+    ;; (use-package nord-theme
+    ;;  :config
+    ;;  (load-theme 'nord t))
 
-		;; dracula-theme, which has tab-bar support
-		(use-package dracula-theme
-			:config
-			(load-theme 'dracula t))
+    ;; dracula-theme, which has tab-bar support
+    (use-package dracula-theme
+      :config
+      (load-theme 'dracula t))
   #+end_src
 ** Frames Configuration
   #+begin_src emacs-lisp
-		;;more useful frame title, that show either a file or a
-		;; buffer name (if the buffer isn't visiting a file)
-		(setq frame-title-format '((:eval (projectile-project-name))))
+    ;;more useful frame title, that show either a file or a
+    ;; buffer name (if the buffer isn't visiting a file)
+    (setq frame-title-format '((:eval (projectile-project-name))))
 
-		;; line numbers, column number, size indication
-		(global-display-line-numbers-mode)
-		(line-number-mode t)
-		(column-number-mode t)
-		(size-indication-mode t)
+    ;; line numbers, column number, size indication
+    (global-display-line-numbers-mode)
+    (line-number-mode t)
+    (column-number-mode t)
+    (size-indication-mode t)
   #+end_src
 * Mouse and Keys
 Mouse and keyboard settings which don't belong to any specific package.
   #+begin_src emacs-lisp
-		;; scrolling
-		(setq scroll-margin 0
-					scroll-conservatively 100000
-					scroll-preserve-screen-position 1)
+    ;; scrolling
+    (setq scroll-margin 0
+          scroll-conservatively 100000
+          scroll-preserve-screen-position 1)
 
-		;; change font size binding
-		(global-set-key (kbd "C-+") 'text-scale-increase)
-		(global-set-key (kbd "C--") 'text-scale-decrease)
+    ;; change font size binding
+    (global-set-key (kbd "C-+") 'text-scale-increase)
+    (global-set-key (kbd "C--") 'text-scale-decrease)
 
-		;; keybinding to reload configuration
-		(global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
+    ;; keybinding to reload configuration
+    (global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
 
-		;; keybinding to open configuration file (this file)
-		(global-set-key (kbd "C-c n") (lambda ()  (interactive) (find-file "~/.emacs.d/configuration.org")))
+    ;; keybinding to open configuration file (this file)
+    (global-set-key (kbd "C-c n") (lambda ()  (interactive) (find-file "~/.emacs.d/configuration.org")))
 
-		;; assume I want to close current buffer with ""C-x k""
-		(global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
+    ;; assume I want to close current buffer with ""C-x k""
+    (global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
 
-		;; function for toggling comments
-		(defun comment-or-uncomment-region-or-line ()
-				"Comments or uncomments the region or the current line if there's no active region."
-				(interactive)
-				(let (beg end)
-						(if (region-active-p)
-								(setq beg (region-beginning) end (region-end))
-								(setq beg (line-beginning-position) end (line-end-position)))
-						(comment-or-uncomment-region beg end)
-						(forward-line)))
+    ;; function for toggling comments
+    (defun comment-or-uncomment-region-or-line ()
+        "Comments or uncomments the region or the current line if there's no active region."
+        (interactive)
+        (let (beg end)
+            (if (region-active-p)
+                (setq beg (region-beginning) end (region-end))
+                (setq beg (line-beginning-position) end (line-end-position)))
+            (comment-or-uncomment-region beg end)
+            (forward-line)))
 
-		;; binding toggle-comment to "C-/" for consistency with other editors
-		(global-set-key (kbd "C-/") 'comment-or-uncomment-region-or-line)
+    ;; binding toggle-comment to "C-/" for consistency with other editors
+    (global-set-key (kbd "C-/") 'comment-or-uncomment-region-or-line)
 
-		;; replacing keybinding for undo as it is "C-/" by default
-		(global-set-key (kbd "C-.") 'undo)
+    ;; replacing keybinding for undo as it is "C-/" by default
+    (global-set-key (kbd "C-.") 'undo)
   #+end_src
 * User Interaction
 Packages and configuration related to user interaction.
 ** avy
   #+begin_src emacs-lisp
-		;skip around the screen
-		(use-package avy
-			:init
-			(global-set-key (kbd "C-;") 'avy-goto-char-2))
+    ;skip around the screen
+    (use-package avy
+      :init
+      (global-set-key (kbd "C-;") 'avy-goto-char-2))
   #+end_src
 ** counsel
   #+begin_src emacs-lisp
-		;; autocomplete interface for search
-		(use-package counsel
-			:bind
-			(("C-s" . swiper)
-			 ("C-x C-r" . counsel-recentf))
-			:config 
-			(ivy-mode)
-			(counsel-mode)
-			(use-package ivy-hydra))
+    ;; autocomplete interface for search
+    (use-package counsel
+      :bind
+      (("C-s" . swiper)
+       ("C-x C-r" . counsel-recentf))
+      :config 
+      (ivy-mode)
+      (counsel-mode)
+      (use-package ivy-hydra))
   #+end_src
 ** exec-path-from-shell
   #+begin_src emacs-lisp
-		;; Force Emacs to use shell path
-		(use-package exec-path-from-shell
-			:config
-			(exec-path-from-shell-initialize))
+    ;; Force Emacs to use shell path
+    (use-package exec-path-from-shell
+      :config
+      (exec-path-from-shell-initialize))
   #+end_src
 ** smex
   #+begin_src emacs-lisp
-		;; frequency sorter to integrate with counsel
-		(use-package smex)
+    ;; frequency sorter to integrate with counsel
+    (use-package smex)
   #+end_src
 ** which-key
   #+begin_src emacs-lisp
-		;; shows possible key combinations
-		(use-package which-key
-			:config
-			(which-key-mode))
+    ;; shows possible key combinations
+    (use-package which-key
+      :config
+      (which-key-mode))
   #+end_src
 ** windmove
   #+begin_src emacs-lisp
-		(use-package windmove
-			:config
-			;; use shift + arrow keys to switch between visible buffers
-			(windmove-default-keybindings)
-			;; Make windmove work in org-mode
-			(add-hook 'org-shiftup-final-hook 'windmove-up)
-			(add-hook 'org-shiftleft-final-hook 'windmove-left)
-			(add-hook 'org-shiftdown-final-hook 'windmove-down)
-			(add-hook 'org-shiftright-final-hook 'windmove-right))
+    (use-package windmove
+      :config
+      ;; use shift + arrow keys to switch between visible buffers
+      (windmove-default-keybindings)
+      ;; Make windmove work in org-mode
+      (add-hook 'org-shiftup-final-hook 'windmove-up)
+      (add-hook 'org-shiftleft-final-hook 'windmove-left)
+      (add-hook 'org-shiftdown-final-hook 'windmove-down)
+      (add-hook 'org-shiftright-final-hook 'windmove-right))
   #+end_src
 ** Yes/No Question Configuration
-	 #+begin_src emacs-lisp
-		 ;; enable y/n answers
-		 (fset 'yes-or-no-p 'y-or-n-p)
-	 #+end_src
+   #+begin_src emacs-lisp
+     ;; enable y/n answers
+     (fset 'yes-or-no-p 'y-or-n-p)
+   #+end_src
 * Project Management
 Packages and configuration related to managing projects.
 ** magit
   #+begin_src emacs-lisp
-		;; magit git interface
-		(use-package magit)
+    ;; magit git interface
+    (use-package magit)
   #+end_src
 ** projectile
   #+begin_src emacs-lisp
-		;; project manager
-		(use-package projectile
-			:init
-			(setq projectile-completion-system 'ivy)
-			(setq projectile-project-search-path '("~/Projects"))
-			(use-package ag)
-			(use-package ibuffer-projectile)
-			:config
-			(global-set-key (kbd "C-c p") 'projectile-command-map)
-			(global-set-key (kbd "C-c v")  'projectile-ag)
-			(projectile-mode +1))
+    ;; project manager
+    (use-package projectile
+      :init
+      (setq projectile-completion-system 'ivy)
+      (setq projectile-project-search-path '("~/Projects"))
+      (use-package ag)
+      (use-package ibuffer-projectile)
+      :config
+      (global-set-key (kbd "C-c p") 'projectile-command-map)
+      (global-set-key (kbd "C-c v")  'projectile-ag)
+      (projectile-mode +1))
   #+end_src
 ** treemacs
   #+begin_src emacs-lisp
-		;; sidebar file explorer
-		(use-package treemacs
-			:bind
-			("C-c C-c t" . treemacs)
-			:commands
-			(treemacs-filewatch-mode
-			 treemacs-git-mode
-			 treemacs-follow-mode)
-			:config
-			(add-hook 'treemacs-mode-hook (lambda() (display-line-numbers-mode -1))))
+    ;; sidebar file explorer
+    (use-package treemacs
+      :bind
+      ("C-c C-c t" . treemacs)
+      :commands
+      (treemacs-filewatch-mode
+       treemacs-git-mode
+       treemacs-follow-mode)
+      :config
+      (add-hook 'treemacs-mode-hook (lambda() (display-line-numbers-mode -1))))
 
-		;; integrate git with treemacs
-		(use-package treemacs-magit
-			:after (treemacs magit)
-			:ensure t)
+    ;; integrate git with treemacs
+    (use-package treemacs-magit
+      :after (treemacs magit)
+      :ensure t)
 
-		;; integrate projectile with treemacs
-		(use-package treemacs-projectile
-			:after (treemacs projectile)
-			:ensure t)
+    ;; integrate projectile with treemacs
+    (use-package treemacs-projectile
+      :after (treemacs projectile)
+      :ensure t)
   #+end_src
 * Text Files
 Packages and configuration related to displaying, editing, and formatting text files.
 ** company
  #+begin_src emacs-lisp
-	 ;; company for text-completion
-	 (use-package company
-		 :config
-		 (global-company-mode))
+   ;; company for text-completion
+   (use-package company
+     :config
+     (global-company-mode))
   #+end_src
 ** flycheck
   #+begin_src emacs-lisp
-		;; flycheck for syntax checking
-		(use-package flycheck
-			:config
-			(global-flycheck-mode))
+    ;; flycheck for syntax checking
+    (use-package flycheck
+      :config
+      (global-flycheck-mode))
   #+end_src
 ** hl-line
   #+begin_src emacs-lisp
-		;; highlight the current line
-		(use-package hl-line
-			:config
-			(global-hl-line-mode +1))
+    ;; highlight the current line
+    (use-package hl-line
+      :config
+      (global-hl-line-mode +1))
   #+end_src
 ** paredit
   #+begin_src emacs-lisp
-		(use-package paredit
-			:config
-			(add-hook 'emacs-lisp-mode-hook (lambda () (setq show-paren-style 'expression))))
+    (use-package paredit
+      :config
+      (add-hook 'emacs-lisp-mode-hook (lambda () (setq show-paren-style 'expression))))
   #+end_src
 ** rainbow-delimiters
   #+begin_src emacs-lisp
-	(use-package rainbow-delimiters
-		:config
-		(add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
+  (use-package rainbow-delimiters
+    :config
+    (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
   #+end_src
 ** format-all
-	 #+begin_src emacs-lisp
-		 (use-package format-all
-			 :bind
-			 ("C-c f" . format-all-buffer))
-	 #+end_src
+   #+begin_src emacs-lisp
+     (use-package format-all
+       :bind
+       ("C-c f" . format-all-buffer))
+   #+end_src
 ** Formatting Configuration
-	 #+begin_src emacs-lisp
-		 ;; wraps visual lines
-		 (global-visual-line-mode)
+   #+begin_src emacs-lisp
+     ;; wraps visual lines
+     (global-visual-line-mode)
 
-		 ;; newline at end of file
-		 (setq require-final-newline t)
+     ;; newline at end of file
+     (setq require-final-newline t)
 
-		 ;; wrap lines at 80 characters
-		 (setq-default fill-column 100)
-	 #+end_src
+     ;; wrap lines at 80 characters
+     (setq-default fill-column 100)
+
+     ;; indicate undesireable whitespace
+     (setq-default show-trailing-whitespace 't)
+
+     ; try not to use tab characters ever when formatting code
+     (setq-default indent-tabs-mode nil)
+   #+end_src
 * Elfeed RSS Reader
 RSS reader using an org-mode file for configuration.
-	#+begin_src emacs-lisp
-		(use-package elfeed
-			:bind ("C-x w" . elfeed)
+  #+begin_src emacs-lisp
+    (use-package elfeed
+      :bind ("C-x w" . elfeed)
 
-			:config
-			(use-package elfeed-org
-				:init
-				(elfeed-org)))
-	#+end_src
+      :config
+      (use-package elfeed-org
+        :init
+        (elfeed-org)))
+  #+end_src
 * Nov EPub Reader
   #+begin_src emacs-lisp
-		;; epub reader mode
-		(use-package nov
-			:config
-			(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
-			:hook
-			(nove-mode . visual-line-mode))
+    ;; epub reader mode
+    (use-package nov
+      :config
+      (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+      :hook
+      (nove-mode . visual-line-mode))
   #+end_src
 * Hydra
 ** Binding
-	#+begin_src emacs-lisp
-		(use-package hydra
-			:bind
-			(("C-x t" . hydra-tab-bar/body)
-			 ("C-c l" . hydra-lsp/body)
-			 ("C-c p" . hydra-projectile/body)))
-	#+end_src
+  #+begin_src emacs-lisp
+    (use-package hydra
+      :bind
+      (("C-x t" . hydra-tab-bar/body)
+       ("C-c l" . hydra-lsp/body)
+       ("C-c p" . hydra-projectile/body)))
+  #+end_src
 ** hydra-lsp
 Hydra bindings for language server commands.
-	 #+begin_src emacs-lisp
-		 (defhydra hydra-lsp (:color amaranth)
-			 "Language Server Operations"
+   #+begin_src emacs-lisp
+     (defhydra hydra-lsp (:color amaranth)
+       "Language Server Operations"
 
-			 ("f" lsp-format-buffer "format" :column "Buffer")
-			 ("m" lsp-ui-imenu "imenu")
-			 ("x" lsp-execute-code-action "execute action")
+       ("f" lsp-format-buffer "format" :column "Buffer")
+       ("m" lsp-ui-imenu "imenu")
+       ("x" lsp-execute-code-action "execute action")
 
-			 ("M-r" lsp-restart-workspace "restart" :column "Server")
-			 ("S" lsp-shutdown-workspace "shutdown")
-			 ("M-s" lsp-describe-session "describe session")
+       ("M-r" lsp-restart-workspace "restart" :column "Server")
+       ("S" lsp-shutdown-workspace "shutdown")
+       ("M-s" lsp-describe-session "describe session")
 
-			 ("d" lsp-find-declaration "declaration" :column "Symbol")
-			 ("D" lsp-ui-peek-find-definitions "definition")
-			 ("R" lsp-ui-peek-find-references "references")
-			 ("i" lsp-ui-peek-find-implementation "implementation" :column "Symbol")
-			 ("t" lsp-find-type-definition "type")
-			 ("s" lsp-signature-help "signature")
-			 ("o" lsp-describe-thing-at-point "documentation" :column "Symbol")
-			 ("r" lsp-rename "rename")
-			 ("q" nil "exit" :color blue))
-	 #+end_src
+       ("d" lsp-find-declaration "declaration" :column "Symbol")
+       ("D" lsp-ui-peek-find-definitions "definition")
+       ("R" lsp-ui-peek-find-references "references")
+       ("i" lsp-ui-peek-find-implementation "implementation" :column "Symbol")
+       ("t" lsp-find-type-definition "type")
+       ("s" lsp-signature-help "signature")
+       ("o" lsp-describe-thing-at-point "documentation" :column "Symbol")
+       ("r" lsp-rename "rename")
+       ("q" nil "exit" :color blue))
+   #+end_src
 ** hydra-projectile
-	 #+begin_src emacs-lisp 
-		 (defhydra hydra-projectile-other-window (:color amaranth)
-			 "projectile-other-window"
-			 ("f"  projectile-find-file-other-window        "file" :column "Find File")
-			 ("g"  projectile-find-file-dwim-other-window   "file dwim")
-			 ("d"  projectile-find-dir-other-window         "dir")
-			 ("b"  projectile-switch-to-buffer-other-window "buffer")
-			 ("q"  nil                                      "cancel" :color blue))
+   #+begin_src emacs-lisp 
+     (defhydra hydra-projectile-other-window (:color amaranth)
+       "projectile-other-window"
+       ("f"  projectile-find-file-other-window        "file" :column "Find File")
+       ("g"  projectile-find-file-dwim-other-window   "file dwim")
+       ("d"  projectile-find-dir-other-window         "dir")
+       ("b"  projectile-switch-to-buffer-other-window "buffer")
+       ("q"  nil                                      "cancel" :color blue))
 
-		 (defhydra hydra-projectile (:color amaranth)
-			 "PROJECTILE: %(projectile-project-root)"
+     (defhydra hydra-projectile (:color amaranth)
+       "PROJECTILE: %(projectile-project-root)"
 
-			 ("ff" projectile-find-file "file" :column "Find File")
-			 ("s-f"  projectile-find-file-dwim "file dwim")
-			 ("fd"  projectile-find-file-in-directory "file curr dir")
-			 ("r"   projectile-recentf "recent file")
-			 ("d"   projectile-find-dir "dir")
+       ("ff" projectile-find-file "file" :column "Find File")
+       ("s-f"  projectile-find-file-dwim "file dwim")
+       ("fd"  projectile-find-file-in-directory "file curr dir")
+       ("r"   projectile-recentf "recent file")
+       ("d"   projectile-find-dir "dir")
 
-			 ("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
-			 ("i"   projectile-ibuffer "ibuffer")
-			 ("K"   projectile-kill-buffers "kill all buffers")
+       ("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
+       ("i"   projectile-ibuffer "ibuffer")
+       ("K"   projectile-kill-buffers "kill all buffers")
 
-			 ("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
-			 ("x"   projectile-remove-known-project "remove known project")
-			 ("X"   projectile-cleanup-known-projects "cleanup projects")
-			 ("z"   projectile-cache-current-file "cache current project")
+       ("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
+       ("x"   projectile-remove-known-project "remove known project")
+       ("X"   projectile-cleanup-known-projects "cleanup projects")
+       ("z"   projectile-cache-current-file "cache current project")
 
-			 ("a"   projectile-ag "ag" :column "Project")
-			 ("P" projectile-switch-project "switch project" :column "Project")
-			 ("p"   treemacs-projectile "treemacs")
+       ("a"   projectile-ag "ag" :column "Project")
+       ("P" projectile-switch-project "switch project" :column "Project")
+       ("p"   treemacs-projectile "treemacs")
 
-			 ("`"   hydra-projectile-other-window/body "other window" :color blue :column "Other")
-			 ("q"   nil "exit" :color blue))
-	 #+end_src
+       ("`"   hydra-projectile-other-window/body "other window" :color blue :column "Other")
+       ("q"   nil "exit" :color blue))
+   #+end_src
 ** hydra-tab-bar
 Hydra bindings for managing tab-bar-mode in emacs 27.
-	 #+begin_src emacs-lisp
-					(defhydra hydra-tab-bar (:color amaranth)
-						"Tab Bar Operations"
-						("t" tab-new "Create a new tab" :column "Creation")
-						("d" dired-other-tab "Open Dired in another tab")
-						("f" find-file-other-tab "Find file in another tab")
-						("0" tab-close "Close current tab")
-						("m" tab-move "Move current tab" :column "Management")
-						("r" tab-rename "Rename Tab")
-						("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
-						("l" tab-next "Next Tab")
-						("j" tab-previous "Previous Tab")
-						("q" nil "exit" :color blue))
-	 #+end_src
+   #+begin_src emacs-lisp
+          (defhydra hydra-tab-bar (:color amaranth)
+            "Tab Bar Operations"
+            ("t" tab-new "Create a new tab" :column "Creation")
+            ("d" dired-other-tab "Open Dired in another tab")
+            ("f" find-file-other-tab "Find file in another tab")
+            ("0" tab-close "Close current tab")
+            ("m" tab-move "Move current tab" :column "Management")
+            ("r" tab-rename "Rename Tab")
+            ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
+            ("l" tab-next "Next Tab")
+            ("j" tab-previous "Previous Tab")
+            ("q" nil "exit" :color blue))
+   #+end_src
 * Orgmode
   #+begin_src emacs-lisp
-		;; bullets instead of asterisks
-		(use-package org-bullets
-			:hook (org-mode . org-bullets-mode))
+    ;; bullets instead of asterisks
+    (use-package org-bullets
+      :hook (org-mode . org-bullets-mode))
 
-		;; org src blocks act more like the major mode
-		(setq org-src-fontify-natively t)
-		(setq org-src-tab-acts-natively t)
+    ;; org src blocks act more like the major mode
+    (setq org-src-fontify-natively t)
+    (setq org-src-tab-acts-natively t)
 
-		;; editing source block in same window
-		(setq org-src-window-setup 'current-window)
+    ;; editing source block in same window
+    (setq org-src-window-setup 'current-window)
 
-		;; for the "old-school" <s-<tab> to make src blocks
-		(require 'org-tempo)
+    ;; for the "old-school" <s-<tab> to make src blocks
+    (require 'org-tempo)
 
-		(with-eval-after-load 'org
-			(define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
+    (with-eval-after-load 'org
+      (define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
   #+end_src
   
 * AUCTeX
-	#+begin_src emacs-lisp
-		(use-package auctex
-			:defer t
-			:config
-				(setq TeX-auto-save t)
-				(setq TeX-parse-self t)
-				(setq TeX-PDF-mode t)
-				(setq-default TeX-master nil)
+  #+begin_src emacs-lisp
+    (use-package auctex
+      :defer t
+      :config
+        (setq TeX-auto-save t)
+        (setq TeX-parse-self t)
+        (setq TeX-PDF-mode t)
+        (setq-default TeX-master nil)
 
-				(add-hook 'LaTeX-mode-hook 'visual-line-mode)
-				(add-hook 'LaTeX-mode-hook 'flyspell-mode)
-				(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+        (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+        (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+        (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 
-				(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-				(setq reftex-plug-into-AUCTeX t))
+        (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+        (setq reftex-plug-into-AUCTeX t))
 
-		(use-package pdf-tools)
+    (use-package pdf-tools)
 
-		;; to use pdfview with auctex
-		 (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-				TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
-				TeX-source-correlate-start-server t) ;; not sure if last line is neccessary
+    ;; to use pdfview with auctex
+     (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+        TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+        TeX-source-correlate-start-server t) ;; not sure if last line is neccessary
 
-		 ;; to have the buffer refresh after compilation
-		 (add-hook 'TeX-after-compilation-finished-functions
-						#'TeX-revert-document-buffer)
-	#+end_src
+     ;; to have the buffer refresh after compilation
+     (add-hook 'TeX-after-compilation-finished-functions
+            #'TeX-revert-document-buffer)
+  #+end_src
 * Languages and LSP Support
 Packages and configuration related to language major/minor modes and language servers.
 ** LSP Mode
   #+begin_src emacs-lisp
-		;; lsp-mode plus other recommended packages and configuration
-		(use-package lsp-mode
-			:bind
-			(:map lsp-mode-map
-						(("C-M-b" . lsp-find-implementation)
-						 ("M-RET" . lsp-execute-code-action))))
+    ;; lsp-mode plus other recommended packages and configuration
+    (use-package lsp-mode
+      :bind
+      (:map lsp-mode-map
+            (("C-M-b" . lsp-find-implementation)
+             ("M-RET" . lsp-execute-code-action))))
 
-		;; ui features for lsp-mode
-		(use-package lsp-ui
-			:after lsp-mode
-			:bind
-			("M-i" . lsp-ui-imenu))
+    ;; ui features for lsp-mode
+    (use-package lsp-ui
+      :after lsp-mode
+      :bind
+      ("M-i" . lsp-ui-imenu))
 
-		;; integration for lsp with ivy and treemacs
-		(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
-		(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+    ;; integration for lsp with ivy and treemacs
+    (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+    (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
-		;; completion provider
-		(setq lsp-completion-provider :capf)
-		(setq lsp-completion-enable t)
+    ;; completion provider
+    (setq lsp-completion-provider :capf)
+    (setq lsp-completion-enable t)
 
-		;; debugging mode
-		(use-package dap-mode
-			:config
-			(global-set-key (kbd "<f7>") 'dap-step-in)
-			(global-set-key (kbd "<f8>") 'dap-net)
-			(global-set-key (kbd "<f9>") 'dap-continue)
-			(dap-mode t)
-			(dap-ui-mode t)
-			(dap-tooltip-mode 1)
-			(tooltip-mode 1))
+    ;; debugging mode
+    (use-package dap-mode
+      :config
+      (global-set-key (kbd "<f7>") 'dap-step-in)
+      (global-set-key (kbd "<f8>") 'dap-net)
+      (global-set-key (kbd "<f9>") 'dap-continue)
+      (dap-mode t)
+      (dap-ui-mode t)
+      (dap-tooltip-mode 1)
+      (tooltip-mode 1))
   #+end_src
 ** C
 Needs clangd.
   #+begin_src emacs-lisp
-		(add-hook 'c-mode-hook 'lsp)
+    (add-hook 'c-mode-hook 'lsp)
   #+end_src
 ** Elisp
   #+begin_src emacs-lisp
-		;; Help for emacs-lisp functions
-		(use-package eldoc
-			:config
-			(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-			(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-			(add-hook 'ielm-mode-hook 'turn-on-eldoc-mode))
+    ;; Help for emacs-lisp functions
+    (use-package eldoc
+      :config
+      (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+      (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+      (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode))
   #+end_src
 ** Elixir
   #+begin_src emacs-lisp
-		;; Elixir major mode hooked up to lsp
-		(use-package elixir-mode
-			:hook (elixir-mode . lsp))
+    ;; Elixir major mode hooked up to lsp
+    (use-package elixir-mode
+      :hook (elixir-mode . lsp))
 
-		;; minor mode for mix commands
-		(use-package mix
-			:hook (elixir-mode mix-minor-mode))
+    ;; minor mode for mix commands
+    (use-package mix
+      :hook (elixir-mode mix-minor-mode))
   #+end_src
 ** OCaml
   #+begin_src emacs-lisp
-		;; OCaml major mode
-		(use-package tuareg
-			:hook (tuareg-mode . lsp))
+    ;; OCaml major mode
+    (use-package tuareg
+      :hook (tuareg-mode . lsp))
 
-		;; dune integration, don't know how to use
-		(use-package dune)
+    ;; dune integration, don't know how to use
+    (use-package dune)
   #+end_src
 ** Java
   #+begin_src emacs-lisp
-		(use-package lsp-java
-			:hook (java-mode . lsp))
+    (use-package lsp-java
+      :hook (java-mode . lsp))
 
-		;; debugging
-		(require 'dap-java)
+    ;; debugging
+    (require 'dap-java)
 
-		;; function to build jar from maven project
-		(defun mvn-jar ()
-			(interactive)
-			(mvn "package"))
+    ;; function to build jar from maven project
+    (defun mvn-jar ()
+      (interactive)
+      (mvn "package"))
 
-		;; function to run the main class defined for the maven project
-		(defun mvn-run ()
-			(interactive)
-			(mvn "compile exec:java"))
+    ;; function to run the main class defined for the maven project
+    (defun mvn-run ()
+      (interactive)
+      (mvn "compile exec:java"))
 
-		;; function to test all test classes
-		(defun mvn-test-all ()
-			(interactive)
-			(mvn "test"))
+    ;; function to test all test classes
+    (defun mvn-test-all ()
+      (interactive)
+      (mvn "test"))
 
-			;; maven minor mode
-			(use-package mvn
-				:bind
-				(:map java-mode-map
-							(("C-c M" . mvn)
-							 ("C-c m r" . mvn-run)
-							 ("C-c m c" . mvn-compile)
-							 ("C-c m T" . mvn-test) ;; asks for specific test class to run
-							 ("C-c m t" . mvn-test-all)
-							 ("C-c m j" . mvn-jar))))
+      ;; maven minor mode
+      (use-package mvn
+        :bind
+        (:map java-mode-map
+              (("C-c M" . mvn)
+               ("C-c m r" . mvn-run)
+               ("C-c m c" . mvn-compile)
+               ("C-c m T" . mvn-test) ;; asks for specific test class to run
+               ("C-c m t" . mvn-test-all)
+               ("C-c m j" . mvn-jar))))
    #+end_src
 ** Python
   #+begin_src emacs-lisp
-		(use-package python-mode
-			:config
-			(add-hook 'python-mode-hook 'lsp))
+    (use-package python-mode
+      :config
+      (add-hook 'python-mode-hook 'lsp))
   #+end_src
 ** Rust
   #+begin_src emacs-lisp
-		;; hook up rust-mode with the language server
-		(use-package rust-mode
-			:config
-			(setq rust-format-on-save t)
-			:hook (rust-mode . lsp))
+    ;; hook up rust-mode with the language server
+    (use-package rust-mode
+      :config
+      (setq rust-format-on-save t)
+      :hook (rust-mode . lsp))
 
-		;; cargo minor mode for cargo keybindings
-		(use-package cargo
-			:hook (rust-mode . cargo-minor-mode))
+    ;; cargo minor mode for cargo keybindings
+    (use-package cargo
+      :hook (rust-mode . cargo-minor-mode))
   #+end_src
 ** sh
   #+begin_src emacs-lisp
-		(add-hook 'shell-mode-hook
-				(lambda ()
-					(setq sh-basic-offset 2
-					shr-indentation 2)))
+    (add-hook 'shell-mode-hook
+        (lambda ()
+          (setq sh-basic-offset 2
+          shr-indentation 2)))
   #+end_src
 ** Web Dev
 Currently not doing web development, by my estimation I will need these basic packages.
-	 #+begin_src emacs-lisp
-		 (use-package web-mode)
-		 (use-package typescript-mode)
-		 (use-package tide)
-	 #+end_src
+   #+begin_src emacs-lisp
+     (use-package web-mode)
+     (use-package typescript-mode)
+     (use-package tide)
+   #+end_src
