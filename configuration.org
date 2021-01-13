@@ -20,6 +20,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - texlive-latex-extra, texlive-extra-utils (AUCTeX)
 - libpng-dev zlib1g-dev libpoppler-glib-dev libpoppler-private-devm imagemagick (pdf-tools)
 - nodejs (tide-mode)
+- playerctl (exwm)
 ** Other Sources
 - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls.
 - OCaml Language Server:  https://github.com/ocaml/ocaml-lsp
@@ -708,27 +709,28 @@ Currently not doing web development, by my estimation I will need these basic pa
 			:config
 			(setq exwm-workspace-number 1)
 
-			;; When window "class" updates, use it to set the buffer name
+			;; when window "class" updates, use it to set the buffer name
 			(defun exwm-update-class ()
 				(exwm-workspace-rename-buffer exwm-class-name))
 			(add-hook 'exwm-update-class-hook #'exwm-update-class)
 
-			;; These keys should always pass through to Emacs
+			;; these keys should always pass through to emacs
 			(setq exwm-input-prefix-keys
 						'(?\C-x
 							?\C-u
 							?\C-h
 							?\C-g
-							?\M-x))
+							?\M-x
+							?\M-!))
 
-			;; Ctrl+Q will enable the next key to be sent directly
+			;; ctrl+q will enable the next key to be sent directly
 			(define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
 
-			;; Set up global key bindings.  These always work, no matter the input state!
-			;; Keep in mind that changing this list after EXWM initializes has no effect.
+			;; set up global key bindings.  these always work, no matter the input state!
+			;; keep in mind that changing this list after EXWM initializes has no effect.
 			(setq exwm-input-global-keys
 						`(
-							;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+							;; reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
 							([?\s-r] . exwm-reset)
 
 							;; general app launcher
@@ -741,16 +743,23 @@ Currently not doing web development, by my estimation I will need these basic pa
 													 (interactive)
 													 (shell-command "firefox")))
 
-							;; Switch workspace
+							;; shortcut for eshell
+							([s-<return>] . (lambda ()
+															 (interactive)
+															 (eshell)))
+
+							;; switch workspace
 							;;([?\s-w] . exwm-workspace-switch)
 
-							;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
+							;; 's-N': switch to certain workspace with super (win) plus a number key (0 - 9)
 							;; ,@(mapcar (lambda (i)
 							;;            `(,(kbd (format "s-%d" i)) .
 							;;              (lambda ()
 							;;                (interactive)
 							;;                (exwm-workspace-switch-create ,i))))
 							;;          (number-sequence 0 9))
+
+							;; media keys
 							([XF86AudioLowerVolume] . (lambda ()
 																					(interactive)
 																					(shell-command "amixer -D pulse sset Master 5%-")))
@@ -759,7 +768,19 @@ Currently not doing web development, by my estimation I will need these basic pa
 																					(shell-command "amixer -D pulse sset Master 5%+")))
 							([XF86AudioMute] . (lambda ()
 																	 (interactive)
-																	 (shell-command "amixer -D pulse sset Master toggle"))))))
+																	 (shell-command "amixer -D pulse sset Master toggle")))
+							([XF86AudioPlay] . (lambda ()
+																	 (interactive)
+																	 (shell-command "playerctl play-pause")))
+							([XF86AudioStop] . (lambda ()
+																	 (interactive)
+																	 (shell-command "playerctl stop")))
+							([XF86AudioPrev] . (lambda ()
+																	 (interactive)
+																	 (shell-command "playerctl previous")))
+							([XF86AudioNext] . (lambda ()
+																	 (interactive)
+																	 (shell-command "playerctl next"))))))
 
 			;; function to turn on all the exwm stuff
 			(defun enable-exwm ()
