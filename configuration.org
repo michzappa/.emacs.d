@@ -10,7 +10,8 @@ blocks. Emacs 27.x.
 - TODO hydra? - magit, window-management, multiple-cursors (and then figure out multiple cursors)
 - TODO look into pinning packages? But maybe the package-archive-priorities take care of that.
 - TODO evaluate need for treemacs/actually making it work as desired (opens current project only)
-
+- TODO go through https://github.com/daviwil/dotfiles/blob/master/Emacs.org
+- TODO further exwm configuration by copying from daviwil and customizing.
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag
@@ -390,7 +391,7 @@ Packages and configuration related to displaying, editing, and formatting text f
 RSS reader using an org-mode file for configuration.
   #+begin_src emacs-lisp
     (use-package elfeed
-      :bind ("C-x w" . elfeed)
+      :bind ("C-c w" . elfeed)
 
       :config
       (use-package elfeed-org
@@ -414,7 +415,7 @@ RSS reader using an org-mode file for configuration.
 			(("C-x t" . hydra-tab-bar/body)
 			 ("C-c l" . hydra-lsp/body)
 			 ("C-c p" . hydra-projectile/body)
-			 ("C-c w" . hydra-windmove/body)))
+			 ("C-x w" . hydra-windmove/body)))
   #+end_src
 ** hydra-lsp
 Hydra bindings for language server commands.
@@ -695,3 +696,88 @@ Currently not doing web development, by my estimation I will need these basic pa
      (use-package typescript-mode)
      (use-package tide)
    #+end_src
+* EXWM
+	#+begin_src emacs-lisp
+		;; should exwm be enabled?
+		(setq exwm-enabled (and (eq window-system 'x)
+														(seq-contains command-line-args "--use-exwm")))
+
+		(defun exwm-update-class ()
+			(exwm-workspace-rename-buffer exwm-class-name))
+
+		(use-package exwm
+			:config
+			(setq exwm-workspace-number 1)
+
+			;; When window "class" updates, use it to set the buffer name
+			;; (add-hook 'exwm-update-class-hook #'efs/exwm-update-class)
+
+			;; These keys should always pass through to Emacs
+			(setq exwm-input-prefix-keys
+				'(?\C-x
+					?\C-u
+					?\C-h
+					?\M-x
+					?\M-`
+					?\M-&
+					?\M-:
+					?\C-\M-j  ;; Buffer list
+					?\C-\ ))  ;; Ctrl+Space
+
+			;; Ctrl+Q will enable the next key to be sent directly
+			(define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
+
+			;; Set up global key bindings.  These always work, no matter the input state!
+			;; Keep in mind that changing this list after EXWM initializes has no effect.
+			(setq exwm-input-global-keys
+						`(
+							;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+							([?\s-r] . exwm-reset)
+
+							;; Move between windows
+							;;([s-left] . windmove-left)
+							;;([s-right] . windmove-right)
+							;;([s-up] . windmove-up)
+							;;([s-down] . windmove-down)
+
+							;; Launch applications via shell command
+							;; ([?\s-&] . (lambda (command)
+							;; 						 (interactive (list (read-shell-command "$ ")))
+							;; 						 (start-process-shell-command command nil command)))
+							([?\s-/] . (lambda ()
+													 (interactive)
+													 (counsel-linux-app)))
+
+							;; Switch workspace
+							;;([?\s-w] . exwm-workspace-switch)
+
+							;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
+							;; ,@(mapcar (lambda (i)
+							;; 						`(,(kbd (format "s-%d" i)) .
+							;; 							(lambda ()
+							;; 								(interactive)
+							;; 								(exwm-workspace-switch-create ,i))))
+							;; 					(number-sequence 0 9))
+							)))
+
+
+
+		;; exwm system tray
+		(require 'exwm-systemtray)
+
+		;; Ensure screen updates with xrandr will refresh EXWM frames
+		(require 'exwm-randr)
+
+		(defun enable-exwm ()
+			(exwm-enable)
+			(exwm-init)
+			(exwm-systemtray-enable)
+			(exwm-randr-enable)
+			;; Remap CapsLock to Ctrl
+			(start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/Xmodmap"))
+
+		(if exwm-enabled (enable-exwm) ())
+	#+end_src
+
+	#+RESULTS:
+	: #<process xmodmap>
