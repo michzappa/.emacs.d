@@ -2,12 +2,12 @@
 #+DESCRIPTION: My literate emacs configuration using org-mode.
 #+AUTHOR: Michael Zappa
 
-init.el uses org-babel-load file to automatically load in the emacs-lisp 
+init.el uses org-babel-load file to automatically load in the emacs-lisp
 blocks.
 
 - TODO add more org config: directory, export to html, pdf, latex from hrs config https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org
+  -Maybe don't need to do this since using AUCTeX. Still want to use org-mode more.
 - TODO hydra? - magit, window-management, multiple-cursors (and then figure out multiple cursors)
-- TODO maybe go through and redo all the src blocks for uniformity? yikes
 - TODO look into pinning packages? But maybe the package-archive-priorities take care of that.
 - TODO evaluate need for treemacs/actually making it work as desired (opens current project only)
 
@@ -120,7 +120,7 @@ Packages and configuration related to modifying the user-interface.
 ** all-the-icons
   #+begin_src emacs-lisp
     ;; font for more emacs icons
-    (use-package all-the-icons)  
+    (use-package all-the-icons)
   #+end_src
 ** minions
   #+begin_src emacs-lisp
@@ -154,7 +154,7 @@ Packages and configuration related to modifying the user-interface.
 
     ;; initial frame maximized
     (add-to-list 'initial-frame-alist '(fullscreen . maximized))
-  #+end_src 
+  #+end_src
 ** Theme Configuration
   #+begin_src emacs-lisp
     ;; ;; nord-theme, doesn't have tab-bar support yet
@@ -233,7 +233,7 @@ Packages and configuration related to user interaction.
       :bind
       (("C-s" . swiper)
        ("C-x C-r" . counsel-recentf))
-      :config 
+      :config
       (ivy-mode)
       (counsel-mode)
       (use-package ivy-hydra))
@@ -372,9 +372,7 @@ Packages and configuration related to displaying, editing, and formatting text f
 
      ;; indicate undesireable whitespace
      (setq-default show-trailing-whitespace 't)
-
-     ; try not to use tab characters ever when formatting code
-     (setq-default indent-tabs-mode nil)
+     (add-hook 'before-save-hook 'delete-trailing-whitespace)
    #+end_src
 * Elfeed RSS Reader
 RSS reader using an org-mode file for configuration.
@@ -430,7 +428,7 @@ Hydra bindings for language server commands.
        ("q" nil "exit" :color blue))
    #+end_src
 ** hydra-projectile
-   #+begin_src emacs-lisp 
+   #+begin_src emacs-lisp
      (defhydra hydra-projectile-other-window (:color amaranth)
        "projectile-other-window"
        ("f"  projectile-find-file-other-window        "file" :column "Find File")
@@ -499,7 +497,7 @@ Hydra bindings for managing tab-bar-mode in emacs 27.
     (with-eval-after-load 'org
       (define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
   #+end_src
-  
+
 * AUCTeX
   #+begin_src emacs-lisp
     (use-package auctex
@@ -520,12 +518,12 @@ Hydra bindings for managing tab-bar-mode in emacs 27.
     (use-package pdf-tools)
 
     ;; to use pdfview with auctex
-     (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+    (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
         TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
         TeX-source-correlate-start-server t) ;; not sure if last line is neccessary
 
-     ;; to have the buffer refresh after compilation
-     (add-hook 'TeX-after-compilation-finished-functions
+    ;; to have the buffer refresh after compilation
+    (add-hook 'TeX-after-compilation-finished-functions
             #'TeX-revert-document-buffer)
   #+end_src
 * Languages and LSP Support
@@ -620,16 +618,16 @@ Needs clangd.
       (interactive)
       (mvn "test"))
 
-      ;; maven minor mode
-      (use-package mvn
-        :bind
-        (:map java-mode-map
-              (("C-c M" . mvn)
-               ("C-c m r" . mvn-run)
-               ("C-c m c" . mvn-compile)
-               ("C-c m T" . mvn-test) ;; asks for specific test class to run
-               ("C-c m t" . mvn-test-all)
-               ("C-c m j" . mvn-jar))))
+    ;; maven minor mode
+    (use-package mvn
+      :bind
+      (:map java-mode-map
+            (("C-c M" . mvn)
+             ("C-c m r" . mvn-run)
+             ("C-c m c" . mvn-compile)
+             ("C-c m T" . mvn-test) ;; asks for specific test class to run
+             ("C-c m t" . mvn-test-all)
+             ("C-c m j" . mvn-jar))))
    #+end_src
 ** Python
   #+begin_src emacs-lisp
