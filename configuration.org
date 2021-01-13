@@ -489,8 +489,8 @@ Hydra bindings for managing tab-bar-mode in emacs 27.
        ("m" tab-move "Move current tab" :column "Management")
        ("r" tab-rename "Rename Tab")
        ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
-       ("l" tab-next "Next Tab")
-       ("j" tab-previous "Previous Tab")
+       ("<right>" tab-next "Next Tab")
+       ("<left>" tab-previous "Previous Tab")
        ("q" nil "exit" :color blue))
    #+end_src
 ** hydra-windmove
@@ -753,13 +753,13 @@ Currently not doing web development, by my estimation I will need these basic pa
 							;;          (number-sequence 0 9))
 							([XF86AudioLowerVolume] . (lambda ()
 																					(interactive)
-																					(shell-command "amixer -D pulse sset Master 5%+")))
+																					(shell-command "amixer -D pulse sset Master 5%-")))
 							([XF86AudioRaiseVolume] . (lambda ()
 																					(interactive)
 																					(shell-command "amixer -D pulse sset Master 5%+")))
 							([XF86AudioMute] . (lambda ()
 																	 (interactive)
-																	 (shell-command "amixer -D pulse sset Master 5%+"))))))
+																	 (shell-command "amixer -D pulse sset Master toggle"))))))
 
 			;; function to turn on all the exwm stuff
 			(defun enable-exwm ()
