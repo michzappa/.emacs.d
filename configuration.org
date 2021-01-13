@@ -3,7 +3,7 @@
 #+AUTHOR: Michael Zappa
 
 init.el uses org-babel-load file to automatically load in the emacs-lisp
-blocks.
+blocks. Emacs 27.x.
 
 - TODO add more org config: directory, export to html, pdf, latex from hrs config https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org
   -Maybe don't need to do this since using AUCTeX. Still want to use org-mode more.
@@ -259,15 +259,27 @@ Packages and configuration related to user interaction.
   #+end_src
 ** windmove
   #+begin_src emacs-lisp
-    (use-package windmove
-      :config
-      ;; use shift + arrow keys to switch between visible buffers
-      (windmove-default-keybindings)
-      ;; Make windmove work in org-mode
-      (add-hook 'org-shiftup-final-hook 'windmove-up)
-      (add-hook 'org-shiftleft-final-hook 'windmove-left)
-      (add-hook 'org-shiftdown-final-hook 'windmove-down)
-      (add-hook 'org-shiftright-final-hook 'windmove-right))
+		(use-package windmove
+			;; default keybindings are S-s-<direction>, but super doesn't get past the window manager (GNOME) on my computer
+			:bind
+			(("C-S-<left>" . windmove-swap-states-left)
+			 ("C-S-<right>" . windmove-swap-states-right)
+			 ("C-S-<up>" . windmove-swap-states-up)
+			 ("C-S-<down>" . windmove-swap-states-down))
+			:config
+			;; use shift + arrow keys to switch between visible buffers
+			(windmove-default-keybindings))
+
+			;; ;; Make windmove work in org-mode. Commenting out to use more org-mode features.
+			;; (add-hook 'org-shiftup-final-hook 'windmove-up)
+			;; (add-hook 'org-shiftleft-final-hook 'windmove-left)
+			;; (add-hook 'org-shiftdown-final-hook 'windmove-down)
+			;; (add-hook 'org-shiftright-final-hook 'windmove-right)
+
+			;; (add-hook 'org-shiftcontrolup-final-hook 'windmove-swap-states-up)
+			;; (add-hook 'org-shiftcontrolleft-final-hook 'windmove-swap-states-left)
+			;; (add-hook 'org-shiftcontroldown-final-hook 'windmove-swap-states-down)
+			;; (add-hook 'org-shiftcontrolright-final-hook 'windmove-swap-states-right)
   #+end_src
 ** Yes/No Question Configuration
    #+begin_src emacs-lisp
@@ -480,22 +492,24 @@ Hydra bindings for managing tab-bar-mode in emacs 27.
    #+end_src
 * Orgmode
   #+begin_src emacs-lisp
-    ;; bullets instead of asterisks
-    (use-package org-bullets
-      :hook (org-mode . org-bullets-mode))
+		;; bullets instead of asterisks
+		(use-package org-bullets
+			:hook (org-mode . org-bullets-mode))
 
-    ;; org src blocks act more like the major mode
-    (setq org-src-fontify-natively t)
-    (setq org-src-tab-acts-natively t)
+		;; org src blocks act more like the major mode
+		(setq org-src-fontify-natively t)
+		(setq org-src-tab-acts-natively t)
 
-    ;; editing source block in same window
-    (setq org-src-window-setup 'current-window)
+		;; editing source block in same window
+		(setq org-src-window-setup 'current-window)
 
-    ;; for the "old-school" <s-<tab> to make src blocks
-    (require 'org-tempo)
+		;; for the "old-school" <s-<tab> to make src blocks
+		(require 'org-tempo)
+		(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 
-    (with-eval-after-load 'org
-      (define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
+		;; change tabs from org-mode
+		(with-eval-after-load 'org
+			(define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
   #+end_src
 
 * AUCTeX
