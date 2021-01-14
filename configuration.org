@@ -13,7 +13,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - TODO go through https://github.com/daviwil/dotfiles/blob/master/Emacs.org
 - TODO further exwm configuration by copying from daviwil and customizing. particularly multiple monitors. why doesn't system tray work?
 - emacs from scratch repo: https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Desktop-01.org
-
+-TODO EXWM DISPLAY JAVA GUI's
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag (projectile-ag)
@@ -139,27 +139,24 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** Startup Configuration
   #+begin_src emacs-lisp
-    ;; scratch screen
-    (setq inhibit-startup-screen t)
-    (setq initial-scratch-message "")
+		;; scratch screen
+		(setq inhibit-startup-screen t)
+		(setq initial-scratch-message "")
 
-    ;; hecking bell
-    (setq ring-bell-function 'ignore)
+		;; hecking bell
+		(setq ring-bell-function 'ignore)
 
-    ;; shallow tabs
-    (setq-default tab-width 2)
+		;; shallow tabs
+		(setq-default tab-width 2)
 
-    ;; tab mode
-    (tab-bar-mode)
+		;; turn off things
+		(menu-bar-mode -1)
+		(toggle-scroll-bar -1)
+		(tool-bar-mode -1)
+		(blink-cursor-mode -1)
 
-    ;; turn off things
-    (menu-bar-mode -1)
-    (toggle-scroll-bar -1)
-    (tool-bar-mode -1)
-    (blink-cursor-mode -1)
-
-    ;; initial frame maximized
-    (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+		;; initial frame maximized
+		(add-to-list 'initial-frame-alist '(fullscreen . maximized))
   #+end_src
 ** Theme Configuration
   #+begin_src emacs-lisp
@@ -184,9 +181,14 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		(line-number-mode t)
 		(column-number-mode t)
 		(size-indication-mode t)
+
+		;; tab mode
+		(tab-bar-mode)
+		(global-set-key (kbd "M-[") 'tab-bar-history-back)
+		(global-set-key (kbd "M-]") 'tab-bar-history-forward)
   #+end_src
 * Mouse and Keys
-	Mouse and keyboard settings which don't belong to any specific package.
+	Mouse and keyboard settings which don't belong to any specific package or function.
   #+begin_src emacs-lisp
 		;; scrolling
 		(setq scroll-margin 0
@@ -206,21 +208,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		;; assume I want to close current buffer with ""C-x k""
 		(global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
 
-		;; function for toggling comments
-		(defun comment-or-uncomment-region-or-line ()
-			"Comments or uncomments the region or the current line if there's no active region."
-			(interactive)
-			(let (beg end)
-				(if (region-active-p)
-						(setq beg (region-beginning) end (region-end))
-					(setq beg (line-beginning-position) end (line-end-position)))
-				(comment-or-uncomment-region beg end)
-				(forward-line)))
-
-		;; binding toggle-comment to "C-/" for consistency with other editors
-		(global-set-key (kbd "C-/") 'comment-or-uncomment-region-or-line)
-
-		;; replacing keybinding for undo as it is "C-/" by default
+		;; replacing keybinding for undo as it is "C-/" by default and I use that for toggling comments.
 		(global-set-key (kbd "C-.") 'undo)
   #+end_src
 * User Interaction
@@ -384,17 +372,31 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
    #+end_src
 ** Formatting Configuration
    #+begin_src emacs-lisp
-     ;; wraps visual lines
-     (global-visual-line-mode)
+		 ;; wraps visual lines
+		 (global-visual-line-mode)
 
-     ;; newline at end of file
-     (setq require-final-newline t)
+		 ;; newline at end of file
+		 (setq require-final-newline t)
 
-     ;; wrap lines at 80 characters
-     (setq-default fill-column 100)
+		 ;; wrap lines at 80 characters
+		 (setq-default fill-column 100)
 
-     ;; delete trailing whitespace when saving.
-     (add-hook 'before-save-hook 'delete-trailing-whitespace)
+		 ;; delete trailing whitespace when saving.
+		 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+		 ;; function for toggling comments
+		 (defun comment-or-uncomment-region-or-line ()
+			 "Comments or uncomments the region or the current line if there's no active region."
+			 (interactive)
+			 (let (beg end)
+				 (if (region-active-p)
+						 (setq beg (region-beginning) end (region-end))
+					 (setq beg (line-beginning-position) end (line-end-position)))
+				 (comment-or-uncomment-region beg end)
+				 (forward-line)))
+
+		 ;; binding toggle-comment to "C-/" for consistency with other editors
+		 (global-set-key (kbd "C-/") 'comment-or-uncomment-region-or-line)
    #+end_src
 * Elfeed RSS Reader
 	RSS reader using an org-mode file for configuration.
