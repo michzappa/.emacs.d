@@ -29,7 +29,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - Python Language Server:  https://github.com/palantir/python-language-server
 - Rust Language Server:  https://github.com/rust-lang/rls
 * Packages Setup
-Setting up the package archives and the lisp to automatically load all my packages.
+	Setting up the package archives and the lisp to automatically load all my packages.
   #+begin_src emacs-lisp
     ;; setting up the MELPA and other repos
     (require 'package)
@@ -65,7 +65,7 @@ Setting up the package archives and the lisp to automatically load all my packag
     (setq load-prefer-newer t)
   #+end_src
 * Personal
-Giving emacs my information.
+	Giving emacs my information.
   #+begin_src emacs-lisp
 		(setq user-emacs-directory "~/.emacs.d/user-dir")
 		(setq custom-file          "~/.emacs.d/custom.el")
@@ -75,7 +75,7 @@ Giving emacs my information.
 		(setq user-mail-address    "zapprich@gmail.com")
   #+end_src
 * Misc
-Miscellanious things which might be put somewhere else eventually.
+	Miscellanious things which might be put somewhere else eventually.
   #+begin_src emacs-lisp
 		;; scroll compilation output in the window
 		(setq compilation-scroll-output t)
@@ -122,7 +122,7 @@ Miscellanious things which might be put somewhere else eventually.
 								 buffer-file-name))))
   #+end_src
 * User Interface
-Packages and configuration related to modifying the user-interface.
+	Packages and configuration related to modifying the user-interface.
 ** all-the-icons
   #+begin_src emacs-lisp
     ;; font for more emacs icons
@@ -186,7 +186,7 @@ Packages and configuration related to modifying the user-interface.
 		(size-indication-mode t)
   #+end_src
 * Mouse and Keys
-Mouse and keyboard settings which don't belong to any specific package.
+	Mouse and keyboard settings which don't belong to any specific package.
   #+begin_src emacs-lisp
 		;; scrolling
 		(setq scroll-margin 0
@@ -224,7 +224,7 @@ Mouse and keyboard settings which don't belong to any specific package.
 		(global-set-key (kbd "C-.") 'undo)
   #+end_src
 * User Interaction
-Packages and configuration related to user interaction.
+	Packages and configuration related to user interaction.
 ** avy
   #+begin_src emacs-lisp
     ;skip around the screen
@@ -293,12 +293,12 @@ Packages and configuration related to user interaction.
      (fset 'yes-or-no-p 'y-or-n-p)
    #+end_src
 * VTerm
-Preferred emacs terminal emulator.
+	Preferred emacs terminal emulator.
 	#+begin_src emacs-lisp
 		(use-package vterm)
 	#+end_src
 * Project Management
-Packages and configuration related to managing projects.
+	Packages and configuration related to managing projects.
 ** magit
   #+begin_src emacs-lisp
     ;; magit git interface
@@ -342,7 +342,7 @@ Packages and configuration related to managing projects.
 			:ensure t)
   #+end_src
 * Text Files
-Packages and configuration related to displaying, editing, and formatting text files.
+	Packages and configuration related to displaying, editing, and formatting text files.
 ** company
  #+begin_src emacs-lisp
    ;; company for text-completion
@@ -397,7 +397,7 @@ Packages and configuration related to displaying, editing, and formatting text f
      (add-hook 'before-save-hook 'delete-trailing-whitespace)
    #+end_src
 * Elfeed RSS Reader
-RSS reader using an org-mode file for configuration.
+	RSS reader using an org-mode file for configuration.
   #+begin_src emacs-lisp
     (use-package elfeed
       :bind ("C-c w" . elfeed)
@@ -408,6 +408,7 @@ RSS reader using an org-mode file for configuration.
         (elfeed-org)))
   #+end_src
 * Nov EPub Reader
+	EPub reader mode.
   #+begin_src emacs-lisp
     ;; epub reader mode
     (use-package nov
@@ -417,7 +418,9 @@ RSS reader using an org-mode file for configuration.
       (nove-mode . visual-line-mode))
   #+end_src
 * Hydra
+	Hydra provides the ability to create a keybinding menu to reduce redundant keypresses.
 ** Binding
+	 Binding my hydras' heads.
   #+begin_src emacs-lisp
     (use-package hydra
       :bind
@@ -427,7 +430,7 @@ RSS reader using an org-mode file for configuration.
        ("C-x w" . hydra-windmove/body)))
   #+end_src
 ** hydra-lsp
-Hydra bindings for language server commands.
+	 Hydra bindings for language server commands.
    #+begin_src emacs-lisp
      (defhydra hydra-lsp (:color amaranth)
        "Language Server Operations"
@@ -451,6 +454,7 @@ Hydra bindings for language server commands.
        ("q" nil "exit" :color blue))
    #+end_src
 ** hydra-projectile
+	 Hydra bindings for using projectile to manage projects.
    #+begin_src emacs-lisp
      (defhydra hydra-projectile-other-window (:color amaranth)
        "projectile-other-window"
@@ -486,7 +490,7 @@ Hydra bindings for language server commands.
        ("q"   nil "exit" :color blue))
    #+end_src
 ** hydra-tab-bar
-Hydra bindings for managing tab-bar-mode in emacs 27.
+	 Hydra bindings for managing tab-bar-mode in emacs 27.
    #+begin_src emacs-lisp
      (defhydra hydra-tab-bar (:color amaranth)
        "Tab Bar Operations"
@@ -502,7 +506,7 @@ Hydra bindings for managing tab-bar-mode in emacs 27.
        ("q" nil "exit" :color blue))
    #+end_src
 ** hydra-windmove
-Hydra bindings for moving windows with windmove.
+	 Hydra bindings for moving windows with windmove.
    #+begin_src emacs-lisp
      (defhydra hydra-windmove (:color amaranth)
        "Windmove Operations"
@@ -519,6 +523,7 @@ Hydra bindings for moving windows with windmove.
        ("q" nil "exit" :color blue))
    #+end_src
 * Orgmode
+	Configuration for the majestic org-mode.
   #+begin_src emacs-lisp
     ;; bullets instead of asterisks
     (use-package org-bullets
@@ -543,6 +548,7 @@ Hydra bindings for moving windows with windmove.
     (setq org-replace-disputed-keys t)
   #+end_src
 * AUCTeX
+	LaTeX editing enhancements.
   #+begin_src emacs-lisp
 		(use-package auctex
 			:defer t
@@ -552,29 +558,30 @@ Hydra bindings for moving windows with windmove.
 						TeX-PDF-mode t)
 			(setq-default TeX-master nil)
 
+			;; formatting mode hooks
 			(add-hook 'LaTeX-mode-hook 'visual-line-mode)
 			(add-hook 'LaTeX-mode-hook 'flyspell-mode)
 			(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 
 			(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-			(setq reftex-plug-into-AUCTeX t))
+			(setq reftex-plug-into-AUCTeX t)
+
+			;; to use pdfview with auctex
+			(setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+						TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+						TeX-source-correlate-start-server t)
+
+			;; overview of all compilation errors
+			(setq TeX-error-overview-open-after-TeX-run t)
+
+			;; to have the buffer refresh after compilation
+			(add-hook 'TeX-after-compilation-finished-functions
+								#'TeX-revert-document-buffer))
 
 		(use-package pdf-tools)
-
-		;; to use pdfview with auctex
-		(setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-					TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
-					TeX-source-correlate-start-server t)
-
-		;; overview of all compilation errors
-		(setq TeX-error-overview-open-after-TeX-run t)
-
-		;; to have the buffer refresh after compilation
-		(add-hook 'TeX-after-compilation-finished-functions
-							#'TeX-revert-document-buffer)
   #+end_src
 * Languages and LSP Support
-Packages and configuration related to language major/minor modes and language servers.
+	Packages and configuration related to language major/minor modes and language servers.
 ** LSP Mode
   #+begin_src emacs-lisp
 		;; lsp-mode plus other recommended packages and configuration
@@ -582,7 +589,11 @@ Packages and configuration related to language major/minor modes and language se
 			:bind
 			(:map lsp-mode-map
 						(("C-M-b" . lsp-find-implementation)
-						 ("M-RET" . lsp-execute-code-action))))
+						 ("M-RET" . lsp-execute-code-action)))
+			:config
+			;; completion provider
+			(setq lsp-completion-provider :capf)
+			(setq lsp-completion-enable t))
 
 		;; ui features for lsp-mode
 		(use-package lsp-ui
@@ -593,10 +604,6 @@ Packages and configuration related to language major/minor modes and language se
 		;; integration for lsp with ivy and treemacs
 		(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 		(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
-
-		;; completion provider
-		(setq lsp-completion-provider :capf)
-		(setq lsp-completion-enable t)
 
 		;; debugging mode
 		(use-package dap-mode
@@ -644,37 +651,40 @@ Needs clangd.
   #+end_src
 ** Java
   #+begin_src emacs-lisp
-    (use-package lsp-java
-      :hook (java-mode . lsp))
+		(use-package lsp-java
+			:hook (java-mode . lsp)
+			:config
+			;; debugging
+			(require 'dap-java))
 
-    ;; debugging
-    (require 'dap-java)
+		;; function to build jar from maven project
+		(defun mvn-jar ()
+			"Packages the maven project into a jar."
+			(interactive)
+			(mvn "package"))
 
-    ;; function to build jar from maven project
-    (defun mvn-jar ()
-      (interactive)
-      (mvn "package"))
+		;; function to run the main class defined for the maven project
+		(defun mvn-run ()
+			"Run the maven project using the exec plugin."
+			(interactive)
+			(mvn "compile exec:java"))
 
-    ;; function to run the main class defined for the maven project
-    (defun mvn-run ()
-      (interactive)
-      (mvn "compile exec:java"))
+		;; function to test all test classes
+		(defun mvn-test-all ()
+			"Run all test classes in the maven project."
+			(interactive)
+			(mvn "test"))
 
-    ;; function to test all test classes
-    (defun mvn-test-all ()
-      (interactive)
-      (mvn "test"))
-
-    ;; maven minor mode
-    (use-package mvn
-      :bind
-      (:map java-mode-map
-            (("C-c M" . mvn)
-             ("C-c m r" . mvn-run)
-             ("C-c m c" . mvn-compile)
-             ("C-c m T" . mvn-test) ;; asks for specific test class to run
-             ("C-c m t" . mvn-test-all)
-             ("C-c m j" . mvn-jar))))
+		;; maven minor mode
+		(use-package mvn
+			:bind
+			(:map java-mode-map
+						(("C-c M" . mvn)
+						 ("C-c m r" . mvn-run)
+						 ("C-c m c" . mvn-compile)
+						 ("C-c m T" . mvn-test) ;; asks for specific test class to run
+						 ("C-c m t" . mvn-test-all)
+						 ("C-c m j" . mvn-jar))))
    #+end_src
 ** Python
   #+begin_src emacs-lisp
@@ -709,118 +719,119 @@ Currently not doing web development, by my estimation I will need these basic pa
      (use-package tide)
    #+end_src
 * EXWM
-Configuration for using emacs as an X window manager.
+	Configuration for using emacs as an X window manager.
   #+begin_src emacs-lisp
-				;; should exwm be enabled?
-				(setq exwm-enabled (and (eq window-system 'x)
-																(seq-contains command-line-args "--use-exwm")))
+		;; should exwm be enabled?
+		(setq exwm-enabled (and (eq window-system 'x)
+														(seq-contains command-line-args "--use-exwm")))
 
-				(use-package exwm
-					:if exwm-enabled
-					:config
-					(setq exwm-workspace-number 1)
+		(use-package exwm
+			:if exwm-enabled
+			:config
+			(setq exwm-workspace-number 1)
 
-					;; when window "class" updates, use it to set the buffer name
-					(defun exwm-update-class ()
-						(exwm-workspace-rename-buffer exwm-class-name))
-					(add-hook 'exwm-update-class-hook #'exwm-update-class)
+			;; when window "class" updates, use it to set the buffer name
+			(defun exwm-update-class ()
+				(exwm-workspace-rename-buffer exwm-class-name))
+			(add-hook 'exwm-update-class-hook #'exwm-update-class)
 
-					;; these keys should always pass through to emacs
-					(setq exwm-input-prefix-keys
-								'(?\C-x
-									?\C-u
-									?\C-h
-									?\C-g
-									?\M-x
-									?\M-!))
+			;; these keys should always pass through to emacs
+			(setq exwm-input-prefix-keys
+						'(?\C-x
+							?\C-u
+							?\C-h
+							?\C-g
+							?\M-x
+							?\M-!))
 
-					;; enable the next key to be sent directly, for things like copy and paste from x windows
-					(define-key exwm-mode-map [?\C-m] 'exwm-input-send-next-key)
+			;; enable the next key to be sent directly, for things like copy and paste from x windows
+			(define-key exwm-mode-map [?\C-m] 'exwm-input-send-next-key)
 
-					;; set up global key bindings.  these always work, no matter the input state!
-					;; keep in mind that changing this list after EXWM initializes has no effect.
-					(setq exwm-input-global-keys
-								`(
-									;; reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
-									([?\s-r] . exwm-reset)
+			;; set up global key bindings.  these always work, no matter the input state!
+			;; keep in mind that changing this list after EXWM initializes has no effect.
+			(setq exwm-input-global-keys
+						`(
+							;; reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+							([?\s-r] . exwm-reset)
 
-									;; general app launcher
-									([?\s-/] . (lambda ()
-															 (interactive)
-															 (counsel-linux-app)))
+							;; general app launcher
+							([?\s-/] . (lambda ()
+													 (interactive)
+													 (counsel-linux-app)))
 
-									;; shortcut for firefox
-									([?\s-x] . (lambda ()
-															 (interactive)
-															 (shell-command "firefox")))
+							;; shortcut for firefox
+							([?\s-x] . (lambda ()
+													 (interactive)
+													 (shell-command "firefox")))
 
-									;; shortcut for terminal emulator
-									([s-return] . (lambda ()
-																	(interactive)
-																	(vterm-other-window)))
+							;; shortcut for terminal emulator
+							([s-return] . (lambda ()
+															(interactive)
+															(vterm-other-window)))
 
-									;; switch workspace
-									;;([?\s-w] . exwm-workspace-switch)
+							;; switch workspace
+							;;([?\s-w] . exwm-workspace-switch)
 
-									;; 's-N': switch to certain workspace with super (win) plus a number key (0 - 9)
-									;; ,@(mapcar (lambda (i)
-									;;            `(,(kbd (format "s-%d" i)) .
-									;;              (lambda ()
-									;;                (interactive)
-									;;                (exwm-workspace-switch-create ,i))))
-									;;          (number-sequence 0 9))
+							;; 's-N': switch to certain workspace with super (win) plus a number key (0 - 9)
+							;; ,@(mapcar (lambda (i)
+							;;            `(,(kbd (format "s-%d" i)) .
+							;;              (lambda ()
+							;;                (interactive)
+							;;                (exwm-workspace-switch-create ,i))))
+							;;          (number-sequence 0 9))
 
-									;; media keys
-									([XF86AudioLowerVolume] . (lambda ()
-																							(interactive)
-																							(shell-command "amixer -D pulse sset Master 5%-")))
-									([XF86AudioRaiseVolume] . (lambda ()
-																							(interactive)
-																							(shell-command "amixer -D pulse sset Master 5%+")))
-									([XF86AudioMute] . (lambda ()
-																			 (interactive)
-																			 (shell-command "amixer -D pulse sset Master toggle")))
-									([XF86AudioPlay] . (lambda ()
-																			 (interactive)
-																			 (shell-command "playerctl play-pause")))
-									([XF86AudioStop] . (lambda ()
-																			 (interactive)
-																			 (shell-command "playerctl stop")))
-									([XF86AudioPrev] . (lambda ()
-																			 (interactive)
-																			 (shell-command "playerctl previous")))
-									([XF86AudioNext] . (lambda ()
-																			 (interactive)
-																			 (shell-command "playerctl next")))
-									([XF86MonBrightnessUp] . (lambda ()
-																			 (interactive)
-																			 (shell-command "light -A 5")))
-									([XF86MonBrightnessDown] . (lambda ()
-																			 (interactive)
-																			 (shell-command "light -U 5"))))))
+							;; media keys
+							([XF86AudioLowerVolume] . (lambda ()
+																					(interactive)
+																					(shell-command "amixer -D pulse sset Master 5%-")))
+							([XF86AudioRaiseVolume] . (lambda ()
+																					(interactive)
+																					(shell-command "amixer -D pulse sset Master 5%+")))
+							([XF86AudioMute] . (lambda ()
+																	 (interactive)
+																	 (shell-command "amixer -D pulse sset Master toggle")))
+							([XF86AudioPlay] . (lambda ()
+																	 (interactive)
+																	 (shell-command "playerctl play-pause")))
+							([XF86AudioStop] . (lambda ()
+																	 (interactive)
+																	 (shell-command "playerctl stop")))
+							([XF86AudioPrev] . (lambda ()
+																	 (interactive)
+																	 (shell-command "playerctl previous")))
+							([XF86AudioNext] . (lambda ()
+																	 (interactive)
+																	 (shell-command "playerctl next")))
+							([XF86MonBrightnessUp] . (lambda ()
+																	 (interactive)
+																	 (shell-command "light -A 5")))
+							([XF86MonBrightnessDown] . (lambda ()
+																	 (interactive)
+																	 (shell-command "light -U 5"))))))
 
-				;; function to turn on all the exwm stuff
-				(defun enable-exwm ()
-					(exwm-enable)
-					(exwm-init)
+		;; function to turn on all the exwm stuff
+		(defun enable-exwm ()
+			"Enables the features of EXWM."
+			(exwm-enable)
+			(exwm-init)
 
-					;; exwm system tray
-					(require 'exwm-systemtray)
-					(exwm-systemtray-enable)
+			;; exwm system tray
+			(require 'exwm-systemtray)
+			(exwm-systemtray-enable)
 
-					;; ensure screen updates with xrandr will refresh EXWM frames
-					(require 'exwm-randr)
-					(exwm-randr-enable)
+			;; ensure screen updates with xrandr will refresh EXWM frames
+			(require 'exwm-randr)
+			(exwm-randr-enable)
 
-					;; use default super+shift keybindings
-					(windmove-swap-states-default-keybindings)
+			;; use default super+shift keybindings
+			(windmove-swap-states-default-keybindings)
 
-					;; remap capsLock to ctrl
-					(start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/Xmodmap")
+			;; remap capsLock to ctrl
+			(start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/Xmodmap")
 
-					;; display time
-					(setq display-time-default-load-average nil)
-					(display-time-mode t))
+			;; display time
+			(setq display-time-default-load-average nil)
+			(display-time-mode t))
 
-				(if exwm-enabled (enable-exwm) ())
+		(if exwm-enabled (enable-exwm) ())
   #+end_src
