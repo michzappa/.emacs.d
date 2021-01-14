@@ -14,7 +14,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - TODO further exwm configuration by copying from daviwil and customizing. particularly multiple monitors. why doesn't system tray work?
 - emacs from scratch repo: https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Desktop-01.org
 
-- TODO eshell: proper colors display and remember sudo
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag (projectile-ag)
@@ -22,7 +21,8 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - texlive-latex-extra, texlive-extra-utils (AUCTeX)
 - libpng-dev zlib1g-dev libpoppler-glib-dev libpoppler-private-devm imagemagick (pdf-tools)
 - nodejs (tide-mode)
-- playerctl (exwm)
+- playerctl, light (exwm, user needs to be in video group for light)
+- cmake, libtool-bin, libvterm-dev (vterm)
 ** Other Sources
 - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls.
 - OCaml Language Server:  https://github.com/ocaml/ocaml-lsp
@@ -291,6 +291,11 @@ Packages and configuration related to user interaction.
      ;; enable y/n answers
      (fset 'yes-or-no-p 'y-or-n-p)
    #+end_src
+* VTerm
+Preferred emacs terminal emulator.
+	#+begin_src emacs-lisp
+		(use-package vterm)
+	#+end_src
 * Project Management
 Packages and configuration related to managing projects.
 ** magit
@@ -748,10 +753,10 @@ Configuration for using emacs as an X window manager.
 															 (interactive)
 															 (shell-command "firefox")))
 
-									;; shortcut for eshell
+									;; shortcut for terminal emulator
 									([s-return] . (lambda ()
 																	(interactive)
-																	(eshell)))
+																	(vterm-other-window)))
 
 									;; switch workspace
 									;;([?\s-w] . exwm-workspace-switch)
