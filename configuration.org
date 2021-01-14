@@ -13,6 +13,8 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - TODO go through https://github.com/daviwil/dotfiles/blob/master/Emacs.org
 - TODO further exwm configuration by copying from daviwil and customizing. particularly multiple monitors. why doesn't system tray work?
 - emacs from scratch repo: https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Desktop-01.org
+
+- TODO eshell: proper colors display and remember sudo
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag (projectile-ag)
@@ -703,110 +705,116 @@ Currently not doing web development, by my estimation I will need these basic pa
 * EXWM
 Configuration for using emacs as an X window manager.
   #+begin_src emacs-lisp
-		;; should exwm be enabled?
-		(setq exwm-enabled (and (eq window-system 'x)
-														(seq-contains command-line-args "--use-exwm")))
+				;; should exwm be enabled?
+				(setq exwm-enabled (and (eq window-system 'x)
+																(seq-contains command-line-args "--use-exwm")))
 
-		(use-package exwm
-			:if exwm-enabled
-			:config
-			(setq exwm-workspace-number 1)
+				(use-package exwm
+					:if exwm-enabled
+					:config
+					(setq exwm-workspace-number 1)
 
-			;; when window "class" updates, use it to set the buffer name
-			(defun exwm-update-class ()
-				(exwm-workspace-rename-buffer exwm-class-name))
-			(add-hook 'exwm-update-class-hook #'exwm-update-class)
+					;; when window "class" updates, use it to set the buffer name
+					(defun exwm-update-class ()
+						(exwm-workspace-rename-buffer exwm-class-name))
+					(add-hook 'exwm-update-class-hook #'exwm-update-class)
 
-			;; these keys should always pass through to emacs
-			(setq exwm-input-prefix-keys
-						'(?\C-x
-							?\C-u
-							?\C-h
-							?\C-g
-							?\M-x
-							?\M-!))
+					;; these keys should always pass through to emacs
+					(setq exwm-input-prefix-keys
+								'(?\C-x
+									?\C-u
+									?\C-h
+									?\C-g
+									?\M-x
+									?\M-!))
 
-			;; enable the next key to be sent directly, for things like copy and paste from x windows
-			(define-key exwm-mode-map [?\C-m] 'exwm-input-send-next-key)
+					;; enable the next key to be sent directly, for things like copy and paste from x windows
+					(define-key exwm-mode-map [?\C-m] 'exwm-input-send-next-key)
 
-			;; set up global key bindings.  these always work, no matter the input state!
-			;; keep in mind that changing this list after EXWM initializes has no effect.
-			(setq exwm-input-global-keys
-						`(
-							;; reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
-							([?\s-r] . exwm-reset)
+					;; set up global key bindings.  these always work, no matter the input state!
+					;; keep in mind that changing this list after EXWM initializes has no effect.
+					(setq exwm-input-global-keys
+								`(
+									;; reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+									([?\s-r] . exwm-reset)
 
-							;; general app launcher
-							([?\s-/] . (lambda ()
-													 (interactive)
-													 (counsel-linux-app)))
+									;; general app launcher
+									([?\s-/] . (lambda ()
+															 (interactive)
+															 (counsel-linux-app)))
 
-							;; shortcut for firefox
-							([?\s-x] . (lambda ()
-													 (interactive)
-													 (shell-command "firefox")))
+									;; shortcut for firefox
+									([?\s-x] . (lambda ()
+															 (interactive)
+															 (shell-command "firefox")))
 
-							;; shortcut for eshell
-							([s-return] . (lambda ()
-															(interactive)
-															(eshell)))
+									;; shortcut for eshell
+									([s-return] . (lambda ()
+																	(interactive)
+																	(eshell)))
 
-							;; switch workspace
-							;;([?\s-w] . exwm-workspace-switch)
+									;; switch workspace
+									;;([?\s-w] . exwm-workspace-switch)
 
-							;; 's-N': switch to certain workspace with super (win) plus a number key (0 - 9)
-							;; ,@(mapcar (lambda (i)
-							;;            `(,(kbd (format "s-%d" i)) .
-							;;              (lambda ()
-							;;                (interactive)
-							;;                (exwm-workspace-switch-create ,i))))
-							;;          (number-sequence 0 9))
+									;; 's-N': switch to certain workspace with super (win) plus a number key (0 - 9)
+									;; ,@(mapcar (lambda (i)
+									;;            `(,(kbd (format "s-%d" i)) .
+									;;              (lambda ()
+									;;                (interactive)
+									;;                (exwm-workspace-switch-create ,i))))
+									;;          (number-sequence 0 9))
 
-							;; media keys
-							([XF86AudioLowerVolume] . (lambda ()
-																					(interactive)
-																					(shell-command "amixer -D pulse sset Master 5%-")))
-							([XF86AudioRaiseVolume] . (lambda ()
-																					(interactive)
-																					(shell-command "amixer -D pulse sset Master 5%+")))
-							([XF86AudioMute] . (lambda ()
-																	 (interactive)
-																	 (shell-command "amixer -D pulse sset Master toggle")))
-							([XF86AudioPlay] . (lambda ()
-																	 (interactive)
-																	 (shell-command "playerctl play-pause")))
-							([XF86AudioStop] . (lambda ()
-																	 (interactive)
-																	 (shell-command "playerctl stop")))
-							([XF86AudioPrev] . (lambda ()
-																	 (interactive)
-																	 (shell-command "playerctl previous")))
-							([XF86AudioNext] . (lambda ()
-																	 (interactive)
-																	 (shell-command "playerctl next"))))))
+									;; media keys
+									([XF86AudioLowerVolume] . (lambda ()
+																							(interactive)
+																							(shell-command "amixer -D pulse sset Master 5%-")))
+									([XF86AudioRaiseVolume] . (lambda ()
+																							(interactive)
+																							(shell-command "amixer -D pulse sset Master 5%+")))
+									([XF86AudioMute] . (lambda ()
+																			 (interactive)
+																			 (shell-command "amixer -D pulse sset Master toggle")))
+									([XF86AudioPlay] . (lambda ()
+																			 (interactive)
+																			 (shell-command "playerctl play-pause")))
+									([XF86AudioStop] . (lambda ()
+																			 (interactive)
+																			 (shell-command "playerctl stop")))
+									([XF86AudioPrev] . (lambda ()
+																			 (interactive)
+																			 (shell-command "playerctl previous")))
+									([XF86AudioNext] . (lambda ()
+																			 (interactive)
+																			 (shell-command "playerctl next")))
+									([XF86MonBrightnessUp] . (lambda ()
+																			 (interactive)
+																			 (shell-command "light -A 5")))
+									([XF86MonBrightnessDown] . (lambda ()
+																			 (interactive)
+																			 (shell-command "light -U 5"))))))
 
-		;; function to turn on all the exwm stuff
-		(defun enable-exwm ()
-			(exwm-enable)
-			(exwm-init)
+				;; function to turn on all the exwm stuff
+				(defun enable-exwm ()
+					(exwm-enable)
+					(exwm-init)
 
-			;; exwm system tray
-			(require 'exwm-systemtray)
-			(exwm-systemtray-enable)
+					;; exwm system tray
+					(require 'exwm-systemtray)
+					(exwm-systemtray-enable)
 
-			;; ensure screen updates with xrandr will refresh EXWM frames
-			(require 'exwm-randr)
-			(exwm-randr-enable)
+					;; ensure screen updates with xrandr will refresh EXWM frames
+					(require 'exwm-randr)
+					(exwm-randr-enable)
 
-			;; use default super+shift keybindings
-			(windmove-swap-states-default-keybindings)
+					;; use default super+shift keybindings
+					(windmove-swap-states-default-keybindings)
 
-			;; remap capsLock to ctrl
-			(start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/Xmodmap")
+					;; remap capsLock to ctrl
+					(start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/Xmodmap")
 
-			;; display time
-			(setq display-time-default-load-average nil)
-			(display-time-mode t))
+					;; display time
+					(setq display-time-default-load-average nil)
+					(display-time-mode t))
 
-		(if exwm-enabled (enable-exwm) ())
+				(if exwm-enabled (enable-exwm) ())
   #+end_src
