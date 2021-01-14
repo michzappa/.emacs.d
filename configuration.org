@@ -67,11 +67,12 @@ Setting up the package archives and the lisp to automatically load all my packag
 * Personal
 Giving emacs my information.
   #+begin_src emacs-lisp
-    (setq user-emacs-directory "~/.emacs.d/user-dir")
-    (setq custom-file "~/.emacs.d/custom.el")
+		(setq user-emacs-directory "~/.emacs.d/user-dir")
+		(setq custom-file          "~/.emacs.d/custom.el")
+		(setq abbrev-file-name     "~/.emacs.d/abbrev_defs")
 
-    (setq user-full-name "Michael Zappa")
-    (setq user-mail-address "zapprich@gmail.com")
+		(setq user-full-name       "Michael Zappa")
+		(setq user-mail-address    "zapprich@gmail.com")
   #+end_src
 * Misc
 Miscellanious things which might be put somewhere else eventually.
