@@ -206,6 +206,9 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		(global-set-key (kbd "C-+") 'text-scale-increase)
 		(global-set-key (kbd "C--") 'text-scale-decrease)
 
+		;; shortcut for copying lines using verbose syntax
+		(global-set-key "\C-c\C-d" "\C-a\C- \C-n\M-w")
+
 		;; keybinding to reload configuration
 		(global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
 
@@ -708,15 +711,16 @@ Needs clangd.
   #+end_src
 ** Rust
   #+begin_src emacs-lisp
-    ;; hook up rust-mode with the language server
-    (use-package rust-mode
-      :config
-      (setq rust-format-on-save t)
-      :hook (rust-mode . lsp))
+		;; hook up rust-mode with the language server
+		(use-package rust-mode
+			:config
+			(setq rust-format-on-save t)
+			(add-hook 'rust-mode-hook (lambda () (local-unset-key (kbd "C-c C-d")))) ;; interferes with my custom keybinding for copying a line and I don't ever use the rust-mode binding
+			:hook (rust-mode . lsp))
 
-    ;; cargo minor mode for cargo keybindings
-    (use-package cargo
-      :hook (rust-mode . cargo-minor-mode))
+		;; cargo minor mode for cargo keybindings
+		(use-package cargo
+			:hook (rust-mode . cargo-minor-mode))
   #+end_src
 ** sh
   #+begin_src emacs-lisp
