@@ -7,15 +7,10 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 
 - TODO add more org config: directory, export to html, pdf, latex from hrs config https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org
   -Maybe don't need to do this since using AUCTeX. Still want to use org-mode more.
-- TODO hydra? - magit, window-management, multiple-cursors (and then figure out multiple cursors)
-- TODO look into pinning packages? But maybe the package-archive-priorities take care of that.
 - TODO evaluate need for treemacs/actually making it work as desired (opens current project only)
 - TODO go through https://github.com/daviwil/dotfiles/blob/master/Emacs.org
 - TODO further exwm configuration by copying from daviwil and customizing. particularly multiple monitors. why doesn't system tray work?
 - emacs from scratch repo: https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Desktop-01.org
--TODO EXWM DISPLAY JAVA GUI's
-- TODO learn more about dired from Mastering Emacs
-- TODO maybe use desktop-environment package for media keys instead of manual config
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag (projectile-ag)
@@ -530,29 +525,36 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
    #+end_src
 * Orgmode
 	Configuration for the majestic org-mode.
+** General
   #+begin_src emacs-lisp
-    ;; bullets instead of asterisks
-    (use-package org-bullets
-      :hook (org-mode . org-bullets-mode))
+		(setq org-directory "~/Org")
 
-    ;; org src blocks act more like the major mode
-    (setq org-src-fontify-natively t)
-    (setq org-src-tab-acts-natively t)
+		;; bullets instead of asterisks
+		(use-package org-bullets
+			:hook (org-mode . org-bullets-mode))
 
-    ;; editing source block in same window
-    (setq org-src-window-setup 'current-window)
+		;; org src blocks act more like the major mode
+		(setq org-src-fontify-natively t)
+		(setq org-src-tab-acts-natively t)
 
-    ;; for the "old-school" <s-<tab> to make src blocks
-    (require 'org-tempo)
-    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+		;; editing source block in same window
+		(setq org-src-window-setup 'current-window)
 
-    ;; change tabs from org-mode
-    (with-eval-after-load 'org
-      (define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
+		;; for the "old-school" <s-<tab> to make src blocks
+		(require 'org-tempo)
+		(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 
-    (setq org-support-shift-select t)
-    (setq org-replace-disputed-keys t)
+		;; change tabs from org-mode
+		(with-eval-after-load 'org
+			(define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
+
+		(setq org-support-shift-select t)
+		(setq org-replace-disputed-keys t)
   #+end_src
+** org-capture
+	 #+begin_src emacs-lisp
+		 ;;(setq org-capture-templates)
+	 #+end_src
 * AUCTeX
 	LaTeX editing enhancements.
   #+begin_src emacs-lisp
@@ -756,6 +758,12 @@ Currently not doing web development, by my estimation I will need these basic pa
 			;; package to manage bluetooth from emacs
 			(use-package bluetooth)
 
+			;; mode to bind media keys
+			(use-package desktop-environment
+				:config
+				(setq desktop-environment-volume-toggle-command "amixer -D pulse sset Master toggle") ;; for some reason the default command does not work
+				(desktop-environment-mode))
+
 			(setq exwm-workspace-number 2)
 			(setq exwm-randr-workspace-monitor-plist
 						'(0 "eDP-1" ;; laptop
@@ -810,35 +818,7 @@ Currently not doing web development, by my estimation I will need these basic pa
 							;;                (interactive)
 							;;                (exwm-workspace-switch-create ,i))))
 							;;          (number-sequence 0 9))
-
-							;; media keys
-							([XF86AudioLowerVolume] . (lambda ()
-																					(interactive)
-																					(shell-command "amixer -D pulse sset Master 5%-")))
-							([XF86AudioRaiseVolume] . (lambda ()
-																					(interactive)
-																					(shell-command "amixer -D pulse sset Master 5%+")))
-							([XF86AudioMute] . (lambda ()
-																	 (interactive)
-																	 (shell-command "amixer -D pulse sset Master toggle")))
-							([XF86AudioPlay] . (lambda ()
-																	 (interactive)
-																	 (shell-command "playerctl play-pause")))
-							([XF86AudioStop] . (lambda ()
-																	 (interactive)
-																	 (shell-command "playerctl stop")))
-							([XF86AudioPrev] . (lambda ()
-																	 (interactive)
-																	 (shell-command "playerctl previous")))
-							([XF86AudioNext] . (lambda ()
-																	 (interactive)
-																	 (shell-command "playerctl next")))
-							([XF86MonBrightnessUp] . (lambda ()
-																				 (interactive)
-																				 (shell-command "light -A 5")))
-							([XF86MonBrightnessDown] . (lambda ()
-																					 (interactive)
-																					 (shell-command "light -U 5"))))))
+							)))
 
 		;; function to turn on all the exwm stuff
 		(defun enable-exwm ()
