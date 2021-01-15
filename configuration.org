@@ -473,8 +473,8 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
      (defhydra hydra-projectile (:color amaranth)
        "PROJECTILE: %(projectile-project-root)"
 
-       ("ff" projectile-find-file "file" :column "Find File")
-       ("s-f"  projectile-find-file-dwim "file dwim")
+       ("ff"  projectile-find-file "file" :column "Find File")
+       ("s-f" projectile-find-file-dwim "file dwim")
        ("fd"  projectile-find-file-in-directory "file curr dir")
        ("r"   projectile-recentf "recent file")
        ("d"   projectile-find-dir "dir")
@@ -489,8 +489,8 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
        ("z"   projectile-cache-current-file "cache current project")
 
        ("a"   projectile-ag "ag" :column "Project")
-       ("P" projectile-switch-project "switch project" :column "Project")
-       ("p"   treemacs-projectile "treemacs")
+       ("p"   projectile-switch-project "switch project" :column "Project")
+       ("P"   treemacs-projectile "treemacs")
 
        ("`"   hydra-projectile-other-window/body "other window" :color blue :column "Other")
        ("q"   nil "exit" :color blue))
