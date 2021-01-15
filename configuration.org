@@ -548,54 +548,55 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * AUCTeX
 	LaTeX editing enhancements.
   #+begin_src emacs-lisp
-		(use-package auctex
-			:defer t
-			:hook (LaTeX-mode . reftex-mode)
-			:custom
-			(TeX-auto-save t)
-			(TeX-byte-compile t)
-			(TeX-clean-confirm nil)
-			(TeX-master 'dwim)
-			(TeX-parse-self t)
-			(TeX-source-correlate-mode t)
+				(use-package auctex
+					:defer t
+					:hook (LaTeX-mode . reftex-mode)
+					:custom
+					(TeX-auto-save t)
+					(TeX-byte-compile t)
+					(TeX-clean-confirm nil)
+					(TeX-master 'dwim)
+					(TeX-parse-self t)
+					(TeX-source-correlate-mode t)
 
-			;; pdf mode
-			(TeX-PDF-mode t)
-			(TeX-view-program-selection '((output-pdf "PDF Tools")))
-			(TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
-			(TeX-source-correlate-start-server t)
+					;; pdf mode
+					(TeX-PDF-mode t)
+					(TeX-view-program-selection '((output-pdf "PDF Tools")))
+					(TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
+					(TeX-source-correlate-start-server t)
 
-			(reftex-plug-into-AUCTeX t)
-			(TeX-error-overview-open-after-TeX-run t)
-			:config
+					(reftex-plug-into-AUCTeX t)
+					(TeX-error-overview-open-after-TeX-run t)
+					:config
 
-			;; formatting hooks
-			(add-hook 'LaTeX-mode-hook 'visual-line-mode)
-			(add-hook 'LaTeX-mode-hook 'flyspell-mode)
-			(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+					;; formatting hooks
+					(add-hook 'LaTeX-mode-hook 'visual-line-mode)
+					(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+					(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 
-			;; overview of all compilation errors
-			(setq TeX-error-overview-open-after-TeX-run t)
+					;; overview of all compilation errors
+					(setq TeX-error-overview-open-after-TeX-run t)
 
-			;; to have the buffer refresh after compilation
-			(add-hook 'TeX-after-compilation-finished-functions
-								#'TeX-revert-document-buffer))
+					;; to have the buffer refresh after compilation
+					(add-hook 'TeX-after-compilation-finished-functions
+										#'TeX-revert-document-buffer))
 
-		;; reference management
-		(use-package bibtex
-			:after auctex
-			:hook (bibtex-mode . my/bibtex-fill-column)
-			:preface
-			(defun my/bibtex-fill-column ()
-				"Ensures that each entry does not exceed 120 characters."
-				(setq fill-column 120)))
+				;; reference management
+				(use-package bibtex
+					:after auctex
+					:hook (bibtex-mode . my/bibtex-fill-column)
+					:preface
+					(defun my/bibtex-fill-column ()
+						"Ensures that each entry does not exceed 120 characters."
+						(setq fill-column 120)))
 
-		;; autocomplete support
-		(use-package company-auctex
-			:after (auctex company)
-			:config (company-auctex-init))
+				;; autocomplete support
+				(use-package company-auctex
+					:after (auctex company)
+					:config (company-auctex-init))
 
-		(use-package pdf-tools)
+				(use-package pdf-tools
+					:hook (pdf-view-mode . pdf-view-midnight-minor-mode))
   #+end_src
 * Languages and LSP Support
 	Packages and configuration related to language major/minor modes and language servers.
