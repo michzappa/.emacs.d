@@ -207,7 +207,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		(global-set-key (kbd "C--") 'text-scale-decrease)
 
 		;; shortcut for copying lines using verbose syntax
-		(global-set-key "\C-c\C-d" "\C-a\C- \C-n\M-w")
+		(global-set-key (kbd "C-c D") "\C-a\C- \C-n\M-w")
 
 		;; keybinding to reload configuration
 		(global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
@@ -715,7 +715,7 @@ Needs clangd.
 		(use-package rust-mode
 			:config
 			(setq rust-format-on-save t)
-			(add-hook 'rust-mode-hook (lambda () (local-unset-key (kbd "C-c C-d")))) ;; interferes with my custom keybinding for copying a line and I don't ever use the rust-mode binding
+			;;(add-hook 'rust-mode-hook (lambda () (local-unset-key (kbd "C-c C-d")))) ;; interferes with my custom keybinding for copying a line and I don't ever use the rust-mode binding
 			:hook (rust-mode . lsp))
 
 		;; cargo minor mode for cargo keybindings
@@ -736,7 +736,7 @@ Currently not doing web development, by my estimation I will need these basic pa
      (use-package typescript-mode)
      (use-package tide)
    #+end_src
-* Orgmode
+* Org Mode
 	Configuration for the majestic org-mode.
 ** General
   #+begin_src emacs-lisp
