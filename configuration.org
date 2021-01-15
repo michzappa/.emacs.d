@@ -15,6 +15,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - emacs from scratch repo: https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Desktop-01.org
 -TODO EXWM DISPLAY JAVA GUI's
 - TODO learn more about dired from Mastering Emacs
+- TODO maybe use desktop-environment package for media keys instead of manual config
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag (projectile-ag)
@@ -24,6 +25,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - nodejs (tide-mode)
 - playerctl, light (exwm, user needs to be in video group for light)
 - cmake, libtool-bin, libvterm-dev (vterm)
+- slock, xss-lock (exwm)
 ** Other Sources
 - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls.
 - OCaml Language Server:  https://github.com/ocaml/ocaml-lsp
@@ -152,7 +154,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 
 		;; turn off things
 		(menu-bar-mode -1)
-		(toggle-scroll-bar -1)
+		(scroll-bar-mode -1)
 		(tool-bar-mode -1)
 		(blink-cursor-mode -1)
 
@@ -731,7 +733,13 @@ Currently not doing web development, by my estimation I will need these basic pa
 		(use-package exwm
 			:if exwm-enabled
 			:config
-			(setq exwm-workspace-number 1)
+			;; package to manage bluetooth from emacs
+			(use-package bluetooth)
+
+			(setq exwm-workspace-number 2)
+			(setq exwm-randr-workspace-monitor-plist
+						'(0 "eDP-1" ;; laptop
+								1 "DP-3")) ;; external monitor via HDMI which is for some reason named DP-3
 
 			;; when window "class" updates, use it to set the buffer name
 			(defun exwm-update-class ()
@@ -815,16 +823,16 @@ Currently not doing web development, by my estimation I will need these basic pa
 		;; function to turn on all the exwm stuff
 		(defun enable-exwm ()
 			"Enables the features of EXWM."
-			(exwm-enable)
-			(exwm-init)
 
 			;; exwm system tray
 			(require 'exwm-systemtray)
 			(exwm-systemtray-enable)
+			(setq exwm-systemtray-height 32)
 
 			;; ensure screen updates with xrandr will refresh EXWM frames
 			(require 'exwm-randr)
 			(exwm-randr-enable)
+			;;(exwm-randr-refresh)
 
 			;; use default super+shift keybindings
 			(windmove-swap-states-default-keybindings)
@@ -834,7 +842,13 @@ Currently not doing web development, by my estimation I will need these basic pa
 
 			;; display time
 			(setq display-time-default-load-average nil)
-			(display-time-mode t))
+			(display-time-mode t)
+
+			;; Show battery status in the mode line
+			(display-battery-mode 1)
+
+			(exwm-enable)
+			(exwm-init))
 
 		(if exwm-enabled (enable-exwm) ())
   #+end_src
