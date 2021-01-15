@@ -26,6 +26,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - playerctl, light (exwm, user needs to be in video group for light)
 - cmake, libtool-bin, libvterm-dev (vterm)
 - slock, xss-lock (exwm)
+- compton or equivalent compositor (exwm)
 ** Other Sources
 - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls.
 - OCaml Language Server:  https://github.com/ocaml/ocaml-lsp
@@ -557,24 +558,29 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+begin_src emacs-lisp
 		(use-package auctex
 			:defer t
-			:config
-			(setq TeX-auto-save t
-						TeX-parse-self t
-						TeX-PDF-mode t)
-			(setq-default TeX-master nil)
+			:hook (LaTeX-mode . reftex-mode)
+			:custom
+			(TeX-auto-save t)
+			(TeX-byte-compile t)
+			(TeX-clean-confirm nil)
+			(TeX-master 'dwim)
+			(TeX-parse-self t)
+			(TeX-source-correlate-mode t)
 
-			;; formatting mode hooks
+			;; pdf mode
+			(TeX-PDF-mode t)
+			(TeX-view-program-selection '((output-pdf "PDF Tools")))
+			(TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
+			(TeX-source-correlate-start-server t)
+
+			(reftex-plug-into-AUCTeX t)
+			(TeX-error-overview-open-after-TeX-run t)
+			:config
+
+			;; formatting hooks
 			(add-hook 'LaTeX-mode-hook 'visual-line-mode)
 			(add-hook 'LaTeX-mode-hook 'flyspell-mode)
 			(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-
-			(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-			(setq reftex-plug-into-AUCTeX t)
-
-			;; to use pdfview with auctex
-			(setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-						TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
-						TeX-source-correlate-start-server t)
 
 			;; overview of all compilation errors
 			(setq TeX-error-overview-open-after-TeX-run t)
@@ -582,6 +588,20 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 			;; to have the buffer refresh after compilation
 			(add-hook 'TeX-after-compilation-finished-functions
 								#'TeX-revert-document-buffer))
+
+		;; reference management
+		(use-package bibtex
+			:after auctex
+			:hook (bibtex-mode . my/bibtex-fill-column)
+			:preface
+			(defun my/bibtex-fill-column ()
+				"Ensures that each entry does not exceed 120 characters."
+				(setq fill-column 120)))
+
+		;; autocomplete support
+		(use-package company-auctex
+			:after (auctex company)
+			:config (company-auctex-init))
 
 		(use-package pdf-tools)
   #+end_src
