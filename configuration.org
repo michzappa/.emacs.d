@@ -235,6 +235,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 			(("C-s" . swiper)
 			 ("C-x C-r" . counsel-recentf))
 			:config
+			(setcdr (assoc 'counsel-M-x ivy-initial-inputs-alist) "") ;; not only prefixes
 			(ivy-mode)
 			(counsel-mode)
 			(use-package ivy-hydra))
@@ -296,8 +297,10 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 	Packages and configuration related to managing projects.
 ** magit
   #+begin_src emacs-lisp
-    ;; magit git interface
-    (use-package magit)
+		;; magit git interface
+		(use-package magit
+			:config
+			(setq magit-completing-read-function 'ivy-completing-read))
   #+end_src
 ** projectile
   #+begin_src emacs-lisp
@@ -800,7 +803,11 @@ Currently not doing web development, by my estimation I will need these basic pa
 			;; mode to bind media keys
 			(use-package desktop-environment
 				:config
-				(setq desktop-environment-volume-toggle-command "amixer -D pulse sset Master toggle") ;; for some reason the default command does not work
+				;; for some reason the default volume commands do not work
+				(setq desktop-environment-volume-toggle-command "amixer -D pulse set Master toggle")
+				(setq desktop-environment-volume-set-command     "amixer -D pulse set Master %s")
+				(setq desktop-environment-volume-get-command     "amixer -D pulse get Master")
+
 				(desktop-environment-mode))
 
 			(setq exwm-workspace-number 2)
