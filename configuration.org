@@ -159,15 +159,20 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** Theme Configuration
   #+begin_src emacs-lisp
-    ;; ;; nord-theme, doesn't have tab-bar support yet
-    ;; (use-package nord-theme
-    ;;  :config
-    ;;  (load-theme 'nord t))
+		;; ;; nord-theme, doesn't have tab-bar support yet
+		;; (use-package nord-theme
+		;;  :config
+		;;  (load-theme 'nord t))
 
-    ;; dracula-theme, which has tab-bar support
-    (use-package dracula-theme
-      :config
-      (load-theme 'dracula t))
+		;; dracula-theme, which has tab-bar support
+		;; (use-package dracula-theme
+		;;   :config
+		;;   (load-theme 'dracula t))
+
+		;; modus-vivendi, dark theme from prot
+		(use-package modus-vivendi-theme
+			:config
+			(load-theme 'modus-vivendi t))
   #+end_src
 ** Frames Configuration
   #+begin_src emacs-lisp
@@ -185,6 +190,9 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		(tab-bar-mode)
 		(global-set-key (kbd "M-[") 'tab-bar-history-back)
 		(global-set-key (kbd "M-]") 'tab-bar-history-forward)
+
+		;; winner-mode to undo and redo window configurations
+		(winner-mode)
   #+end_src
 * Mouse and Keys
 	Mouse and keyboard settings which don't belong to any specific package or function.
@@ -423,12 +431,13 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 ** Binding
 	 Binding my hydras' heads.
   #+begin_src emacs-lisp
-    (use-package hydra
-      :bind
-      (("C-x t" . hydra-tab-bar/body)
-       ("C-c l" . hydra-lsp/body)
-       ("C-c p" . hydra-projectile/body)
-       ("C-x w" . hydra-windmove/body)))
+		(use-package hydra
+			:bind
+			(("C-x t" . hydra-tab-bar/body)
+			 ("C-c l" . hydra-lsp/body)
+			 ("C-c o" . hydra-org/body)
+			 ("C-c p" . hydra-projectile/body)
+			 ("C-x w" . hydra-windmove/body)))
   #+end_src
 ** hydra-lsp
 	 Hydra bindings for language server commands.
@@ -454,6 +463,13 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
        ("r" lsp-rename "rename")
        ("q" nil "exit" :color blue))
    #+end_src
+** hydra-org
+	 #+begin_src emacs-lisp
+		 (defhydra hydra-org (:color blue)
+			 "orgmode"
+			 ("c" org-capture "capture")
+			 ("a" org-agenda "agenda"))
+	 #+end_src
 ** hydra-projectile
 	 Hydra bindings for using projectile to manage projects.
    #+begin_src emacs-lisp
@@ -523,38 +539,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 
        ("q" nil "exit" :color blue))
    #+end_src
-* Orgmode
-	Configuration for the majestic org-mode.
-** General
-  #+begin_src emacs-lisp
-		(setq org-directory "~/Org")
-
-		;; bullets instead of asterisks
-		(use-package org-bullets
-			:hook (org-mode . org-bullets-mode))
-
-		;; org src blocks act more like the major mode
-		(setq org-src-fontify-natively t)
-		(setq org-src-tab-acts-natively t)
-
-		;; editing source block in same window
-		(setq org-src-window-setup 'current-window)
-
-		;; for the "old-school" <s-<tab> to make src blocks
-		(require 'org-tempo)
-		(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-
-		;; change tabs from org-mode
-		(with-eval-after-load 'org
-			(define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
-
-		(setq org-support-shift-select t)
-		(setq org-replace-disputed-keys t)
-  #+end_src
-** org-capture
-	 #+begin_src emacs-lisp
-		 ;;(setq org-capture-templates)
-	 #+end_src
 * AUCTeX
 	LaTeX editing enhancements.
   #+begin_src emacs-lisp
@@ -745,6 +729,61 @@ Currently not doing web development, by my estimation I will need these basic pa
      (use-package typescript-mode)
      (use-package tide)
    #+end_src
+* Orgmode
+	Configuration for the majestic org-mode.
+** General
+  #+begin_src emacs-lisp
+		(setq org-directory "~/Org")
+
+		;; bullets instead of asterisks
+		(use-package org-bullets
+			:hook (org-mode . org-bullets-mode))
+
+		;; org src blocks act more like the major mode
+		(setq org-src-fontify-natively t)
+		(setq org-src-tab-acts-natively t)
+
+		;; editing source block in same window
+		(setq org-src-window-setup 'current-window)
+
+		;; for the "old-school" <s-<tab> to make src blocks
+		(require 'org-tempo)
+		(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+
+		;; change tabs from org-mode
+		(with-eval-after-load 'org
+			(define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
+
+		(setq org-support-shift-select t)
+		(setq org-replace-disputed-keys t)
+  #+end_src
+** org-capture
+	 #+begin_src emacs-lisp
+		 (global-set-key (kbd "C-c c") 'org-capture)
+
+		 ;; abstracted template for a TODO to take place on some day, like an assignment due date.
+		 (defun temp/todo-on-day ()
+			 "* TODO %? %^t")
+
+		 (setq org-capture-templates
+					 '(("c" "Class Task")
+						 ("cs" "Systems Task" entry
+							(file+headline "class-tasks.org" "Systems")
+							(function temp/todo-on-day))
+						 ("cn" "Networks Task" entry
+							(file+headline "class-tasks.org" "Networks")
+							(function temp/todo-on-day))
+						 ("cc" "Cyber Task" entry
+							(file+headline "class-tasks.org" "Cyber")
+							(function temp/todo-on-day))
+						 ("cp" "Phonology Task" entry
+							(file+headline "class-tasks.org" "Phonology")
+							(function temp/todo-on-day))))
+	 #+end_src
+** org-agenda
+	 #+begin_src emacs-lisp
+		 (setq org-agenda-files '("~/Org"))
+	 #+end_src
 * EXWM
 	Configuration for using emacs as an X window manager.
   #+begin_src emacs-lisp
