@@ -18,7 +18,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - texlive-latex-extra, texlive-extra-utils (AUCTeX)
 - libpng-dev zlib1g-dev libpoppler-glib-dev libpoppler-private-devm imagemagick (pdf-tools)
 - nodejs (tide-mode)
-- playerctl, light (exwm, user needs to be in video group for light)
+- playerctl, brightnessctl (exwm)
 - cmake, libtool-bin, libvterm-dev (vterm)
 - slock, xss-lock (exwm)
 - compton or equivalent compositor (exwm)
@@ -902,15 +902,9 @@ Currently not doing web development, by my estimation I will need these basic pa
 		(defun enable-exwm ()
 			"Enables the features of EXWM."
 
-			;; exwm system tray
-			(require 'exwm-systemtray)
-			(exwm-systemtray-enable)
-			(setq exwm-systemtray-height 32)
-
 			;; ensure screen updates with xrandr will refresh EXWM frames
 			(require 'exwm-randr)
 			(exwm-randr-enable)
-			;;(exwm-randr-refresh)
 
 			;; use default super+shift keybindings
 			(windmove-swap-states-default-keybindings)
