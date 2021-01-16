@@ -3,9 +3,6 @@
 # Source .profile for common environment vars
 . ~/.profile
 
-# Enable screen locking on suspend
-xss-lock --slock &
-
 # Compositor
 compton &
 

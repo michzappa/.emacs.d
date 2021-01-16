@@ -5,11 +5,9 @@
 init.el uses org-babel-load file to automatically load in the emacs-lisp
 blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and might not even be).
 
-- TODO add more org config: directory, export to html, pdf, latex from hrs config https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org
-  -Maybe don't need to do this since using AUCTeX. Still want to use org-mode more.
+- TODO put hydras with their topic
 - TODO evaluate need for treemacs/actually making it work as desired (opens current project only)
 - TODO go through https://github.com/daviwil/dotfiles/blob/master/Emacs.org
-- TODO further exwm configuration by copying from daviwil and customizing. particularly multiple monitors. why doesn't system tray work?
 - emacs from scratch repo: https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Desktop-01.org
 * Things to Install
 ** Apt Packages (or equivalent)
@@ -20,7 +18,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - nodejs (tide-mode)
 - playerctl, brightnessctl (exwm)
 - cmake, libtool-bin, libvterm-dev (vterm)
-- slock, xss-lock (exwm)
+- slock (exwm)
 - compton or equivalent compositor (exwm)
 ** Other Sources
 - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls.
@@ -186,14 +184,28 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		(column-number-mode t)
 		(size-indication-mode t)
 
-		;; tab mode
-		(tab-bar-mode)
-		(global-set-key (kbd "M-[") 'tab-bar-history-back)
-		(global-set-key (kbd "M-]") 'tab-bar-history-forward)
-
 		;; winner-mode to undo and redo window configurations
 		(winner-mode)
   #+end_src
+** tab-bar-mode
+	 #+begin_src emacs-lisp
+		 (tab-bar-mode)
+		 (global-set-key (kbd "M-[") 'tab-bar-history-back)
+		 (global-set-key (kbd "M-]") 'tab-bar-history-forward)
+		 ;; hydra bindings for tab-bar-mode
+		 (defhydra hydra-tab-bar (:color amaranth)
+			 "Tab Bar Operations"
+			 ("t" tab-new "Create a new tab" :column "Creation")
+			 ("d" dired-other-tab "Open Dired in another tab")
+			 ("f" find-file-other-tab "Find file in another tab")
+			 ("0" tab-close "Close current tab")
+			 ("m" tab-move "Move current tab" :column "Management")
+			 ("r" tab-rename "Rename Tab")
+			 ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
+			 ("<right>" tab-next "Next Tab")
+			 ("<left>" tab-previous "Previous Tab")
+			 ("q" nil "exit" :color blue))
+	 #+end_src
 * Mouse and Keys
 	Mouse and keyboard settings which don't belong to any specific package or function.
   #+begin_src emacs-lisp
@@ -285,6 +297,20 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 			(add-hook 'org-shiftcontrolleft-final-hook 'windmove-swap-states-left)
 			(add-hook 'org-shiftcontroldown-final-hook 'windmove-swap-states-down)
 			(add-hook 'org-shiftcontrolright-final-hook 'windmove-swap-states-right))
+
+		(defhydra hydra-windmove (:color amaranth)
+			"Windmove Operations"
+			("<left>" windmove-left "left" :column "Change window")
+			("<right>" windmove-right "right")
+			("<up>" windmove-up "up")
+			("<down>" windmove-down "down")
+
+			("C-<left>" windmove-swap-states-left "move left" :column "Move window")
+			("C-<right>" windmove-swap-states-right "move right")
+			("C-<up>" windmove-swap-states-up "move up")
+			("C-<down>" windmove-swap-states-down "move down")
+
+			("q" nil "exit" :color blue))
   #+end_src
 ** Yes/No Question Configuration
    #+begin_src emacs-lisp
@@ -318,6 +344,40 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 			(global-set-key (kbd "C-c p") 'projectile-command-map)
 			(global-set-key (kbd "C-c v")  'projectile-ag)
 			(projectile-mode +1))
+
+		;; hydra bindings for projectile
+		(defhydra hydra-projectile-other-window (:color amaranth)
+			"projectile-other-window"
+			("f"  projectile-find-file-other-window        "file" :column "Find File")
+			("g"  projectile-find-file-dwim-other-window   "file dwim")
+			("d"  projectile-find-dir-other-window         "dir")
+			("b"  projectile-switch-to-buffer-other-window "buffer")
+			("q"  nil                                      "cancel" :color blue))
+
+		(defhydra hydra-projectile (:color amaranth)
+			"PROJECTILE: %(projectile-project-root)"
+
+			("ff"  projectile-find-file "file" :column "Find File")
+			("s-f" projectile-find-file-dwim "file dwim")
+			("fd"  projectile-find-file-in-directory "file curr dir")
+			("r"   projectile-recentf "recent file")
+			("d"   projectile-find-dir "dir")
+
+			("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
+			("i"   projectile-ibuffer "ibuffer")
+			("K"   projectile-kill-buffers "kill all buffers")
+
+			("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
+			("x"   projectile-remove-known-project "remove known project")
+			("X"   projectile-cleanup-known-projects "cleanup projects")
+			("z"   projectile-cache-current-file "cache current project")
+
+			("a"   projectile-ag "ag" :column "Project")
+			("p"   projectile-switch-project "switch project" :column "Project")
+			("P"   treemacs-projectile "treemacs")
+
+			("`"   hydra-projectile-other-window/body "other window" :color blue :column "Other")
+			("q"   nil "exit" :color blue))
   #+end_src
 ** treemacs
   #+begin_src emacs-lisp
@@ -434,8 +494,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 * Hydra
 	Hydra provides the ability to create a keybinding menu to reduce redundant keypresses.
-** Binding
-	 Binding my hydras' heads.
   #+begin_src emacs-lisp
 		(use-package hydra
 			:bind
@@ -445,106 +503,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 			 ("C-c p" . hydra-projectile/body)
 			 ("C-x w" . hydra-windmove/body)))
   #+end_src
-** hydra-lsp
-	 Hydra bindings for language server commands.
-   #+begin_src emacs-lisp
-     (defhydra hydra-lsp (:color amaranth)
-       "Language Server Operations"
-
-       ("f" lsp-format-buffer "format" :column "Buffer")
-       ("m" lsp-ui-imenu "imenu")
-       ("x" lsp-execute-code-action "execute action")
-
-       ("M-r" lsp-restart-workspace "restart" :column "Server")
-       ("S" lsp-shutdown-workspace "shutdown")
-       ("M-s" lsp-describe-session "describe session")
-
-       ("d" lsp-find-declaration "declaration" :column "Symbol")
-       ("D" lsp-ui-peek-find-definitions "definition")
-       ("R" lsp-ui-peek-find-references "references")
-       ("i" lsp-ui-peek-find-implementation "implementation" :column "Symbol")
-       ("t" lsp-find-type-definition "type")
-       ("s" lsp-signature-help "signature")
-       ("o" lsp-describe-thing-at-point "documentation" :column "Symbol")
-       ("r" lsp-rename "rename")
-       ("q" nil "exit" :color blue))
-   #+end_src
-** hydra-org
-	 #+begin_src emacs-lisp
-		 (defhydra hydra-org (:color blue)
-			 "orgmode"
-			 ("c" org-capture "capture")
-			 ("a" org-agenda "agenda"))
-	 #+end_src
-** hydra-projectile
-	 Hydra bindings for using projectile to manage projects.
-   #+begin_src emacs-lisp
-     (defhydra hydra-projectile-other-window (:color amaranth)
-       "projectile-other-window"
-       ("f"  projectile-find-file-other-window        "file" :column "Find File")
-       ("g"  projectile-find-file-dwim-other-window   "file dwim")
-       ("d"  projectile-find-dir-other-window         "dir")
-       ("b"  projectile-switch-to-buffer-other-window "buffer")
-       ("q"  nil                                      "cancel" :color blue))
-
-     (defhydra hydra-projectile (:color amaranth)
-       "PROJECTILE: %(projectile-project-root)"
-
-       ("ff"  projectile-find-file "file" :column "Find File")
-       ("s-f" projectile-find-file-dwim "file dwim")
-       ("fd"  projectile-find-file-in-directory "file curr dir")
-       ("r"   projectile-recentf "recent file")
-       ("d"   projectile-find-dir "dir")
-
-       ("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
-       ("i"   projectile-ibuffer "ibuffer")
-       ("K"   projectile-kill-buffers "kill all buffers")
-
-       ("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
-       ("x"   projectile-remove-known-project "remove known project")
-       ("X"   projectile-cleanup-known-projects "cleanup projects")
-       ("z"   projectile-cache-current-file "cache current project")
-
-       ("a"   projectile-ag "ag" :column "Project")
-       ("p"   projectile-switch-project "switch project" :column "Project")
-       ("P"   treemacs-projectile "treemacs")
-
-       ("`"   hydra-projectile-other-window/body "other window" :color blue :column "Other")
-       ("q"   nil "exit" :color blue))
-   #+end_src
-** hydra-tab-bar
-	 Hydra bindings for managing tab-bar-mode in emacs 27.
-   #+begin_src emacs-lisp
-     (defhydra hydra-tab-bar (:color amaranth)
-       "Tab Bar Operations"
-       ("t" tab-new "Create a new tab" :column "Creation")
-       ("d" dired-other-tab "Open Dired in another tab")
-       ("f" find-file-other-tab "Find file in another tab")
-       ("0" tab-close "Close current tab")
-       ("m" tab-move "Move current tab" :column "Management")
-       ("r" tab-rename "Rename Tab")
-       ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
-       ("<right>" tab-next "Next Tab")
-       ("<left>" tab-previous "Previous Tab")
-       ("q" nil "exit" :color blue))
-   #+end_src
-** hydra-windmove
-	 Hydra bindings for moving windows with windmove.
-   #+begin_src emacs-lisp
-     (defhydra hydra-windmove (:color amaranth)
-       "Windmove Operations"
-       ("<left>" windmove-left "left" :column "Change window")
-       ("<right>" windmove-right "right")
-       ("<up>" windmove-up "up")
-       ("<down>" windmove-down "down")
-
-       ("C-<left>" windmove-swap-states-left "move left" :column "Move window")
-       ("C-<right>" windmove-swap-states-right "move right")
-       ("C-<up>" windmove-swap-states-up "move up")
-       ("C-<down>" windmove-swap-states-down "move down")
-
-       ("q" nil "exit" :color blue))
-   #+end_src
 * AUCTeX
 	LaTeX editing enhancements.
   #+begin_src emacs-lisp
@@ -604,37 +562,59 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   Packages and configuration related to language major/minor modes and language servers.
 ** LSP Mode
   #+begin_src emacs-lisp
-    ;; lsp-mode plus other recommended packages and configuration
-    (use-package lsp-mode
-      :bind
-      (:map lsp-mode-map
-            (("C-M-b" . lsp-find-implementation)
-             ("M-RET" . lsp-execute-code-action)))
-      :config
-      ;; completion provider
-      (setq lsp-completion-provider :capf)
-      (setq lsp-completion-enable t))
+		;; lsp-mode plus other recommended packages and configuration
+		(use-package lsp-mode
+			:bind
+			(:map lsp-mode-map
+						(("C-M-b" . lsp-find-implementation)
+						 ("M-RET" . lsp-execute-code-action)))
+			:config
+			;; completion provider
+			(setq lsp-completion-provider :capf)
+			(setq lsp-completion-enable t))
 
-    ;; ui features for lsp-mode
-    (use-package lsp-ui
-      :after lsp-mode
-      :bind
-      ("M-i" . lsp-ui-imenu))
+		;; ui features for lsp-mode
+		(use-package lsp-ui
+			:after lsp-mode
+			:bind
+			("M-i" . lsp-ui-imenu))
 
-    ;; integration for lsp with ivy and treemacs
-    (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
-    (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+		;; integration for lsp with ivy and treemacs
+		(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+		(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
-    ;; debugging mode
-    (use-package dap-mode
-      :config
-      (global-set-key (kbd "<f7>") 'dap-step-in)
-      (global-set-key (kbd "<f8>") 'dap-net)
-      (global-set-key (kbd "<f9>") 'dap-continue)
-      (dap-mode t)
-      (dap-ui-mode t)
-      (dap-tooltip-mode 1)
-      (tooltip-mode 1))
+		;; debugging mode
+		(use-package dap-mode
+			:config
+			(global-set-key (kbd "<f7>") 'dap-step-in)
+			(global-set-key (kbd "<f8>") 'dap-net)
+			(global-set-key (kbd "<f9>") 'dap-continue)
+			(dap-mode t)
+			(dap-ui-mode t)
+			(dap-tooltip-mode 1)
+			(tooltip-mode 1))
+
+		;; hydra bindings for language server commands.
+		(defhydra hydra-lsp (:color amaranth)
+			"Language Server Operations"
+
+			("f" lsp-format-buffer "format" :column "Buffer")
+			("m" lsp-ui-imenu "imenu")
+			("x" lsp-execute-code-action "execute action")
+
+			("M-r" lsp-restart-workspace "restart" :column "Server")
+			("S" lsp-shutdown-workspace "shutdown")
+			("M-s" lsp-describe-session "describe session")
+
+			("d" lsp-find-declaration "declaration" :column "Symbol")
+			("D" lsp-ui-peek-find-definitions "definition")
+			("R" lsp-ui-peek-find-references "references")
+			("i" lsp-ui-peek-find-implementation "implementation" :column "Symbol")
+			("t" lsp-find-type-definition "type")
+			("s" lsp-signature-help "signature")
+			("o" lsp-describe-thing-at-point "documentation" :column "Symbol")
+			("r" lsp-rename "rename")
+			("q" nil "exit" :color blue))
   #+end_src
 ** C
 Needs clangd.
@@ -767,6 +747,14 @@ Currently not doing web development, by my estimation I will need these basic pa
     (setq org-support-shift-select t)
     (setq org-replace-disputed-keys t)
   #+end_src
+** hydra-org
+	 #+begin_src emacs-lisp
+		 (defhydra hydra-org (:color blue)
+			 "orgmode"
+			 ("c" org-capture "capture")
+			 ("a" org-agenda "agenda")
+			 ("p" org-projectile-project-todo-completing-read "projectile"))
+	 #+end_src
 ** org-capture
    #+begin_src emacs-lisp
      (global-set-key (kbd "C-c c") 'org-capture)
@@ -814,6 +802,15 @@ Currently not doing web development, by my estimation I will need these basic pa
                       (org-present-show-cursor)
                       (org-present-read-write))))))
    #+end_src
+** org-projectile
+	 #+begin_src emacs-lisp
+		 ;; put a todo file in the directory of each projectile project and link them to org-agenda
+		 (use-package org-projectile
+			 :config
+			 (setq org-projectile-per-filepath "todo.org"
+						 org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+			 (org-projectile-per-project))
+	 #+end_src
 * EXWM
   Configuration for using emacs as an X window manager.
   #+begin_src emacs-lisp
