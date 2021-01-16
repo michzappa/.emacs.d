@@ -433,9 +433,11 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** rainbow-delimiters
   #+begin_src emacs-lisp
-  (use-package rainbow-delimiters
-    :config
-    (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
+		(use-package rainbow-delimiters
+			:config
+			(add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
+			(add-hook 'java-mode-hook #'rainbow-delimiters-mode)
+			(add-hook 'rust-mode-hook #'rainbow-delimiters-mode))
   #+end_src
 ** format-all
    #+begin_src emacs-lisp
