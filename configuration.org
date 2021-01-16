@@ -439,46 +439,46 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** format-all
    #+begin_src emacs-lisp
-		 (use-package format-all)
+     (use-package format-all)
    #+end_src
 ** Formatting Configuration
    #+begin_src emacs-lisp
-		 ;; wraps visual lines
-		 (global-visual-line-mode)
+     ;; wraps visual lines
+     (global-visual-line-mode)
 
-		 ;; newline at end of file
-		 (setq require-final-newline t)
+     ;; newline at end of file
+     (setq require-final-newline t)
 
-		 ;; wrap lines at 80 characters
-		 (setq-default fill-column 100)
+     ;; wrap lines at 80 characters
+     (setq-default fill-column 100)
 
-		 ;; delete trailing whitespace when saving.
-		 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+     ;; delete trailing whitespace when saving.
+     (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-		 ;; function for toggling comments
-		 (defun comment-or-uncomment-region-or-line ()
-			 "Comments or uncomments the region or the current line if there's no active region."
-			 (interactive)
-			 (let (beg end)
-				 (if (region-active-p)
-						 (setq beg (region-beginning) end (region-end))
-					 (setq beg (line-beginning-position) end (line-end-position)))
-				 (comment-or-uncomment-region beg end)
-				 (forward-line)))
+     ;; function for toggling comments
+     (defun comment-or-uncomment-region-or-line ()
+       "Comments or uncomments the region or the current line if there's no active region."
+       (interactive)
+       (let (beg end)
+         (if (region-active-p)
+             (setq beg (region-beginning) end (region-end))
+           (setq beg (line-beginning-position) end (line-end-position)))
+         (comment-or-uncomment-region beg end)
+         (forward-line)))
 
-		 ;; binding toggle-comment to "C-/" for consistency with other editors
-		 (global-set-key (kbd "C-/") 'comment-or-uncomment-region-or-line)
+     ;; binding toggle-comment to "C-/" for consistency with other editors
+     (global-set-key (kbd "C-/") 'comment-or-uncomment-region-or-line)
 
-		 ;; function to untabify buffer
-		 (defun untabify-buffer ()
-			 (interactive)
-			 (untabify (point-min) (point-max)))
+     ;; function to untabify buffer
+     (defun untabify-buffer ()
+       (interactive)
+       (untabify (point-min) (point-max)))
 
-		 ;; hydra for formatting files
-		 (defhydra hydra-formatting (:color blue)
-			 "formatting"
-			 ("f" format-all-buffer "format-all")
-			 ("u" untabify-buffer "untabify"))
+     ;; hydra for formatting files
+     (defhydra hydra-formatting (:color blue)
+       "formatting"
+       ("f" format-all-buffer "format-all")
+       ("u" untabify-buffer "untabify"))
 
    #+end_src
 * Elfeed RSS Reader
@@ -505,14 +505,14 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * Hydra
   Hydra provides the ability to create a keybinding menu to reduce redundant keypresses.
   #+begin_src emacs-lisp
-		(use-package hydra
-			:bind
-			(("C-c f" . hydra-formatting/body)
-			 ("C-x t" . hydra-tab-bar/body)
-			 ("C-c l" . hydra-lsp/body)
-			 ("C-c o" . hydra-org/body)
-			 ("C-c p" . hydra-projectile/body)
-			 ("C-x w" . hydra-windmove/body)))
+    (use-package hydra
+      :bind
+      (("C-c f" . hydra-formatting/body)
+       ("C-x t" . hydra-tab-bar/body)
+       ("C-c l" . hydra-lsp/body)
+       ("C-c o" . hydra-org/body)
+       ("C-c p" . hydra-projectile/body)
+       ("C-x w" . hydra-windmove/body)))
   #+end_src
 * AUCTeX
   LaTeX editing enhancements.
@@ -735,29 +735,29 @@ Currently not doing web development, by my estimation I will need these basic pa
   Configuration for the majestic org-mode.
 ** General
   #+begin_src emacs-lisp
-		(setq org-directory "~/Org")
+    (setq org-directory "~/Org")
 
-		;; bullets instead of asterisks
-		(use-package org-bullets
-			:hook (org-mode . org-bullets-mode))
+    ;; bullets instead of asterisks
+    (use-package org-bullets
+      :hook (org-mode . org-bullets-mode))
 
-		;; org src blocks act more like the major mode
-		(setq org-src-fontify-natively t)
-		(setq org-src-tab-acts-natively t)
+    ;; org src blocks act more like the major mode
+    (setq org-src-fontify-natively t)
+    (setq org-src-tab-acts-natively t)
 
-		;; editing source block in same window
-		(setq org-src-window-setup 'current-window)
+    ;; editing source block in same window
+    (setq org-src-window-setup 'current-window)
 
-		;; for the "old-school" <s-<tab> to make src blocks
-		(require 'org-tempo)
-		(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+    ;; for the "old-school" <s-<tab> to make src blocks
+    (require 'org-tempo)
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 
-		;; change tabs from org-mode
-		(with-eval-after-load 'org
-			(define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
+    ;; change tabs from org-mode
+    (with-eval-after-load 'org
+      (define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
 
-		(setq org-support-shift-select t)
-		(setq org-replace-disputed-keys t)
+    (setq org-support-shift-select t)
+    (setq org-replace-disputed-keys t)
   #+end_src
 ** hydra-org
    #+begin_src emacs-lisp
