@@ -1,4 +1,4 @@
-#+TIxTLE: Emacs Configuration
+#+TITLE: Emacs Configuration
 #+DESCRIPTION: My literate emacs configuration using org-mode.
 #+AUTHOR: Michael Zappa
 
@@ -15,12 +15,11 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - clangd (C lsp-mode)
 - texlive-latex-extra, texlive-extra-utils (AUCTeX)
 - libpng-dev zlib1g-dev libpoppler-glib-dev libpoppler-private-devm imagemagick (pdf-tools)
-- nodejs (tide-mode)
+- nodejs, npm (tide-mode)
 - playerctl, brightnessctl (exwm)
 - cmake, libtool-bin, libvterm-dev (vterm)
 - slock (exwm)
 - compton or equivalent compositor (exwm)
-- npm
 ** Other Sources
 - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls.
 - OCaml Language Server:  https://github.com/ocaml/ocaml-lsp
@@ -29,6 +28,9 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * Packages Setup
   Setting up the package archives and the lisp to automatically load all my packages.
   #+begin_src emacs-lisp
+    ;; errors getting archives in Debian 10 for some emacs 26.x errors.
+    (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
     ;; setting up the MELPA and other repos
     (require 'package)
     (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
@@ -38,10 +40,10 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 
 
     (setq package-archive-priorities
-          '(("melpa" . 50)
-            ("gnu" . 10)
-            ("org" . 10)
-            ("melpa-unstable" . 0)))
+	  '(("melpa" . 50)
+	    ("gnu" . 10)
+	    ("org" . 10)
+	    ("melpa-unstable" . 0)))
 
     ;; install use-package if not installed
     (when (not (package-installed-p 'use-package))
@@ -352,7 +354,8 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * VTerm
   Preferred emacs terminal emulator.
   #+begin_src emacs-lisp
-    (use-package vterm)
+		(setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=no")
+		(use-package vterm)
   #+end_src
 * Project Management
   Packages and configuration related to managing projects.
@@ -722,7 +725,7 @@ Needs clangd.
    #+end_src
 ** Python
   #+begin_src emacs-lisp
-		(require 'lsp-pyright) ;; not sure if this does anything
+		(use-package lsp-pyright) ;; not sure if this does anything
 
 		;; this registers it, but the server does not get past "starting"
 		(lsp-register-client
