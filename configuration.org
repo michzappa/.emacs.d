@@ -739,6 +739,9 @@ Needs clangd.
 			 ;; i use python3
 			 ((executable-find "python3")
 				(setq python-shell-interpreter "python3"))))
+
+		(require 'dap-python)
+		(setq dap-python-executable "python3")
   #+end_src
 ** Rust
   #+begin_src emacs-lisp
