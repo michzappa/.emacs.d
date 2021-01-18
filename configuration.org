@@ -725,8 +725,6 @@ Needs clangd.
    #+end_src
 ** Python
   #+begin_src emacs-lisp
-		(use-package lsp-pyright) ;; not sure if this does anything
-
 		;; this registers it, but the server does not get past "starting"
 		(lsp-register-client
 		 (make-lsp-client :new-connection (lsp-tramp-connection "pyls")
