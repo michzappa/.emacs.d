@@ -20,6 +20,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - cmake, libtool-bin, libvterm-dev (vterm)
 - slock (exwm)
 - compton or equivalent compositor (exwm)
+- npm
 ** Other Sources
 - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls.
 - OCaml Language Server:  https://github.com/ocaml/ocaml-lsp
@@ -64,70 +65,79 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * Personal
   Giving emacs my information.
   #+begin_src emacs-lisp
-		(setq user-emacs-directory "~/.emacs.d/user-dir")
-		(setq custom-file          "~/.emacs.d/custom.el")
-		(setq bookmark-default-file "~/.emacs.d/bookmarks")
-		(setq abbrev-file-name     "~/.emacs.d/abbrev_defs")
+    (setq user-emacs-directory "~/.emacs.d/user-dir")
+    (setq custom-file          "~/.emacs.d/custom.el")
+    (setq bookmark-default-file "~/.emacs.d/bookmarks")
+    (setq abbrev-file-name     "~/.emacs.d/abbrev_defs")
 
-		(setq user-full-name       "Michael Zappa")
-		(setq user-mail-address    "zapprich@gmail.com")
+    (setq user-full-name       "Michael Zappa")
+    (setq user-mail-address    "zapprich@gmail.com")
   #+end_src
 * Misc
   Miscellanious things which might be put somewhere else eventually.
   #+begin_src emacs-lisp
-		;; scroll compilation output in the window
-		(setq compilation-scroll-output t)
+    ;; scroll compilation output in the window
+    (setq compilation-scroll-output t)
 
-		;; minor mode for inserting parens, braces, quotes and the like in pairs.
-		;;turned "<> off for org mode since it makes the shortcut for org blocks difficult."
-		(electric-pair-mode)
-		(add-hook 'org-mode-hook
-							(lambda () (setq-local electric-pair-inhibit-predicate
-																(lambda (c)
-																	(if (eq c ?<)
-																			t
-																		(electric-pair-inhibit-predicate c))))))
+    ;; minor mode for inserting parens, braces, quotes and the like in pairs.
+    ;;turned "<> off for org mode since it makes the shortcut for org blocks difficult."
+    (electric-pair-mode)
+    (add-hook 'org-mode-hook
+              (lambda () (setq-local electric-pair-inhibit-predicate
+                                (lambda (c)
+                                  (if (eq c ?<)
+                                      t
+                                    (electric-pair-inhibit-predicate c))))))
 
-		;; pretty symbols like lambda
-		(global-prettify-symbols-mode t)
+    ;; pretty symbols like lambda
+    (global-prettify-symbols-mode t)
 
-		;; reduce the frequency of garbage collection by making it happen on
-		;; each 50MB of allocated data (the default is on every 0.76MB)
-		(setq gc-cons-threshold 50000000)
+    ;; reduce the frequency of garbage collection by making it happen on
+    ;; each 50MB of allocated data (the default is on every 0.76MB)
+    (setq gc-cons-threshold 50000000)
 
-		;; warn when opening files bigger than 100MB
-		(setq large-file-warning-threshold 100000000)
+    ;; warn when opening files bigger than 100MB
+    (setq large-file-warning-threshold 100000000)
 
-		;; quit Emacs directly even if there are running processes
-		(setq confirm-kill-processes nil)
+    ;; quit Emacs directly even if there are running processes
+    (setq confirm-kill-processes nil)
 
-		;; store all backup and autosave files in the tmp dir
-		(setq backup-directory-alist
-					`((".*" . ,temporary-file-directory)))
-		(setq auto-save-file-name-transforms
-					`((".*" ,temporary-file-directory t)))
+    ;; store all backup and autosave files in the tmp dir
+    (setq backup-directory-alist
+          `((".*" . ,temporary-file-directory)))
+    (setq auto-save-file-name-transforms
+          `((".*" ,temporary-file-directory t)))
 
-		;; Add color formatting to *compilation* buffer
-		(add-hook 'compilation-filter-hook
-							(lambda () (ansi-color-apply-on-region (point-min) (point-max))))
+    ;; Add color formatting to *compilation* buffer
+    (add-hook 'compilation-filter-hook
+              (lambda () (ansi-color-apply-on-region (point-min) (point-max))))
   #+end_src
 * TRAMP
-	#+begin_src emacs-lisp
-		(setq tramp-default-method "ssh")
+  #+begin_src emacs-lisp
+    (require 'tramp)
+    (setq tramp-default-method "ssh")
 
-		;; helper function to sudo a file
-		(defun sudo ()
-			"Use TRAMP to `sudo' the current buffer"
-			(interactive)
-			(when buffer-file-name
-				(find-alternate-file
-				 (concat "/sudo:root@localhost:"
-								 buffer-file-name))))
+    ;; helper function to sudo a file
+    (defun sudo ()
+      "Use TRAMP to `sudo' the current buffer"
+      (interactive)
+      (when buffer-file-name
+        (find-alternate-file
+         (concat "/sudo:root@localhost:"
+                 buffer-file-name))))
 
-		;; attempt to speed things up
-		(defadvice projectile-project-root (around ignore-remote first activate)
-			(unless (file-remote-p default-directory) ad-do-it))
-	#+end_src
+    ;; attempt to speed things up
+    (defadvice projectile-project-root (around ignore-remote first activate)
+      (unless (file-remote-p default-directory) ad-do-it))
+    (setq remote-file-name-inhibit-cache nil)
+    (setq vc-ignore-dir-regexp
+          (format "%s\\|%s"
+                  vc-ignore-dir-regexp
+                  tramp-file-name-regexp))
+    (setq tramp-verbose 1)
+
+    (add-to-list 'tramp-remote-path "~/.local/bin")
+  #+end_src
 * Mouse and Keys
   Mouse and keyboard settings which don't belong to any specific package or function.
   #+begin_src emacs-lisp
@@ -355,74 +365,74 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** projectile
   #+begin_src emacs-lisp
-		;; project manager
-		(use-package projectile
-			:init
-			(setq projectile-completion-system 'ivy)
-			(setq projectile-project-search-path '("~/Projects"))
-			(use-package ag)
-			(use-package ibuffer-projectile)
-			:config
-			(projectile-mode +1)
-			(setq projectile-mode-line "Projectile"))
+    ;; project manager
+    (use-package projectile
+      :init
+      (setq projectile-completion-system 'ivy)
+      (setq projectile-project-search-path '("~/Projects"))
+      (use-package ag)
+      (use-package ibuffer-projectile)
+      :config
+      (projectile-mode +1)
+      (setq projectile-mode-line "Projectile"))
 
-		;; hydra bindings for projectile
-		(defhydra hydra-projectile-other-window (:color amaranth)
-			"projectile-other-window"
-			("f"  projectile-find-file-other-window        "file" :column "Find File")
-			("g"  projectile-find-file-dwim-other-window   "file dwim")
-			("d"  projectile-find-dir-other-window         "dir")
-			("b"  projectile-switch-to-buffer-other-window "buffer")
-			("q"  nil                                      "cancel" :color blue))
+    ;; hydra bindings for projectile
+    (defhydra hydra-projectile-other-window (:color amaranth)
+      "projectile-other-window"
+      ("f"  projectile-find-file-other-window        "file" :column "Find File")
+      ("g"  projectile-find-file-dwim-other-window   "file dwim")
+      ("d"  projectile-find-dir-other-window         "dir")
+      ("b"  projectile-switch-to-buffer-other-window "buffer")
+      ("q"  nil                                      "cancel" :color blue))
 
-		(defhydra hydra-projectile (:color amaranth)
-			"PROJECTILE: %(projectile-project-root)"
+    (defhydra hydra-projectile (:color amaranth)
+      "PROJECTILE: %(projectile-project-root)"
 
-			("ff"  projectile-find-file "file" :column "Find File")
-			("s-f" projectile-find-file-dwim "file dwim")
-			("fd"  projectile-find-file-in-directory "file curr dir")
-			("r"   projectile-recentf "recent file")
-			("d"   projectile-find-dir "dir")
+      ("ff"  projectile-find-file "file" :column "Find File")
+      ("s-f" projectile-find-file-dwim "file dwim")
+      ("fd"  projectile-find-file-in-directory "file curr dir")
+      ("r"   projectile-recentf "recent file")
+      ("d"   projectile-find-dir "dir")
 
-			("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
-			("i"   projectile-ibuffer "ibuffer")
-			("K"   projectile-kill-buffers "kill all buffers")
+      ("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
+      ("i"   projectile-ibuffer "ibuffer")
+      ("K"   projectile-kill-buffers "kill all buffers")
 
-			("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
-			("x"   projectile-remove-known-project "remove known project")
-			("X"   projectile-cleanup-known-projects "cleanup projects")
-			("z"   projectile-cache-current-file "cache current project")
+      ("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
+      ("x"   projectile-remove-known-project "remove known project")
+      ("X"   projectile-cleanup-known-projects "cleanup projects")
+      ("z"   projectile-cache-current-file "cache current project")
 
-			("a"   projectile-ag "ag" :column "Project")
-			("p"   projectile-switch-project "switch project" :column "Project")
-			("P"   treemacs-projectile "treemacs")
+      ("a"   projectile-ag "ag" :column "Project")
+      ("p"   projectile-switch-project "switch project" :column "Project")
+      ("P"   treemacs-projectile "treemacs")
 
-			("`"   hydra-projectile-other-window/body "other window" :color blue :column "Other")
-			("q"   nil "exit" :color blue))
+      ("`"   hydra-projectile-other-window/body "other window" :color blue :column "Other")
+      ("q"   nil "exit" :color blue))
   #+end_src
 ** treemacs
   #+begin_src emacs-lisp
-		;; sidebar file explorer
-		(use-package treemacs
-			:bind
-			("C-c t" . treemacs)
-			:commands
-			(treemacs-filewatch-mode
-			 treemacs-git-mode
-			 treemacs-follow-mode)
-			:config
-			(setq treemacs-width 24)
-			(add-hook 'treemacs-mode-hook (lambda() (display-line-numbers-mode -1))))
+    ;; sidebar file explorer
+    (use-package treemacs
+      :bind
+      ("C-c t" . treemacs)
+      :commands
+      (treemacs-filewatch-mode
+       treemacs-git-mode
+       treemacs-follow-mode)
+      :config
+      (setq treemacs-width 24)
+      (add-hook 'treemacs-mode-hook (lambda() (display-line-numbers-mode -1))))
 
-		;; integrate git with treemacs
-		(use-package treemacs-magit
-			:after (treemacs magit)
-			:ensure t)
+    ;; integrate git with treemacs
+    (use-package treemacs-magit
+      :after (treemacs magit)
+      :ensure t)
 
-		;; integrate projectile with treemacs
-		(use-package treemacs-projectile
-			:after (treemacs projectile)
-			:ensure t)
+    ;; integrate projectile with treemacs
+    (use-package treemacs-projectile
+      :after (treemacs projectile)
+      :ensure t)
   #+end_src
 * Text Files
   Packages and configuration related to displaying, editing, and formatting text files.
@@ -455,11 +465,11 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** rainbow-delimiters
   #+begin_src emacs-lisp
-		(use-package rainbow-delimiters
-			:config
-			(add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
-			(add-hook 'java-mode-hook #'rainbow-delimiters-mode)
-			(add-hook 'rust-mode-hook #'rainbow-delimiters-mode))
+    (use-package rainbow-delimiters
+      :config
+      (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
+      (add-hook 'java-mode-hook #'rainbow-delimiters-mode)
+      (add-hook 'rust-mode-hook #'rainbow-delimiters-mode))
   #+end_src
 ** format-all
    #+begin_src emacs-lisp
@@ -712,11 +722,18 @@ Needs clangd.
    #+end_src
 ** Python
   #+begin_src emacs-lisp
-		(use-package python-mode
-			:config
-			(add-hook 'python-mode-hook 'lsp))
+    (use-package python-mode
+      :config
+      (add-hook 'python-mode-hook 'lsp))
 
-		(require 'lsp-pyright) ;; not sure if this does anything
+    (require 'lsp-pyright) ;; not sure if this does anything
+
+    ;; this registers it, but the server does not get past "starting"
+    (lsp-register-client
+     (make-lsp-client :new-connection (lsp-tramp-connection "pyls")
+                      :major-modes '(python-mode)
+                      :remote? t
+                      :server-id 'pyls-remote))
   #+end_src
 ** Rust
   #+begin_src emacs-lisp
