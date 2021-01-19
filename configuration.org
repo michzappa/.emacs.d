@@ -587,13 +587,15 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     (use-package company-auctex
       :after (auctex company)
       :config (company-auctex-init))
-
-    ;; enhanced pdf viewer
-    (use-package pdf-tools
-      :init
-      (pdf-tools-install)
-      :hook (pdf-view-mode . pdf-view-midnight-minor-mode))
   #+end_src
+* PDF-Tools
+	#+begin_src emacs-lisp
+		;; enhanced pdf viewer
+		(use-package pdf-tools
+			:init
+			(pdf-tools-install)
+			:hook (pdf-view-mode . pdf-view-midnight-minor-mode))
+	#+end_src
 * Languages and LSP Support
   Packages and configuration related to language major/minor modes and language servers.
 ** LSP Mode
