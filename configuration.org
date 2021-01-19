@@ -284,8 +284,8 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
        ("C-x C-r" . counsel-recentf))
       :config
       (setcdr (assoc 'counsel-M-x ivy-initial-inputs-alist) "") ;; not only prefixes
-      (ivy-mode +1)
-      (counsel-mode +1)
+      (ivy-mode)
+      (counsel-mode)
       (use-package ivy-hydra))
   #+end_src
 ** exec-path-from-shell
