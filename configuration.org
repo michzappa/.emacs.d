@@ -128,7 +128,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 			(setq tramp-default-method "ssh")
 
 			;; helper function to sudo a file
-			(defun sudo ()
+			(defun mz/sudo ()
 				"Use TRAMP to `sudo' the current buffer"
 				(interactive)
 				(when buffer-file-name
@@ -512,7 +512,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
      (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
      ;; function for toggling comments
-     (defun comment-or-uncomment-region-or-line ()
+     (defun mz/comment-or-uncomment-region-or-line ()
        "Comments or uncomments the region or the current line if there's no active region."
        (interactive)
        (let (beg end)
@@ -526,7 +526,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
      (global-set-key (kbd "C-/") 'comment-or-uncomment-region-or-line)
 
      ;; function to untabify buffer
-     (defun untabify-buffer ()
+     (defun mz/untabify-buffer ()
        (interactive)
        (untabify (point-min) (point-max)))
 
@@ -599,7 +599,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       :after auctex
       :hook (bibtex-mode . my/bibtex-fill-column)
       :preface
-      (defun my/bibtex-fill-column ()
+      (defun mz/bibtex-fill-column ()
         "Ensures that each entry does not exceed 120 characters."
         (setq fill-column 120)))
 
@@ -726,19 +726,19 @@ Needs clangd.
       (require 'dap-java))
 
     ;; function to build jar from maven project
-    (defun mvn-jar ()
+    (defun mz/mvn-jar ()
       "Packages the maven project into a jar."
       (interactive)
       (mvn "package"))
 
     ;; function to run the main class defined for the maven project
-    (defun mvn-run ()
+    (defun mz/mvn-run ()
       "Run the maven project using the exec plugin."
       (interactive)
       (mvn "compile exec:java"))
 
     ;; function to test all test classes
-    (defun mvn-test-all ()
+    (defun mz/mvn-test-all ()
       "Run all test classes in the maven project."
       (interactive)
       (mvn "test"))
@@ -748,11 +748,11 @@ Needs clangd.
       :bind
       (:map java-mode-map
             (("C-c M" . mvn)
-             ("C-c m r" . mvn-run)
+             ("C-c m r" . mz/mvn-run)
              ("C-c m c" . mvn-compile)
              ("C-c m T" . mvn-test) ;; asks for specific test class to run
-             ("C-c m t" . mvn-test-all)
-             ("C-c m j" . mvn-jar))))
+             ("C-c m t" . mz/mvn-test-all)
+             ("C-c m j" . mz/mvn-jar))))
    #+end_src
 ** Python
   #+begin_src emacs-lisp
@@ -840,26 +840,26 @@ Currently not doing web development, by my estimation I will need these basic pa
    #+end_src
 ** org-capture
    #+begin_src emacs-lisp
-     (global-set-key (kbd "C-c c") 'org-capture)
+		 (global-set-key (kbd "C-c c") 'org-capture)
 
-     ;; abstracted template for a TODO to take place on some day, like an assignment due date.
-     (defun temp/todo-on-day ()
-       "* TODO %? %^t")
+		 ;; abstracted template for a TODO to take place on some day, like an assignment due date.
+		 (defun mz/todo-on-day-template ()
+			 "* TODO %? %^t")
 
-     (setq org-capture-templates
-           '(("c" "Class Task")
-             ("cs" "Systems Task" entry
-              (file+headline "cs3650.org" "Systems")
-              (function temp/todo-on-day))
-             ("cn" "Networks Task" entry
-              (file+headline "cs3700.org" "Networks")
-              (function temp/todo-on-day))
-             ("cc" "Cyber Task" entry
-              (file+headline "cy2550.org" "Cyber")
-              (function temp/todo-on-day))
-             ("cp" "Phonology Task" entry
-              (file+headline "ling3422.org" "Phonology")
-              (function temp/todo-on-day))))
+		 (setq org-capture-templates
+					 '(("c" "Class Task")
+						 ("cs" "Systems Task" entry
+							(file+headline "cs3650.org" "Systems")
+							(function mz/todo-on-day-template))
+						 ("cn" "Networks Task" entry
+							(file+headline "cs3700.org" "Networks")
+							(function mz/todo-on-day-template))
+						 ("cc" "Cyber Task" entry
+							(file+headline "cy2550.org" "Cyber")
+							(function mz/todo-on-day-template))
+						 ("cp" "Phonology Task" entry
+							(file+headline "ling3422.org" "Phonology")
+							(function mz/todo-on-day-template))))
    #+end_src
 ** org-agenda
    #+begin_src emacs-lisp
@@ -928,9 +928,9 @@ Currently not doing web development, by my estimation I will need these basic pa
                 1 "DP-3")) ;; external monitor via HDMI which is for some reason named DP-3
 
       ;; when window "class" updates, use it to set the buffer name
-      (defun exwm-update-class ()
+      (defun mz/exwm-update-class ()
         (exwm-workspace-rename-buffer exwm-class-name))
-      (add-hook 'exwm-update-class-hook #'exwm-update-class)
+      (add-hook 'exwm-update-class-hook #'mz/exwm-update-class)
 
       ;; these keys should always pass through to emacs
       (setq exwm-input-prefix-keys
@@ -979,7 +979,7 @@ Currently not doing web development, by my estimation I will need these basic pa
               )))
 
     ;; function to turn on all the exwm stuff
-    (defun enable-exwm ()
+    (defun mz/enable-exwm ()
       "Enables the features of EXWM."
 
       ;; ensure screen updates with xrandr will refresh EXWM frames
@@ -1002,5 +1002,5 @@ Currently not doing web development, by my estimation I will need these basic pa
       (exwm-enable)
       (exwm-init))
 
-    (if exwm-enabled (enable-exwm) ())
+    (if exwm-enabled (mz/enable-exwm) ())
   #+end_src
