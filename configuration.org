@@ -68,7 +68,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+begin_src emacs-lisp
     (setq user-emacs-directory "~/.emacs.d/user-dir")
     (setq custom-file          "~/.emacs.d/custom.el")
-    (setq bookmark-default-file "~/.emacs.d/bookmarks")
+    (setq bookmark-default-file "~/.emacs.d/bookmarks.el")
     (setq abbrev-file-name     "~/.emacs.d/abbrev_defs")
 
     (setq user-full-name       "Michael Zappa")
@@ -595,6 +595,16 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 			:init
 			(pdf-tools-install)
 			:hook (pdf-view-mode . pdf-view-midnight-minor-mode))
+
+		;; quelpa just for this right now, maybe break out when re-evaluate packaging. probably will just change to straight
+		(use-package quelpa
+			:config
+			(quelpa
+			 '(pdf-continuous-scroll-mode
+				 :fetcher git
+				 :url "https://github.com/dalanicolai/pdf-continuous-scroll-mode.el.git"))
+			(add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
+			(setq pdf-view-have-image-mode-pixel-vscroll t))
 	#+end_src
 * Languages and LSP Support
   Packages and configuration related to language major/minor modes and language servers.
