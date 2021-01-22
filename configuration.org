@@ -8,7 +8,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - TODO evaluate need for treemacs/actually making it work as desired (opens current project only)
 - TODO go through https://github.com/daviwil/dotfiles/blob/master/Emacs.org
 - emacs from scratch repo: https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Desktop-01.org
-- TODO go through the hydras and make more things blue
 - TODO defer packages
 * Things to Install
 ** Apt Packages (or equivalent)
@@ -122,31 +121,28 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		;; (add-to-list 'load-path "~/.emacs.d/tramp")
 		;; (require 'tramp)
 
-		(use-package tramp
-			:defer t
-			:config
-			(setq tramp-default-method "ssh")
+		(setq tramp-default-method "ssh")
 
-			;; helper function to sudo a file
-			(defun mz/sudo ()
-				"Use TRAMP to `sudo' the current buffer"
-				(interactive)
-				(when buffer-file-name
-					(find-alternate-file
-					 (concat "/sudo:root@localhost:"
-									 buffer-file-name))))
+		;; helper function to sudo a file
+		(defun mz/sudo ()
+			"Use TRAMP to `sudo' the current buffer"
+			(interactive)
+			(when buffer-file-name
+				(find-alternate-file
+				 (concat "/sudo:root@localhost:"
+								 buffer-file-name))))
 
-			;; attempt to speed things up
-			(defadvice projectile-project-root (around ignore-remote first activate)
-				(unless (file-remote-p default-directory) ad-do-it))
-			(setq remote-file-name-inhibit-cache nil)
-			(setq vc-ignore-dir-regexp
-						(format "%s\\|%s"
-										vc-ignore-dir-regexp
-										tramp-file-name-regexp))
-			(setq tramp-verbose 1)
+		;; attempt to speed things up
+		(defadvice projectile-project-root (around ignore-remote first activate)
+			(unless (file-remote-p default-directory) ad-do-it))
+		(setq remote-file-name-inhibit-cache nil)
+		(setq vc-ignore-dir-regexp
+					(format "%s\\|%s"
+									vc-ignore-dir-regexp
+									tramp-file-name-regexp))
+		(setq tramp-verbose 1)
 
-			(add-to-list 'tramp-remote-path "~/.local/bin"))
+		(add-to-list 'tramp-remote-path "~/.local/bin")
   #+end_src
 * Mouse and Keys
   Mouse and keyboard settings which don't belong to any specific package or function.
