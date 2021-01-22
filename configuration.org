@@ -8,6 +8,8 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - TODO evaluate need for treemacs/actually making it work as desired (opens current project only)
 - TODO go through https://github.com/daviwil/dotfiles/blob/master/Emacs.org
 - emacs from scratch repo: https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Desktop-01.org
+- TODO go through the hydras and make more things blue
+- TODO defer packages
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag (projectile-ag)
@@ -115,29 +117,36 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 * TRAMP
   #+begin_src emacs-lisp
-    (require 'tramp)
-    (setq tramp-default-method "ssh")
+		;; loading manually compiled tramp for latest version,
+		;; hoping to get bug fix for lsp over tramp
+		;; (add-to-list 'load-path "~/.emacs.d/tramp")
+		;; (require 'tramp)
 
-    ;; helper function to sudo a file
-    (defun sudo ()
-      "Use TRAMP to `sudo' the current buffer"
-      (interactive)
-      (when buffer-file-name
-        (find-alternate-file
-         (concat "/sudo:root@localhost:"
-                 buffer-file-name))))
+		(use-package tramp
+			:defer t
+			:config
+			(setq tramp-default-method "ssh")
 
-    ;; attempt to speed things up
-    (defadvice projectile-project-root (around ignore-remote first activate)
-      (unless (file-remote-p default-directory) ad-do-it))
-    (setq remote-file-name-inhibit-cache nil)
-    (setq vc-ignore-dir-regexp
-          (format "%s\\|%s"
-                  vc-ignore-dir-regexp
-                  tramp-file-name-regexp))
-    (setq tramp-verbose 1)
+			;; helper function to sudo a file
+			(defun sudo ()
+				"Use TRAMP to `sudo' the current buffer"
+				(interactive)
+				(when buffer-file-name
+					(find-alternate-file
+					 (concat "/sudo:root@localhost:"
+									 buffer-file-name))))
 
-    (add-to-list 'tramp-remote-path "~/.local/bin")
+			;; attempt to speed things up
+			(defadvice projectile-project-root (around ignore-remote first activate)
+				(unless (file-remote-p default-directory) ad-do-it))
+			(setq remote-file-name-inhibit-cache nil)
+			(setq vc-ignore-dir-regexp
+						(format "%s\\|%s"
+										vc-ignore-dir-regexp
+										tramp-file-name-regexp))
+			(setq tramp-verbose 1)
+
+			(add-to-list 'tramp-remote-path "~/.local/bin"))
   #+end_src
 * Mouse and Keys
   Mouse and keyboard settings which don't belong to any specific package or function.
@@ -183,7 +192,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 ** all-the-icons
   #+begin_src emacs-lisp
     ;; font for more emacs icons
-    (use-package all-the-icons)
+    ;;(use-package all-the-icons)
   #+end_src
 ** minions
   #+begin_src emacs-lisp
@@ -249,22 +258,22 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** tab-bar-mode
    #+begin_src emacs-lisp
-     (tab-bar-mode)
-     (global-set-key (kbd "M-[") 'tab-bar-history-back)
-     (global-set-key (kbd "M-]") 'tab-bar-history-forward)
-     ;; hydra bindings for tab-bar-mode
-     (defhydra hydra-tab-bar (:color amaranth)
-       "Tab Bar Operations"
-       ("t" tab-new "Create a new tab" :column "Creation")
-       ("d" dired-other-tab "Open Dired in another tab")
-       ("f" find-file-other-tab "Find file in another tab")
-       ("0" tab-close "Close current tab")
-       ("m" tab-move "Move current tab" :column "Management")
-       ("r" tab-rename "Rename Tab")
-       ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
-       ("<right>" tab-next "Next Tab")
-       ("<left>" tab-previous "Previous Tab")
-       ("q" nil "exit" :color blue))
+		 (tab-bar-mode)
+		 (global-set-key (kbd "M-[") 'tab-bar-history-back)
+		 (global-set-key (kbd "M-]") 'tab-bar-history-forward)
+		 ;; hydra bindings for tab-bar-mode
+		 (defhydra hydra-tab-bar (:color red)
+			 "Tab Bar Operations"
+			 ("t" tab-new "Create a new tab" :column "Creation")
+			 ("d" dired-other-tab "Open Dired in another tab")
+			 ("f" find-file-other-tab "Find file in another tab")
+			 ("0" tab-close "Close current tab")
+			 ("m" tab-move "Move current tab" :column "Management")
+			 ("r" tab-rename "Rename Tab")
+			 ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
+			 ("<right>" tab-next "Next Tab")
+			 ("<left>" tab-previous "Previous Tab")
+			 ("q" nil "exit" :color blue))
    #+end_src
 * User Interaction
   Packages and configuration related to user interaction.
@@ -309,41 +318,41 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** windmove
   #+begin_src emacs-lisp
-    (use-package windmove
-      ;; default keybindings are S-s-<direction>, but super doesn't get past GNOME shell
-      :bind
-      (("C-S-<left>" . windmove-swap-states-left)
-       ("C-S-<right>" . windmove-swap-states-right)
-       ("C-S-<up>" . windmove-swap-states-up)
-       ("C-S-<down>" . windmove-swap-states-down))
-      :config
-      ;; use shift + arrow keys to switch between visible buffers
-      (windmove-default-keybindings)
+		(use-package windmove
+			;; default keybindings are S-s-<direction>, but super doesn't get past GNOME shell
+			:bind
+			(("C-S-<left>" . windmove-swap-states-left)
+			 ("C-S-<right>" . windmove-swap-states-right)
+			 ("C-S-<up>" . windmove-swap-states-up)
+			 ("C-S-<down>" . windmove-swap-states-down))
+			:config
+			;; use shift + arrow keys to switch between visible buffers
+			(windmove-default-keybindings)
 
-      ;; Make windmove work in org-mode.
-      (add-hook 'org-shiftup-final-hook 'windmove-up)
-      (add-hook 'org-shiftleft-final-hook 'windmove-left)
-      (add-hook 'org-shiftdown-final-hook 'windmove-down)
-      (add-hook 'org-shiftright-final-hook 'windmove-right)
+			;; Make windmove work in org-mode.
+			(add-hook 'org-shiftup-final-hook 'windmove-up)
+			(add-hook 'org-shiftleft-final-hook 'windmove-left)
+			(add-hook 'org-shiftdown-final-hook 'windmove-down)
+			(add-hook 'org-shiftright-final-hook 'windmove-right)
 
-      (add-hook 'org-shiftcontrolup-final-hook 'windmove-swap-states-up)
-      (add-hook 'org-shiftcontrolleft-final-hook 'windmove-swap-states-left)
-      (add-hook 'org-shiftcontroldown-final-hook 'windmove-swap-states-down)
-      (add-hook 'org-shiftcontrolright-final-hook 'windmove-swap-states-right))
+			(add-hook 'org-shiftcontrolup-final-hook 'windmove-swap-states-up)
+			(add-hook 'org-shiftcontrolleft-final-hook 'windmove-swap-states-left)
+			(add-hook 'org-shiftcontroldown-final-hook 'windmove-swap-states-down)
+			(add-hook 'org-shiftcontrolright-final-hook 'windmove-swap-states-right))
 
-    (defhydra hydra-windmove (:color amaranth)
-      "Windmove Operations"
-      ("<left>" windmove-left "left" :column "Change window")
-      ("<right>" windmove-right "right")
-      ("<up>" windmove-up "up")
-      ("<down>" windmove-down "down")
+		(defhydra hydra-windmove (:color red)
+			"Windmove Operations"
+			("<left>" windmove-left "left" :column "Change window")
+			("<right>" windmove-right "right")
+			("<up>" windmove-up "up")
+			("<down>" windmove-down "down")
 
-      ("C-<left>" windmove-swap-states-left "move left" :column "Move window")
-      ("C-<right>" windmove-swap-states-right "move right")
-      ("C-<up>" windmove-swap-states-up "move up")
-      ("C-<down>" windmove-swap-states-down "move down")
+			("C-<left>" windmove-swap-states-left "move left" :column "Move window")
+			("C-<right>" windmove-swap-states-right "move right")
+			("C-<up>" windmove-swap-states-up "move up")
+			("C-<down>" windmove-swap-states-down "move down")
 
-      ("q" nil "exit" :color blue))
+			("q" nil "exit" :color blue))
   #+end_src
 ** Yes/No Question Configuration
    #+begin_src emacs-lisp
@@ -367,50 +376,61 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** projectile
   #+begin_src emacs-lisp
-    ;; project manager
-    (use-package projectile
-      :init
-      (setq projectile-completion-system 'ivy)
-      (setq projectile-project-search-path '("~/Projects"))
-      (use-package ag)
-      (use-package ibuffer-projectile)
-      :config
-      (projectile-mode +1)
-      (setq projectile-mode-line "Projectile"))
+		;; project manager
+		(use-package projectile
+			:init
+			(setq projectile-completion-system 'ivy)
+			(setq projectile-project-search-path '("~/Projects"))
+			(use-package ag)
+			(use-package ibuffer-projectile)
+			:config
+			(projectile-mode +1)
+			(setq projectile-mode-line "Projectile"))
 
-    ;; hydra bindings for projectile
-    (defhydra hydra-projectile-other-window (:color amaranth)
-      "projectile-other-window"
-      ("f"  projectile-find-file-other-window        "file" :column "Find File")
-      ("g"  projectile-find-file-dwim-other-window   "file dwim")
-      ("d"  projectile-find-dir-other-window         "dir")
-      ("b"  projectile-switch-to-buffer-other-window "buffer")
-      ("q"  nil                                      "cancel" :color blue))
+		;; utility function for opening projectile eshell in another window
+		(defun mz/projectile-eshell-other-window ()
+			"Open 'eshell' from projectile in a new window."
+			(interactive)
+			(let ((buf (projectile-run-eshell)))
+				(switch-to-buffer (other-buffer buf))
+				(switch-to-buffer-other-window buf)))
 
-    (defhydra hydra-projectile (:color amaranth)
-      "PROJECTILE: %(projectile-project-root)"
+		;; hydra bindings for opening projectile things in another window
+		(defhydra hydra-projectile-other-window (:color blue)
+			"projectile-other-window"
+			("f"  projectile-find-file-other-window        "file" :column "Find File")
+			("g"  projectile-find-file-dwim-other-window   "file dwim")
+			("d"  projectile-find-dir-other-window         "dir")
+			("b"  projectile-switch-to-buffer-other-window "buffer")
+			("e" mz/projectile-eshell-other-window         "eshell" :column "Misc")
+			("q"  nil                                      "cancel" :color blue))
 
-      ("ff"  projectile-find-file "file" :column "Find File")
-      ("s-f" projectile-find-file-dwim "file dwim")
-      ("fd"  projectile-find-file-in-directory "file curr dir")
-      ("r"   projectile-recentf "recent file")
-      ("d"   projectile-find-dir "dir")
+		;; hydra bindings for projectile
+		(defhydra hydra-projectile (:color red)
+			"PROJECTILE: %(projectile-project-root)"
 
-      ("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
-      ("i"   projectile-ibuffer "ibuffer")
-      ("K"   projectile-kill-buffers "kill all buffers")
+			("ff"  projectile-find-file "file" :column "Find File")
+			("s-f" projectile-find-file-dwim "file dwim")
+			("fd"  projectile-find-file-in-directory "file curr dir")
+			("r"   projectile-recentf "recent file")
+			("d"   projectile-find-dir "dir")
 
-      ("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
-      ("x"   projectile-remove-known-project "remove known project")
-      ("X"   projectile-cleanup-known-projects "cleanup projects")
-      ("z"   projectile-cache-current-file "cache current project")
+			("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
+			("i"   projectile-ibuffer "ibuffer")
+			("K"   projectile-kill-buffers "kill all buffers")
+			("e"   projectile-run-eshell "eshell" :color blue)
 
-      ("a"   projectile-ag "ag" :column "Project")
-      ("p"   projectile-switch-project "switch project" :column "Project")
-      ("P"   treemacs-projectile "treemacs")
+			("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
+			("x"   projectile-remove-known-project "remove known project")
+			("X"   projectile-cleanup-known-projects "cleanup projects")
+			("z"   projectile-cache-current-file "cache current project")
 
-      ("`"   hydra-projectile-other-window/body "other window" :color blue :column "Other")
-      ("q"   nil "exit" :color blue))
+			("a"   projectile-ag "ag" :column "Project")
+			("p"   projectile-switch-project "switch project" :column "Project")
+			("P"   treemacs-projectile "treemacs")
+
+			("`"   hydra-projectile-other-window/body "other window" :color blue :column "Other")
+			("q"   nil "exit" :color blue))
   #+end_src
 ** treemacs
   #+begin_src emacs-lisp
@@ -643,7 +663,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       (tooltip-mode 1))
 
     ;; hydra bindings for language server commands.
-    (defhydra hydra-lsp (:color amaranth)
+    (defhydra hydra-lsp (:color red)
       "Language Server Operations"
 
       ("f" lsp-format-buffer "format" :column "Buffer")
@@ -736,24 +756,24 @@ Needs clangd.
    #+end_src
 ** Python
   #+begin_src emacs-lisp
-    ;; this registers it, but the server does not get past "starting"
-    (lsp-register-client
-     (make-lsp-client :new-connection (lsp-tramp-connection "pyls")
-                      :major-modes '(python-mode)
-                      :remote? t
-                      :server-id 'pyls-remote))
+		;; this registers it, but the server does not get past "starting"
+		(lsp-register-client
+		 (make-lsp-client :new-connection (lsp-tramp-connection "pyls")
+											:major-modes '(python-mode)
+											:remote? t
+											:server-id 'pyls-remote))
 
-    (use-package python
-      :hook
-      (python-mode . lsp)
-      :config
-      (cond
-       ;; i use python3
-       ((executable-find "python3")
-        (setq python-shell-interpreter "python3"))))
+		(use-package python
+			:hook
+			(python-mode . lsp)
+			:config
+			(cond
+			 ;; i use python3
+			 ((executable-find "python3")
+				(setq python-shell-interpreter "python3"))))
 
-    (require 'dap-python)
-    (setq dap-python-executable "python3")
+		(require 'dap-python)
+		(setq dap-python-executable "python3")
   #+end_src
 ** Rust
   #+begin_src emacs-lisp
@@ -829,16 +849,16 @@ Currently not doing web development, by my estimation I will need these basic pa
      (setq org-capture-templates
            '(("c" "Class Task")
              ("cs" "Systems Task" entry
-              (file+headline "class-tasks.org" "Systems")
+              (file+headline "cs3650.org" "Systems")
               (function temp/todo-on-day))
              ("cn" "Networks Task" entry
-              (file+headline "class-tasks.org" "Networks")
+              (file+headline "cs3700.org" "Networks")
               (function temp/todo-on-day))
              ("cc" "Cyber Task" entry
-              (file+headline "class-tasks.org" "Cyber")
+              (file+headline "cy2550.org" "Cyber")
               (function temp/todo-on-day))
              ("cp" "Phonology Task" entry
-              (file+headline "class-tasks.org" "Phonology")
+              (file+headline "ling3422.org" "Phonology")
               (function temp/todo-on-day))))
    #+end_src
 ** org-agenda
