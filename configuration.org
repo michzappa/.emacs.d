@@ -119,7 +119,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		;; loading manually compiled tramp for latest version,
 		;; hoping to get bug fix for lsp over tramp
 		;; (add-to-list 'load-path "~/.emacs.d/tramp")
-		;; (require 'tramp)
+		(require 'tramp)
 
 		(setq tramp-default-method "ssh")
 
