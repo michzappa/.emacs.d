@@ -175,13 +175,14 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * Hydra
   Hydra provides the ability to create a keybinding menu to reduce redundant keypresses.
   #+begin_src emacs-lisp
-    (use-package hydra
-      :bind
-      (("C-c f" . hydra-formatting/body)
-       ("C-x t" . hydra-tab-bar/body)
-       ("C-c o" . hydra-org/body)
-       ("C-c p" . hydra-projectile/body)
-       ("C-x w" . hydra-windmove/body)))
+		(use-package hydra
+			:bind
+			(("C-c f" . hydra-formatting/body)
+			 ("C-x t" . hydra-tab-bar/body)
+			 ("C-c e" . hydra-eglot/body)
+			 ("C-c o" . hydra-org/body)
+			 ("C-c p" . hydra-projectile/body)
+			 ("C-x w" . hydra-windmove/body)))
   #+end_src
 * User Interface
   Packages and configuration related to modifying the user-interface.
@@ -403,7 +404,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       ("d"  projectile-find-dir-other-window         "dir")
       ("b"  projectile-switch-to-buffer-other-window "buffer")
       ("e" mz/projectile-eshell-other-window         "eshell" :column "Misc")
-      ("q"  nil                                      "cancel" :color blue))
+      ("q"  nil                                      "exit" :color blue))
 
     ;; hydra bindings for projectile
     (defhydra hydra-projectile (:color red)
@@ -598,7 +599,16 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   Packages and configuration related to language major/minor modes and language servers.
 ** Eglot
    #+begin_src emacs-lisp
-     (use-package eglot)
+		 (use-package eglot)
+
+		 (defhydra hydra-eglot (:color red)
+			 ("r" eglot-rename "rename")
+			 ("X" eglot-shutdown "shutdown")
+			 ("R" eglot-reconnect "reconnect")
+			 ("f" eglot-format "format")
+			 ("c" eglot-code-actions "code actions")
+
+			 ("q" nil "exit" :color blue))
    #+end_src
 ** C
 Needs clangd.
