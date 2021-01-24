@@ -8,7 +8,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - TODO go through https://github.com/daviwil/dotfiles/blob/master/Emacs.org
 - emacs from scratch repo: https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Desktop-01.org
 - TODO defer packages? pin packages? learn more about use-package.
-- TODO eglot hydra
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag (projectile-ag)
@@ -20,9 +19,11 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - cmake, libtool-bin, libvterm-dev (vterm)
 - slock (exwm)
 - compton or equivalent compositor (exwm)
+- lua5.3, liblua5.3 (latex lsp for eglot)
 ** Other Sources
 - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls.
 - OCaml Language Server:  https://github.com/ocaml/ocaml-lsp
+- LaTeX Language Server: https://github.com/astoff/digestif
 - Java Language Server: https://github.com/eclipse/eclipse.jdt.ls
 - Python Language Server:  https://github.com/palantir/python-language-server
 - Rust Language Server:  https://github.com/rust-lang/rls
@@ -223,20 +224,16 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** Theme Configuration
   #+begin_src emacs-lisp
-    ;; ;; nord-theme, doesn't have tab-bar support yet
-    ;; (use-package nord-theme
-    ;;  :config
-    ;;  (load-theme 'nord t))
+		;; ;; nord-theme, doesn't have tab-bar support yet
+		(use-package nord-theme)
 
-    ;; dracula-theme, which has tab-bar support
-    ;; (use-package dracula-theme
-    ;;   :config
-    ;;   (load-theme 'dracula t))
+		;; dracula-theme, which has tab-bar support
+		(use-package dracula-theme)
 
-    ;; modus-vivendi, dark theme from prot
-    (use-package modus-vivendi-theme
-      :config
-      (load-theme 'modus-vivendi t))
+		;; modus-vivendi, dark theme from prot
+		(use-package modus-vivendi-theme
+			:config
+			(load-theme 'modus-vivendi t))
   #+end_src
 ** Frames Configuration
   #+begin_src emacs-lisp
@@ -527,55 +524,46 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       :hook
       (nov-mode . visual-line-mode))
   #+end_src
-* AUCTeX
-  LaTeX editing enhancements.
+* LaTeX
   #+begin_src emacs-lisp
-    (use-package auctex
-      :defer t
-      :hook (LaTeX-mode . reftex-mode)
-      :custom
-      (TeX-auto-save t)
-      (TeX-byte-compile t)
-      (TeX-clean-confirm nil)
-      (TeX-master 'dwim)
-      (TeX-parse-self t)
-      (TeX-source-correlate-mode t)
+		(use-package auctex
+			:defer t
+			:hook (LaTeX-mode . eglot-ensure)
+			:custom
+			(TeX-auto-save t)
+			(TeX-byte-compile t)
+			(TeX-clean-confirm nil)
+			(TeX-master 'dwim)
+			(TeX-parse-self t)
+			(TeX-source-correlate-mode t)
 
-      ;; pdf mode
-      (TeX-PDF-mode t)
-      (TeX-view-program-selection '((output-pdf "PDF Tools")))
-      (TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
-      (TeX-source-correlate-start-server t)
+			;; pdf mode
+			(TeX-PDF-mode t)
+			(TeX-view-program-selection '((output-pdf "PDF Tools")))
+			(TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
+			(TeX-source-correlate-start-server t)
 
-      (reftex-plug-into-AUCTeX t)
-      (TeX-error-overview-open-after-TeX-run t)
-      :config
+			(reftex-plug-into-AUCTeX t)
+			(TeX-error-overview-open-after-TeX-run t)
+			:config
 
-      ;; formatting hooks
-      (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-      (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-      (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+			;; formatting hooks
+			(add-hook 'LaTeX-mode-hook 'visual-line-mode)
+			(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+			(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 
-      ;; overview of all compilation errors
-      (setq TeX-error-overview-open-after-TeX-run t)
+			;; to have the buffer refresh after compilation
+			(add-hook 'TeX-after-compilation-finished-functions
+								#'TeX-revert-document-buffer))
 
-      ;; to have the buffer refresh after compilation
-      (add-hook 'TeX-after-compilation-finished-functions
-                #'TeX-revert-document-buffer))
-
-    ;; reference management
-    (use-package bibtex
-      :after auctex
-      :hook (bibtex-mode . my/bibtex-fill-column)
-      :preface
-      (defun mz/bibtex-fill-column ()
-        "Ensures that each entry does not exceed 120 characters."
-        (setq fill-column 120)))
-
-    ;; autocomplete support
-    (use-package company-auctex
-      :after (auctex company)
-      :config (company-auctex-init))
+		;; reference management
+		(use-package bibtex
+			:after auctex
+			:hook (bibtex-mode . my/bibtex-fill-column)
+			:preface
+			(defun mz/bibtex-fill-column ()
+				"Ensures that each entry does not exceed 120 characters."
+				(setq fill-column 120)))
   #+end_src
 * PDF-Tools
   #+begin_src emacs-lisp
@@ -612,9 +600,9 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 			 ("q" nil "exit" :color blue))
    #+end_src
 ** C
-Needs clangd.
   #+begin_src emacs-lisp
-    (add-hook 'c-mode-hook 'eglot-ensure)
+		(add-hook 'c-mode-hook 'eglot-ensure)
+		(add-to-list 'eglot-server-programs '('c-mode . ("clangd" "")))
   #+end_src
 ** Elisp
   #+begin_src emacs-lisp
