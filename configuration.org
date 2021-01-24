@@ -9,6 +9,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - TODO go through https://github.com/daviwil/dotfiles/blob/master/Emacs.org
 - emacs from scratch repo: https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Desktop-01.org
 - TODO defer packages
+- TODO transition from lsp to eglot? eglot-hydra, then also get rid of flycheck and treemacs
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag (projectile-ag)
@@ -188,7 +189,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 ** all-the-icons
   #+begin_src emacs-lisp
     ;; font for more emacs icons
-    ;;(use-package all-the-icons)
+    (use-package all-the-icons)
   #+end_src
 ** minions
   #+begin_src emacs-lisp
@@ -463,10 +464,11 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** flycheck
   #+begin_src emacs-lisp
-    ;; flycheck for syntax checking
-    (use-package flycheck
-      :config
-      (global-flycheck-mode))
+		;; flycheck for syntax checking
+		(use-package flycheck
+			:config
+			;;(global-flycheck-mode)
+			)
   #+end_src
 ** hl-line
   #+begin_src emacs-lisp
@@ -519,7 +521,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
          (forward-line)))
 
      ;; binding toggle-comment to "C-/" for consistency with other editors
-     (global-set-key (kbd "C-/") 'comment-or-uncomment-region-or-line)
+     (global-set-key (kbd "C-/") 'mz/comment-or-uncomment-region-or-line)
 
      ;; function to untabify buffer
      (defun mz/untabify-buffer ()
@@ -680,10 +682,14 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       ("r" lsp-rename "rename")
       ("q" nil "exit" :color blue))
   #+end_src
+** Eglot
+	 #+begin_src emacs-lisp
+		 (use-package eglot)
+	 #+end_src
 ** C
 Needs clangd.
   #+begin_src emacs-lisp
-    (add-hook 'c-mode-hook 'lsp)
+    (add-hook 'c-mode-hook 'eglot-ensure)
   #+end_src
 ** Elisp
   #+begin_src emacs-lisp
@@ -698,7 +704,7 @@ Needs clangd.
   #+begin_src emacs-lisp
     ;; Elixir major mode hooked up to lsp
     (use-package elixir-mode
-      :hook (elixir-mode . lsp))
+      :hook (elixir-mode . eglot-ensure))
 
     ;; minor mode for mix commands
     (use-package mix
@@ -708,47 +714,50 @@ Needs clangd.
   #+begin_src emacs-lisp
     ;; OCaml major mode
     (use-package tuareg
-      :hook (tuareg-mode . lsp))
+      :hook (tuareg-mode . eglot-ensure))
 
     ;; dune integration, don't know how to use
     (use-package dune)
   #+end_src
 ** Java
   #+begin_src emacs-lisp
-    (use-package lsp-java
-      :hook (java-mode . lsp)
-      :config
-      ;; debugging
-      (require 'dap-java))
+		;; (use-package lsp-java
+		;; 	:hook (java-mode . lsp)
+		;; 	:config
+		;; 	;; debugging
+		;; 	(require 'dap-java)
+		;; 	)
 
-    ;; function to build jar from maven project
-    (defun mz/mvn-jar ()
-      "Packages the maven project into a jar."
-      (interactive)
-      (mvn "package"))
+		(add-hook 'java-mode-hook 'eglot-ensure)
 
-    ;; function to run the main class defined for the maven project
-    (defun mz/mvn-run ()
-      "Run the maven project using the exec plugin."
-      (interactive)
-      (mvn "compile exec:java"))
+		;; function to build jar from maven project
+		(defun mz/mvn-jar ()
+			"Packages the maven project into a jar."
+			(interactive)
+			(mvn "package"))
 
-    ;; function to test all test classes
-    (defun mz/mvn-test-all ()
-      "Run all test classes in the maven project."
-      (interactive)
-      (mvn "test"))
+		;; function to run the main class defined for the maven project
+		(defun mz/mvn-run ()
+			"Run the maven project using the exec plugin."
+			(interactive)
+			(mvn "compile exec:java"))
 
-    ;; maven minor mode
-    (use-package mvn
-      :bind
-      (:map java-mode-map
-            (("C-c M" . mvn)
-             ("C-c m r" . mz/mvn-run)
-             ("C-c m c" . mvn-compile)
-             ("C-c m T" . mvn-test) ;; asks for specific test class to run
-             ("C-c m t" . mz/mvn-test-all)
-             ("C-c m j" . mz/mvn-jar))))
+		;; function to test all test classes
+		(defun mz/mvn-test-all ()
+			"Run all test classes in the maven project."
+			(interactive)
+			(mvn "test"))
+
+		;; maven minor mode
+		(use-package mvn
+			:bind
+			(:map java-mode-map
+						(("C-c M" . mvn)
+						 ("C-c m r" . mz/mvn-run)
+						 ("C-c m c" . mvn-compile)
+						 ("C-c m T" . mvn-test) ;; asks for specific test class to run
+						 ("C-c m t" . mz/mvn-test-all)
+						 ("C-c m j" . mz/mvn-jar))))
    #+end_src
 ** Python
   #+begin_src emacs-lisp
@@ -761,7 +770,8 @@ Needs clangd.
 
 		(use-package python
 			:hook
-			(python-mode . lsp)
+			;; (python-mode . lsp)
+			(python-mode . eglot-ensure)
 			:config
 			(cond
 			 ;; i use python3
@@ -773,16 +783,18 @@ Needs clangd.
   #+end_src
 ** Rust
   #+begin_src emacs-lisp
-    ;; hook up rust-mode with the language server
-    (use-package rust-mode
-      :config
-      (setq rust-format-on-save t)
-      ;;(add-hook 'rust-mode-hook (lambda () (local-unset-key (kbd "C-c C-d")))) ;; interferes with my custom keybinding for copying a line and I don't ever use the rust-mode binding
-      :hook (rust-mode . lsp))
+		;; hook up rust-mode with the language server
+		(use-package rust-mode
+			:config
+			(setq rust-format-on-save t)
+			;;(add-hook 'rust-mode-hook (lambda () (local-unset-key (kbd "C-c C-d")))) ;; interferes with my custom keybinding for copying a line and I don't ever use the rust-mode binding
+			;;:hook (rust-mode . lsp)
+			:hook (rust-mode . eglot-ensure)
+			)
 
-    ;; cargo minor mode for cargo keybindings
-    (use-package cargo
-      :hook (rust-mode . cargo-minor-mode))
+		;; cargo minor mode for cargo keybindings
+		(use-package cargo
+			:hook (rust-mode . cargo-minor-mode))
   #+end_src
 ** sh
   #+begin_src emacs-lisp
