@@ -798,110 +798,98 @@ Currently not doing web development, by my estimation I will need these basic pa
 * EXWM
   Configuration for using emacs as an X window manager.
   #+begin_src emacs-lisp
-    ;; should exwm be enabled?
-    (setq exwm-enabled (and (eq window-system 'x)
-                            (seq-contains command-line-args "--use-exwm")))
+		;; should exwm be enabled?
+		(setq exwm-enabled (and (eq window-system 'x)
+														(seq-contains command-line-args "--use-exwm")))
 
-    (use-package exwm
-      :if exwm-enabled
-      :config
-      ;; package to manage bluetooth from emacs
-      (use-package bluetooth)
+		(use-package exwm
+			:if exwm-enabled
+			:config
+			;; package to manage bluetooth from emacs
+			(use-package bluetooth)
 
-      ;; mode to bind media keys
-      (use-package desktop-environment
-        :config
-        ;; for some reason the default volume commands do not work
-        (setq desktop-environment-volume-toggle-command       "amixer -D pulse set Master toggle"
-              desktop-environment-volume-set-command          "amixer -D pulse set Master %s"
-              desktop-environment-volume-get-command          "amixer -D pulse get Master"
-              ;; brightness change amount
-              desktop-environment-brightness-normal-increment "5%+"
-              desktop-environment-brightness-normal-decrement "5%-"
-              desktop-environment-brightness-small-increment  "2%+"
-              desktop-environment-brightness-small-decrement  "2%-"
-              )
-        (desktop-environment-mode))
+			;; mode to bind media keys
+			(use-package desktop-environment
+				:config
+				;; for some reason the default volume commands do not work
+				(setq desktop-environment-volume-toggle-command       "amixer -D pulse set Master toggle"
+							desktop-environment-volume-set-command          "amixer -D pulse set Master %s"
+							desktop-environment-volume-get-command          "amixer -D pulse get Master"
+							;; brightness change amount
+							desktop-environment-brightness-normal-increment "5%+"
+							desktop-environment-brightness-normal-decrement "5%-"
+							desktop-environment-brightness-small-increment  "2%+"
+							desktop-environment-brightness-small-decrement  "2%-"
+							)
+				(desktop-environment-mode))
 
-      (setq exwm-workspace-number 2)
-      (setq exwm-randr-workspace-monitor-plist
-            '(0 "eDP-1" ;; laptop
-                1 "DP-3")) ;; external monitor via HDMI which is for some reason named DP-3
+			(setq exwm-workspace-number 2)
+			(setq exwm-randr-workspace-monitor-plist
+						'(0 "eDP-1" ;; laptop
+								1 "DP-3")) ;; external monitor via HDMI which is for some reason named DP-3
 
-      ;; when window "class" updates, use it to set the buffer name
-      (defun mz/exwm-update-class ()
-        (exwm-workspace-rename-buffer exwm-class-name))
-      (add-hook 'exwm-update-class-hook #'mz/exwm-update-class)
+			;; when window "class" updates, use it to set the buffer name
+			(defun mz/exwm-update-class ()
+				(exwm-workspace-rename-buffer exwm-class-name))
+			(add-hook 'exwm-update-class-hook #'mz/exwm-update-class)
 
-      ;; these keys should always pass through to emacs
-      (setq exwm-input-prefix-keys
-            '(?\C-x
-              ?\C-u
-              ?\C-h
-              ?\C-g
-              ?\M-x
-              ?\M-!))
+			;; these keys should always pass through to emacs
+			(setq exwm-input-prefix-keys
+						'(?\C-x
+							?\C-u
+							?\C-h
+							?\C-g
+							?\M-x
+							?\M-!))
 
-      ;; enable the next key to be sent directly, for things like copy and paste from x windows
-      (define-key exwm-mode-map [?\C-m] 'exwm-input-send-next-key)
+			;; enable the next key to be sent directly, for things like copy and paste from x windows
+			(define-key exwm-mode-map [?\C-m] 'exwm-input-send-next-key)
 
-      ;; set up global key bindings.  these always work, no matter the input state!
-      ;; keep in mind that changing this list after EXWM initializes has no effect.
-      (setq exwm-input-global-keys
-            `(
-              ;; reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
-              ([?\s-r] . exwm-reset)
+			;; set up global key bindings.  these always work, no matter the input state!
+			;; keep in mind that changing this list after EXWM initializes has no effect.
+			(setq exwm-input-global-keys
+						`(
+							;; reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+							([?\s-r] . exwm-reset)
 
-              ;; general app launcher
-              ([?\s-/] . (lambda ()
-                           (interactive)
-                           (counsel-linux-app)))
+							;; general app launcher
+							([?\s-/] . (lambda ()
+													 (interactive)
+													 (counsel-linux-app)))
 
-              ;; shortcut for firefox
-              ([?\s-x] . (lambda ()
-                           (interactive)
-                           (shell-command "firefox")))
+							;; shortcut for firefox
+							([?\s-x] . (lambda ()
+													 (interactive)
+													 (shell-command "firefox")))
 
-              ;; shortcut for terminal emulator
-              ([s-return] . (lambda ()
-                              (interactive)
-                              (vterm-other-window)))
+							;; shortcut for terminal emulator
+							([s-return] . (lambda ()
+															(interactive)
+															(vterm-other-window))))))
 
-              ;; switch workspace
-              ;;([?\s-w] . exwm-workspace-switch)
+		;; function to turn on all the exwm stuff
+		(defun mz/enable-exwm ()
+			"Enables the features of EXWM."
 
-              ;; 's-N': switch to certain workspace with super (win) plus a number key (0 - 9)
-              ;; ,@(mapcar (lambda (i)
-              ;;            `(,(kbd (format "s-%d" i)) .
-              ;;              (lambda ()
-              ;;                (interactive)
-              ;;                (exwm-workspace-switch-create ,i))))
-              ;;          (number-sequence 0 9))
-              )))
+			;; ensure screen updates with xrandr will refresh EXWM frames
+			(require 'exwm-randr)
+			(exwm-randr-enable)
 
-    ;; function to turn on all the exwm stuff
-    (defun mz/enable-exwm ()
-      "Enables the features of EXWM."
+			;; use default super+shift keybindings
+			(windmove-swap-states-default-keybindings)
 
-      ;; ensure screen updates with xrandr will refresh EXWM frames
-      (require 'exwm-randr)
-      (exwm-randr-enable)
+			;; remap capsLock to ctrl
+			(start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/xmodmap")
 
-      ;; use default super+shift keybindings
-      (windmove-swap-states-default-keybindings)
+			;; display time
+			(setq display-time-default-load-average nil)
+			(display-time-mode t)
 
-      ;; remap capsLock to ctrl
-      (start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/Xmodmap")
+			;; Show battery status in the mode line
+			(display-battery-mode 1)
 
-      ;; display time
-      (setq display-time-default-load-average nil)
-      (display-time-mode t)
+			(exwm-enable)
+			(exwm-init))
 
-      ;; Show battery status in the mode line
-      (display-battery-mode 1)
-
-      (exwm-enable)
-      (exwm-init))
-
-    (if exwm-enabled (mz/enable-exwm) ())
+		(if exwm-enabled (mz/enable-exwm) ())
   #+end_src
