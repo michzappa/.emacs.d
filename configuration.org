@@ -117,33 +117,33 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 * TRAMP
   #+begin_src emacs-lisp
-		;; loading manually compiled tramp for latest version,
-		;; hoping to get bug fix for lsp over tramp
-		;; (add-to-list 'load-path "~/.emacs.d/tramp")
-		(require 'tramp)
+    ;; loading manually compiled tramp for latest version,
+    ;; hoping to get bug fix for lsp over tramp
+    ;; (add-to-list 'load-path "~/.emacs.d/tramp")
+    (require 'tramp)
 
-		(setq tramp-default-method "ssh")
+    (setq tramp-default-method "ssh")
 
-		;; helper function to sudo a file
-		(defun mz/sudo ()
-			"Use TRAMP to `sudo' the current buffer"
-			(interactive)
-			(when buffer-file-name
-				(find-alternate-file
-				 (concat "/sudo:root@localhost:"
-								 buffer-file-name))))
+    ;; helper function to sudo a file
+    (defun mz/sudo ()
+      "Use TRAMP to `sudo' the current buffer"
+      (interactive)
+      (when buffer-file-name
+        (find-alternate-file
+         (concat "/sudo:root@localhost:"
+                 buffer-file-name))))
 
-		;; attempt to speed things up
-		(defadvice projectile-project-root (around ignore-remote first activate)
-			(unless (file-remote-p default-directory) ad-do-it))
-		(setq remote-file-name-inhibit-cache nil)
-		(setq vc-ignore-dir-regexp
-					(format "%s\\|%s"
-									vc-ignore-dir-regexp
-									tramp-file-name-regexp))
-		(setq tramp-verbose 1)
+    ;; attempt to speed things up
+    (defadvice projectile-project-root (around ignore-remote first activate)
+      (unless (file-remote-p default-directory) ad-do-it))
+    (setq remote-file-name-inhibit-cache nil)
+    (setq vc-ignore-dir-regexp
+          (format "%s\\|%s"
+                  vc-ignore-dir-regexp
+                  tramp-file-name-regexp))
+    (setq tramp-verbose 1)
 
-		(add-to-list 'tramp-remote-path "~/.local/bin")
+    (add-to-list 'tramp-remote-path "~/.local/bin")
   #+end_src
 * Mouse and Keys
   Mouse and keyboard settings which don't belong to any specific package or function.
@@ -254,22 +254,22 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** tab-bar-mode
    #+begin_src emacs-lisp
-		 (tab-bar-mode)
-		 (global-set-key (kbd "M-[") 'tab-bar-history-back)
-		 (global-set-key (kbd "M-]") 'tab-bar-history-forward)
-		 ;; hydra bindings for tab-bar-mode
-		 (defhydra hydra-tab-bar (:color red)
-			 "Tab Bar Operations"
-			 ("t" tab-new "Create a new tab" :column "Creation")
-			 ("d" dired-other-tab "Open Dired in another tab")
-			 ("f" find-file-other-tab "Find file in another tab")
-			 ("0" tab-close "Close current tab")
-			 ("m" tab-move "Move current tab" :column "Management")
-			 ("r" tab-rename "Rename Tab")
-			 ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
-			 ("<right>" tab-next "Next Tab")
-			 ("<left>" tab-previous "Previous Tab")
-			 ("q" nil "exit" :color blue))
+     (tab-bar-mode)
+     (global-set-key (kbd "M-[") 'tab-bar-history-back)
+     (global-set-key (kbd "M-]") 'tab-bar-history-forward)
+     ;; hydra bindings for tab-bar-mode
+     (defhydra hydra-tab-bar (:color red)
+       "Tab Bar Operations"
+       ("t" tab-new "Create a new tab" :column "Creation")
+       ("d" dired-other-tab "Open Dired in another tab")
+       ("f" find-file-other-tab "Find file in another tab")
+       ("0" tab-close "Close current tab")
+       ("m" tab-move "Move current tab" :column "Management")
+       ("r" tab-rename "Rename Tab")
+       ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
+       ("<right>" tab-next "Next Tab")
+       ("<left>" tab-previous "Previous Tab")
+       ("q" nil "exit" :color blue))
    #+end_src
 * User Interaction
   Packages and configuration related to user interaction.
@@ -286,11 +286,15 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     (use-package counsel
       :bind
       (("C-s" . swiper)
-       ("C-x C-r" . counsel-recentf))
+       ("C-x C-r" . counsel-recentf)
+       ("M-x" . counsel-M-x)
+       ("C-x C-f" . counsel-find-file))
       :config
       (setcdr (assoc 'counsel-M-x ivy-initial-inputs-alist) "") ;; not only prefixes
-      (ivy-mode)
-      (counsel-mode)
+      ;; for some reason just turning on counsel-mode doesn't properly replace functions on start,
+      ;; so my common uses are also bound above
+      (counsel-mode 1)
+      (ivy-mode 1)
       (use-package ivy-hydra))
   #+end_src
 ** exec-path-from-shell
@@ -314,41 +318,41 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** windmove
   #+begin_src emacs-lisp
-		(use-package windmove
-			;; default keybindings are S-s-<direction>, but super doesn't get past GNOME shell
-			:bind
-			(("C-S-<left>" . windmove-swap-states-left)
-			 ("C-S-<right>" . windmove-swap-states-right)
-			 ("C-S-<up>" . windmove-swap-states-up)
-			 ("C-S-<down>" . windmove-swap-states-down))
-			:config
-			;; use shift + arrow keys to switch between visible buffers
-			(windmove-default-keybindings)
+    (use-package windmove
+      ;; default keybindings are S-s-<direction>, but super doesn't get past GNOME shell
+      :bind
+      (("C-S-<left>" . windmove-swap-states-left)
+       ("C-S-<right>" . windmove-swap-states-right)
+       ("C-S-<up>" . windmove-swap-states-up)
+       ("C-S-<down>" . windmove-swap-states-down))
+      :config
+      ;; use shift + arrow keys to switch between visible buffers
+      (windmove-default-keybindings)
 
-			;; Make windmove work in org-mode.
-			(add-hook 'org-shiftup-final-hook 'windmove-up)
-			(add-hook 'org-shiftleft-final-hook 'windmove-left)
-			(add-hook 'org-shiftdown-final-hook 'windmove-down)
-			(add-hook 'org-shiftright-final-hook 'windmove-right)
+      ;; Make windmove work in org-mode.
+      (add-hook 'org-shiftup-final-hook 'windmove-up)
+      (add-hook 'org-shiftleft-final-hook 'windmove-left)
+      (add-hook 'org-shiftdown-final-hook 'windmove-down)
+      (add-hook 'org-shiftright-final-hook 'windmove-right)
 
-			(add-hook 'org-shiftcontrolup-final-hook 'windmove-swap-states-up)
-			(add-hook 'org-shiftcontrolleft-final-hook 'windmove-swap-states-left)
-			(add-hook 'org-shiftcontroldown-final-hook 'windmove-swap-states-down)
-			(add-hook 'org-shiftcontrolright-final-hook 'windmove-swap-states-right))
+      (add-hook 'org-shiftcontrolup-final-hook 'windmove-swap-states-up)
+      (add-hook 'org-shiftcontrolleft-final-hook 'windmove-swap-states-left)
+      (add-hook 'org-shiftcontroldown-final-hook 'windmove-swap-states-down)
+      (add-hook 'org-shiftcontrolright-final-hook 'windmove-swap-states-right))
 
-		(defhydra hydra-windmove (:color red)
-			"Windmove Operations"
-			("<left>" windmove-left "left" :column "Change window")
-			("<right>" windmove-right "right")
-			("<up>" windmove-up "up")
-			("<down>" windmove-down "down")
+    (defhydra hydra-windmove (:color red)
+      "Windmove Operations"
+      ("<left>" windmove-left "left" :column "Change window")
+      ("<right>" windmove-right "right")
+      ("<up>" windmove-up "up")
+      ("<down>" windmove-down "down")
 
-			("C-<left>" windmove-swap-states-left "move left" :column "Move window")
-			("C-<right>" windmove-swap-states-right "move right")
-			("C-<up>" windmove-swap-states-up "move up")
-			("C-<down>" windmove-swap-states-down "move down")
+      ("C-<left>" windmove-swap-states-left "move left" :column "Move window")
+      ("C-<right>" windmove-swap-states-right "move right")
+      ("C-<up>" windmove-swap-states-up "move up")
+      ("C-<down>" windmove-swap-states-down "move down")
 
-			("q" nil "exit" :color blue))
+      ("q" nil "exit" :color blue))
   #+end_src
 ** Yes/No Question Configuration
    #+begin_src emacs-lisp
@@ -372,61 +376,61 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** projectile
   #+begin_src emacs-lisp
-		;; project manager
-		(use-package projectile
-			:init
-			(setq projectile-completion-system 'ivy)
-			(setq projectile-project-search-path '("~/Projects"))
-			(use-package ag)
-			(use-package ibuffer-projectile)
-			:config
-			(projectile-mode +1)
-			(setq projectile-mode-line "Projectile"))
+    ;; project manager
+    (use-package projectile
+      :init
+      (setq projectile-completion-system 'ivy)
+      (setq projectile-project-search-path '("~/Projects"))
+      (use-package ag)
+      (use-package ibuffer-projectile)
+      :config
+      (projectile-mode +1)
+      (setq projectile-mode-line "Projectile"))
 
-		;; utility function for opening projectile eshell in another window
-		(defun mz/projectile-eshell-other-window ()
-			"Open 'eshell' from projectile in a new window."
-			(interactive)
-			(let ((buf (projectile-run-eshell)))
-				(switch-to-buffer (other-buffer buf))
-				(switch-to-buffer-other-window buf)))
+    ;; utility function for opening projectile eshell in another window
+    (defun mz/projectile-eshell-other-window ()
+      "Open 'eshell' from projectile in a new window."
+      (interactive)
+      (let ((buf (projectile-run-eshell)))
+        (switch-to-buffer (other-buffer buf))
+        (switch-to-buffer-other-window buf)))
 
-		;; hydra bindings for opening projectile things in another window
-		(defhydra hydra-projectile-other-window (:color blue)
-			"projectile-other-window"
-			("f"  projectile-find-file-other-window        "file" :column "Find File")
-			("g"  projectile-find-file-dwim-other-window   "file dwim")
-			("d"  projectile-find-dir-other-window         "dir")
-			("b"  projectile-switch-to-buffer-other-window "buffer")
-			("e" mz/projectile-eshell-other-window         "eshell" :column "Misc")
-			("q"  nil                                      "cancel" :color blue))
+    ;; hydra bindings for opening projectile things in another window
+    (defhydra hydra-projectile-other-window (:color blue)
+      "projectile-other-window"
+      ("f"  projectile-find-file-other-window        "file" :column "Find File")
+      ("g"  projectile-find-file-dwim-other-window   "file dwim")
+      ("d"  projectile-find-dir-other-window         "dir")
+      ("b"  projectile-switch-to-buffer-other-window "buffer")
+      ("e" mz/projectile-eshell-other-window         "eshell" :column "Misc")
+      ("q"  nil                                      "cancel" :color blue))
 
-		;; hydra bindings for projectile
-		(defhydra hydra-projectile (:color red)
-			"PROJECTILE: %(projectile-project-root)"
+    ;; hydra bindings for projectile
+    (defhydra hydra-projectile (:color red)
+      "PROJECTILE: %(projectile-project-root)"
 
-			("ff"  projectile-find-file "file" :column "Find File")
-			("s-f" projectile-find-file-dwim "file dwim")
-			("fd"  projectile-find-file-in-directory "file curr dir")
-			("r"   projectile-recentf "recent file")
-			("d"   projectile-find-dir "dir")
+      ("ff"  projectile-find-file "file" :column "Find File")
+      ("s-f" projectile-find-file-dwim "file dwim")
+      ("fd"  projectile-find-file-in-directory "file curr dir")
+      ("r"   projectile-recentf "recent file")
+      ("d"   projectile-find-dir "dir")
 
-			("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
-			("i"   projectile-ibuffer "ibuffer")
-			("K"   projectile-kill-buffers "kill all buffers")
-			("e"   projectile-run-eshell "eshell" :color blue)
+      ("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
+      ("i"   projectile-ibuffer "ibuffer")
+      ("K"   projectile-kill-buffers "kill all buffers")
+      ("e"   projectile-run-eshell "eshell" :color blue)
 
-			("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
-			("x"   projectile-remove-known-project "remove known project")
-			("X"   projectile-cleanup-known-projects "cleanup projects")
-			("z"   projectile-cache-current-file "cache current project")
+      ("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
+      ("x"   projectile-remove-known-project "remove known project")
+      ("X"   projectile-cleanup-known-projects "cleanup projects")
+      ("z"   projectile-cache-current-file "cache current project")
 
-			("a"   projectile-ag "ag" :column "Project")
-			("p"   projectile-switch-project "switch project" :column "Project")
-			("P"   treemacs-projectile "treemacs")
+      ("a"   projectile-ag "ag" :column "Project")
+      ("p"   projectile-switch-project "switch project" :column "Project")
+      ("P"   treemacs-projectile "treemacs")
 
-			("`"   hydra-projectile-other-window/body "other window" :color blue :column "Other")
-			("q"   nil "exit" :color blue))
+      ("`"   hydra-projectile-other-window/body "other window" :color blue :column "Other")
+      ("q"   nil "exit" :color blue))
   #+end_src
 * Text Files
   Packages and configuration related to displaying, editing, and formatting text files.
@@ -499,7 +503,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
      (defhydra hydra-formatting (:color blue)
        "formatting"
        ("f" format-all-buffer "format-all")
-       ("u" untabify-buffer "untabify"))
+       ("u" mz/untabify-buffer "untabify"))
    #+end_src
 * Elfeed RSS Reader
   RSS reader using an org-mode file for configuration.
@@ -573,29 +577,29 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       :config (company-auctex-init))
   #+end_src
 * PDF-Tools
-	#+begin_src emacs-lisp
-		;; enhanced pdf viewer
-		(use-package pdf-tools
-			:init
-			(pdf-tools-install)
-			:hook (pdf-view-mode . pdf-view-midnight-minor-mode))
+  #+begin_src emacs-lisp
+    ;; enhanced pdf viewer
+    (use-package pdf-tools
+      :init
+      (pdf-tools-install)
+      :hook (pdf-view-mode . pdf-view-midnight-minor-mode))
 
-		;; quelpa just for this right now, maybe break out when re-evaluate packaging. probably will just change to straight
-		(use-package quelpa
-			:config
-			(quelpa
-			 '(pdf-continuous-scroll-mode
-				 :fetcher git
-				 :url "https://github.com/dalanicolai/pdf-continuous-scroll-mode.el.git"))
-			(add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
-			(setq pdf-view-have-image-mode-pixel-vscroll t))
-	#+end_src
+    ;; quelpa just for this right now, maybe break out when re-evaluate packaging. probably will just change to straight
+    (use-package quelpa
+      :config
+      (quelpa
+       '(pdf-continuous-scroll-mode
+         :fetcher git
+         :url "https://github.com/dalanicolai/pdf-continuous-scroll-mode.el.git"))
+      (add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
+      (setq pdf-view-have-image-mode-pixel-vscroll t))
+  #+end_src
 * Languages and LSP Support
   Packages and configuration related to language major/minor modes and language servers.
 ** Eglot
-	 #+begin_src emacs-lisp
-		 (use-package eglot)
-	 #+end_src
+   #+begin_src emacs-lisp
+     (use-package eglot)
+   #+end_src
 ** C
 Needs clangd.
   #+begin_src emacs-lisp
@@ -631,63 +635,63 @@ Needs clangd.
   #+end_src
 ** Java
   #+begin_src emacs-lisp
-		(add-hook 'java-mode-hook 'eglot-ensure)
+    (add-hook 'java-mode-hook 'eglot-ensure)
 
-		;; function to build jar from maven project
-		(defun mz/mvn-jar ()
-			"Packages the maven project into a jar."
-			(interactive)
-			(mvn "package"))
+    ;; function to build jar from maven project
+    (defun mz/mvn-jar ()
+      "Packages the maven project into a jar."
+      (interactive)
+      (mvn "package"))
 
-		;; function to run the main class defined for the maven project
-		(defun mz/mvn-run ()
-			"Run the maven project using the exec plugin."
-			(interactive)
-			(mvn "compile exec:java"))
+    ;; function to run the main class defined for the maven project
+    (defun mz/mvn-run ()
+      "Run the maven project using the exec plugin."
+      (interactive)
+      (mvn "compile exec:java"))
 
-		;; function to test all test classes
-		(defun mz/mvn-test-all ()
-			"Run all test classes in the maven project."
-			(interactive)
-			(mvn "test"))
+    ;; function to test all test classes
+    (defun mz/mvn-test-all ()
+      "Run all test classes in the maven project."
+      (interactive)
+      (mvn "test"))
 
-		;; maven minor mode
-		(use-package mvn
-			:bind
-			(:map java-mode-map
-						(("C-c M" . mvn)
-						 ("C-c m r" . mz/mvn-run)
-						 ("C-c m c" . mvn-compile)
-						 ("C-c m T" . mvn-test) ;; asks for specific test class to run
-						 ("C-c m t" . mz/mvn-test-all)
-						 ("C-c m j" . mz/mvn-jar))))
+    ;; maven minor mode
+    (use-package mvn
+      :bind
+      (:map java-mode-map
+            (("C-c M" . mvn)
+             ("C-c m r" . mz/mvn-run)
+             ("C-c m c" . mvn-compile)
+             ("C-c m T" . mvn-test) ;; asks for specific test class to run
+             ("C-c m t" . mz/mvn-test-all)
+             ("C-c m j" . mz/mvn-jar))))
    #+end_src
 ** Python
   #+begin_src emacs-lisp
-		(use-package python
-			:hook
-			;; (python-mode . lsp)
-			(python-mode . eglot-ensure)
-			:config
-			(cond
-			 ;; i use python3
-			 ((executable-find "python3")
-				(setq python-shell-interpreter "python3"))))
+    (use-package python
+      :hook
+      ;; (python-mode . lsp)
+      (python-mode . eglot-ensure)
+      :config
+      (cond
+       ;; i use python3
+       ((executable-find "python3")
+        (setq python-shell-interpreter "python3"))))
 
-		;;(require 'dap-python)
-		(setq dap-python-executable "python3")
+    ;;(require 'dap-python)
+    (setq dap-python-executable "python3")
   #+end_src
 ** Rust
   #+begin_src emacs-lisp
-		;; hook up rust-mode with the language server
-		(use-package rust-mode
-			:config
-			(setq rust-format-on-save t)
-			:hook (rust-mode . eglot-ensure))
+    ;; hook up rust-mode with the language server
+    (use-package rust-mode
+      :config
+      (setq rust-format-on-save t)
+      :hook (rust-mode . eglot-ensure))
 
-		;; cargo minor mode for cargo keybindings
-		(use-package cargo
-			:hook (rust-mode . cargo-minor-mode))
+    ;; cargo minor mode for cargo keybindings
+    (use-package cargo
+      :hook (rust-mode . cargo-minor-mode))
   #+end_src
 ** sh
   #+begin_src emacs-lisp
@@ -741,26 +745,26 @@ Currently not doing web development, by my estimation I will need these basic pa
    #+end_src
 ** org-capture
    #+begin_src emacs-lisp
-		 (global-set-key (kbd "C-c c") 'org-capture)
+     (global-set-key (kbd "C-c c") 'org-capture)
 
-		 ;; abstracted template for a TODO to take place on some day, like an assignment due date.
-		 (defun mz/todo-on-day-template ()
-			 "* TODO %? %^t")
+     ;; abstracted template for a TODO to take place on some day, like an assignment due date.
+     (defun mz/todo-on-day-template ()
+       "* TODO %? %^t")
 
-		 (setq org-capture-templates
-					 '(("c" "Class Task")
-						 ("cs" "Systems Task" entry
-							(file+headline "cs3650.org" "Systems")
-							(function mz/todo-on-day-template))
-						 ("cn" "Networks Task" entry
-							(file+headline "cs3700.org" "Networks")
-							(function mz/todo-on-day-template))
-						 ("cc" "Cyber Task" entry
-							(file+headline "cy2550.org" "Cyber")
-							(function mz/todo-on-day-template))
-						 ("cp" "Phonology Task" entry
-							(file+headline "ling3422.org" "Phonology")
-							(function mz/todo-on-day-template))))
+     (setq org-capture-templates
+           '(("c" "Class Task")
+             ("cs" "Systems Task" entry
+              (file+headline "cs3650.org" "Systems")
+              (function mz/todo-on-day-template))
+             ("cn" "Networks Task" entry
+              (file+headline "cs3700.org" "Networks")
+              (function mz/todo-on-day-template))
+             ("cc" "Cyber Task" entry
+              (file+headline "cy2550.org" "Cyber")
+              (function mz/todo-on-day-template))
+             ("cp" "Phonology Task" entry
+              (file+headline "ling3422.org" "Phonology")
+              (function mz/todo-on-day-template))))
    #+end_src
 ** org-agenda
    #+begin_src emacs-lisp
