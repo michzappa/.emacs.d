@@ -603,6 +603,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 
 		 (defhydra hydra-eglot (:color red)
 			 ("r" eglot-rename "rename")
+			 ("e" eglot "connect")
 			 ("X" eglot-shutdown "shutdown")
 			 ("R" eglot-reconnect "reconnect")
 			 ("f" eglot-format "format")
@@ -678,18 +679,15 @@ Needs clangd.
    #+end_src
 ** Python
   #+begin_src emacs-lisp
-    (use-package python
-      :hook
-      ;; (python-mode . lsp)
-      (python-mode . eglot-ensure)
-      :config
-      (cond
-       ;; i use python3
-       ((executable-find "python3")
-        (setq python-shell-interpreter "python3"))))
-
-    ;;(require 'dap-python)
-    (setq dap-python-executable "python3")
+		(use-package python
+			:hook
+			(python-mode . eglot-ensure)
+			:config
+			(setq python-indent-offset 2)
+			(cond
+			 ;; i use python3
+			 ((executable-find "python3")
+				(setq python-shell-interpreter "python3"))))
   #+end_src
 ** Rust
   #+begin_src emacs-lisp
