@@ -533,8 +533,10 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+begin_src emacs-lisp
 		(use-package auctex
 			:defer t
-			;;:hook ((LaTeX-mode . (eglot-ensure visual-line-mode flyspell-mode LaTeX-math-mode))
-			;;			 (TeX-after-compilation-finished-functions . TeX-revert-document-buffer))
+			:hook ((LaTeX-mode . eglot-ensure)
+						 (LaTeX-mode . visual-line-mode)
+						 (LaTeX-mode . flyspell-mode)
+						 (LaTeX-mode . LaTeX-math-mode))
 			:custom
 			(TeX-auto-save t)
 			(TeX-byte-compile t)
@@ -552,15 +554,10 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 			(reftex-plug-into-AUCTeX t)
 			(TeX-error-overview-open-after-TeX-run t)
 			:config
-			;;formatting hooks
-			(add-hook 'LaTeX-mode-hook 'visual-line-mode)
-			(add-hook 'LaTeX-mode-hook 'flyspell-mode)
-			(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-
-			;; to have the buffer refresh after compilation
+			;; to have the buffer refresh after compilation. can't be in :hook since it's not a mode hook
 			(add-hook 'TeX-after-compilation-finished-functions
-								#'TeX-revert-document-buffer)
-			)
+								#'TeX-revert-document-buffer))
+
 		;; reference management
 		(use-package bibtex
 			:after auctex
