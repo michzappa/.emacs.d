@@ -307,6 +307,11 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     ;; frequency sorter to integrate with counsel
     (use-package smex)
   #+end_src
+** scratch
+	 #+begin_src emacs-lisp
+		 (use-package scratch
+			 :bind ("C-c s" . scratch))
+	 #+end_src
 ** which-key
   #+begin_src emacs-lisp
     ;; shows possible key combinations
