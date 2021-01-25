@@ -23,6 +23,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - lua5.3, liblua5.3 (latex lsp for eglot)
 ** Other Sources
 - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls.
+- Haskell Language Server: https://github.com/haskell/haskell-language-server
 - OCaml Language Server:  https://github.com/ocaml/ocaml-lsp
 - LaTeX Language Server: https://github.com/astoff/digestif
 - Java Language Server: https://github.com/eclipse/eclipse.jdt.ls
@@ -623,6 +624,11 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     (use-package mix
       :hook (elixir-mode mix-minor-mode))
   #+end_src
+** Haskell
+	 #+begin_src emacs-lisp
+		 (use-package haskell-mode
+			 :hook (haskell-mode . eglot-ensure))
+	 #+end_src
 ** OCaml
   #+begin_src emacs-lisp
     ;; OCaml major mode
