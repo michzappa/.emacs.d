@@ -8,6 +8,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - TODO go through https://github.com/daviwil/dotfiles/blob/master/Emacs.org
 - emacs from scratch repo: https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Desktop-01.org
 - TODO defer packages? pin packages? learn more about use-package.
+- TODO figure out why auctex hooks are weird.
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag (projectile-ag)
@@ -176,14 +177,14 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * Hydra
   Hydra provides the ability to create a keybinding menu to reduce redundant keypresses.
   #+begin_src emacs-lisp
-		(use-package hydra
-			:bind
-			(("C-c f" . hydra-formatting/body)
-			 ("C-x t" . hydra-tab-bar/body)
-			 ("C-c e" . hydra-eglot/body)
-			 ("C-c o" . hydra-org/body)
-			 ("C-c p" . hydra-projectile/body)
-			 ("C-x w" . hydra-windmove/body)))
+    (use-package hydra
+      :bind
+      (("C-c f" . hydra-formatting/body)
+       ("C-x t" . hydra-tab-bar/body)
+       ("C-c e" . hydra-eglot/body)
+       ("C-c o" . hydra-org/body)
+       ("C-c p" . hydra-projectile/body)
+       ("C-x w" . hydra-windmove/body)))
   #+end_src
 * User Interface
   Packages and configuration related to modifying the user-interface.
@@ -194,12 +195,13 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** minions
   #+begin_src emacs-lisp
-    ;; turns off all minor modes in modeline
-    (use-package minions
-      :config
-      (setq minions-mode-line-lighter ""
-            minions-mode-line-delimiters '("" . ""))
-      (minions-mode 1))
+		;; turns off all minor modes in modeline
+		(use-package minions
+			:custom
+			(minions-mode-line-lighter "")
+			(minions-mode-line-delimiters '("" . ""))
+			:config
+			(minions-mode 1))
   #+end_src
 ** Startup Configuration
   #+begin_src emacs-lisp
@@ -224,16 +226,16 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** Theme Configuration
   #+begin_src emacs-lisp
-		;; ;; nord-theme, doesn't have tab-bar support yet
-		(use-package nord-theme)
+    ;; ;; nord-theme, doesn't have tab-bar support yet
+    (use-package nord-theme)
 
-		;; dracula-theme, which has tab-bar support
-		(use-package dracula-theme)
+    ;; dracula-theme, which has tab-bar support
+    (use-package dracula-theme)
 
-		;; modus-vivendi, dark theme from prot
-		(use-package modus-vivendi-theme
-			:config
-			(load-theme 'modus-vivendi t))
+    ;; modus-vivendi, dark theme from prot
+    (use-package modus-vivendi-theme
+      :config
+      (load-theme 'modus-vivendi t))
   #+end_src
 ** Frames Configuration
   #+begin_src emacs-lisp
@@ -275,7 +277,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+begin_src emacs-lisp
     ;skip around the screen
     (use-package avy
-      :init
+      :config
       (global-set-key (kbd "C-;") 'avy-goto-char-2))
   #+end_src
 ** counsel
@@ -308,10 +310,10 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     (use-package smex)
   #+end_src
 ** scratch
-	 #+begin_src emacs-lisp
-		 (use-package scratch
-			 :bind ("C-c s" . scratch))
-	 #+end_src
+   #+begin_src emacs-lisp
+     (use-package scratch
+       :bind ("C-c s" . scratch))
+   #+end_src
 ** which-key
   #+begin_src emacs-lisp
     ;; shows possible key combinations
@@ -321,41 +323,41 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** windmove
   #+begin_src emacs-lisp
-    (use-package windmove
-      ;; default keybindings are S-s-<direction>, but super doesn't get past GNOME shell
-      :bind
-      (("C-S-<left>" . windmove-swap-states-left)
-       ("C-S-<right>" . windmove-swap-states-right)
-       ("C-S-<up>" . windmove-swap-states-up)
-       ("C-S-<down>" . windmove-swap-states-down))
-      :config
-      ;; use shift + arrow keys to switch between visible buffers
-      (windmove-default-keybindings)
+		(use-package windmove
+			;; default keybindings are S-s-<direction>, but super doesn't get past GNOME shell
+			:bind
+			(("C-S-<left>" . windmove-swap-states-left)
+			 ("C-S-<right>" . windmove-swap-states-right)
+			 ("C-S-<up>" . windmove-swap-states-up)
+			 ("C-S-<down>" . windmove-swap-states-down))
+			:hook
+			;; hooks for windmove working in org mode, questionable effect.
+			((org-shiftup . windmove-up)
+			 (org-shiftleft . windmove-left)
+			 (org-shiftdown . windmove-down)
+			 (org-shiftright . windmove-right)
 
-      ;; Make windmove work in org-mode.
-      (add-hook 'org-shiftup-final-hook 'windmove-up)
-      (add-hook 'org-shiftleft-final-hook 'windmove-left)
-      (add-hook 'org-shiftdown-final-hook 'windmove-down)
-      (add-hook 'org-shiftright-final-hook 'windmove-right)
+			 (org-shiftcontrolup . windmove-swap-states-up)
+			 (org-shiftcontrolleft . windmove-swap-states-left)
+			 (org-shiftcontrol-down . windmove-swap-states-down)
+			 (org-shiftcontrolright . windmove-swap-states-right))
+			:config
+			;; use shift + arrow keys to switch between visible buffers
+			(windmove-default-keybindings))
 
-      (add-hook 'org-shiftcontrolup-final-hook 'windmove-swap-states-up)
-      (add-hook 'org-shiftcontrolleft-final-hook 'windmove-swap-states-left)
-      (add-hook 'org-shiftcontroldown-final-hook 'windmove-swap-states-down)
-      (add-hook 'org-shiftcontrolright-final-hook 'windmove-swap-states-right))
+		(defhydra hydra-windmove (:color red)
+			"Windmove Operations"
+			("<left>" windmove-left "left" :column "Change window")
+			("<right>" windmove-right "right")
+			("<up>" windmove-up "up")
+			("<down>" windmove-down "down")
 
-    (defhydra hydra-windmove (:color red)
-      "Windmove Operations"
-      ("<left>" windmove-left "left" :column "Change window")
-      ("<right>" windmove-right "right")
-      ("<up>" windmove-up "up")
-      ("<down>" windmove-down "down")
+			("C-<left>" windmove-swap-states-left "move left" :column "Move window")
+			("C-<right>" windmove-swap-states-right "move right")
+			("C-<up>" windmove-swap-states-up "move up")
+			("C-<down>" windmove-swap-states-down "move down")
 
-      ("C-<left>" windmove-swap-states-left "move left" :column "Move window")
-      ("C-<right>" windmove-swap-states-right "move right")
-      ("C-<up>" windmove-swap-states-up "move up")
-      ("C-<down>" windmove-swap-states-down "move down")
-
-      ("q" nil "exit" :color blue))
+			("q" nil "exit" :color blue))
   #+end_src
 ** Yes/No Question Configuration
    #+begin_src emacs-lisp
@@ -372,68 +374,69 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   Packages and configuration related to managing projects.
 ** magit
   #+begin_src emacs-lisp
-    ;; magit git interface
-    (use-package magit
-      :config
-      (setq magit-completing-read-function 'ivy-completing-read))
+		;; magit git interface
+		(use-package magit
+			:custom
+			(magit-completing-read-function 'ivy-completing-read))
   #+end_src
 ** projectile
   #+begin_src emacs-lisp
-    ;; project manager
-    (use-package projectile
-      :init
-      (setq projectile-completion-system 'ivy)
-      (setq projectile-project-search-path '("~/Projects"))
-      (use-package ag)
-      (use-package ibuffer-projectile)
-      :config
-      (projectile-mode +1)
-      (setq projectile-mode-line "Projectile"))
+		;; project manager
+		(use-package projectile
+			:init
+			(use-package ag)
+			(use-package ibuffer-projectile)
+			:custom
+			(projectile-completion-system 'ivy)
+			(projectile-project-search-path '("~/Projects"))
+			(projectile-mode-line "Projectile")
+			:config
+			(projectile-mode +1))
 
-    ;; utility function for opening projectile eshell in another window
-    (defun mz/projectile-eshell-other-window ()
-      "Open 'eshell' from projectile in a new window."
-      (interactive)
-      (let ((buf (projectile-run-eshell)))
-        (switch-to-buffer (other-buffer buf))
-        (switch-to-buffer-other-window buf)))
+		;; utility function for opening projectile eshell in another window
+		(defun mz/projectile-eshell-other-window ()
+			"Open 'eshell' from projectile in a new window."
+			(interactive)
+			(let ((buf (projectile-run-eshell)))
+				(switch-to-buffer (other-buffer buf))
+				(switch-to-buffer-other-window buf)))
 
-    ;; hydra bindings for opening projectile things in another window
-    (defhydra hydra-projectile-other-window (:color blue)
-      "projectile-other-window"
-      ("f"  projectile-find-file-other-window        "file" :column "Find File")
-      ("g"  projectile-find-file-dwim-other-window   "file dwim")
-      ("d"  projectile-find-dir-other-window         "dir")
-      ("b"  projectile-switch-to-buffer-other-window "buffer")
-      ("e" mz/projectile-eshell-other-window         "eshell" :column "Misc")
-      ("q"  nil                                      "exit" :color blue))
+		;; hydra bindings for opening projectile things in another window
+		(defhydra hydra-projectile-other-window (:color blue)
+			"projectile-other-window"
+			("f"  projectile-find-file-other-window        "file" :column "Find File")
+			("g"  projectile-find-file-dwim-other-window   "file dwim")
+			("d"  projectile-find-dir-other-window         "dir")
+			("b"  projectile-switch-to-buffer-other-window "buffer")
+			("e" mz/projectile-eshell-other-window         "eshell" :column "Misc")
+			("q"  nil                                      "exit" :color blue))
 
-    ;; hydra bindings for projectile
-    (defhydra hydra-projectile (:color red)
-      "PROJECTILE: %(projectile-project-root)"
+		;; hydra bindings for projectile
+		(defhydra hydra-projectile (:color red)
+			"PROJECTILE: %(projectile-project-root)"
 
-      ("ff"  projectile-find-file "file" :column "Find File")
-      ("s-f" projectile-find-file-dwim "file dwim")
-      ("fd"  projectile-find-file-in-directory "file curr dir")
-      ("r"   projectile-recentf "recent file")
-      ("d"   projectile-find-dir "dir")
+			("ff"  projectile-find-file "file" :column "Find File")
+			("s-f" projectile-find-file-dwim "file dwim")
+			("fd"  projectile-find-file-in-directory "file curr dir")
+			("r"   projectile-recentf "recent file")
+			("d"   projectile-find-dir "dir")
 
-      ("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
-      ("i"   projectile-ibuffer "ibuffer")
-      ("K"   projectile-kill-buffers "kill all buffers")
-      ("e"   projectile-run-eshell "eshell" :color blue)
+			("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
+			("i"   projectile-ibuffer "ibuffer")
+			("K"   projectile-kill-buffers "kill all buffers")
+			("e"   projectile-run-eshell "eshell" :color blue)
 
-      ("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
-      ("x"   projectile-remove-known-project "remove known project")
-      ("X"   projectile-cleanup-known-projects "cleanup projects")
-      ("z"   projectile-cache-current-file "cache current project")
+			("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
+			("x"   projectile-remove-known-project "remove known project")
+			("X"   projectile-cleanup-known-projects "cleanup projects")
+			("z"   projectile-cache-current-file "cache current project")
 
-      ("a"   projectile-ag "ag" :column "Project")
-      ("p"   projectile-switch-project "switch project" :column "Project")
-      ("P"   treemacs-projectile "treemacs")
+			("a"   projectile-ag "ag" :column "Project")
+			("p"   projectile-switch-project "switch project" :column "Project")
+			("P"   treemacs-projectile "treemacs")
 
-      ("`"   hydra-projectile-other-window/body "other window" :color blue :column "Other")
-      ("q"   nil "exit" :color blue))
+			("`"   hydra-projectile-other-window/body "other window" :color blue :column "Other")
+			("q"   nil "exit" :color blue))
   #+end_src
 * Text Files
   Packages and configuration related to displaying, editing, and formatting text files.
@@ -459,11 +462,9 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** rainbow-delimiters
   #+begin_src emacs-lisp
-    (use-package rainbow-delimiters
-      :config
-      (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
-      (add-hook 'java-mode-hook #'rainbow-delimiters-mode)
-      (add-hook 'rust-mode-hook #'rainbow-delimiters-mode))
+		(use-package rainbow-delimiters
+			:hook
+			((emacs-lisp-mode java-mode python-mode rust-mode) . rainbow-delimiters-mode))
   #+end_src
 ** format-all
    #+begin_src emacs-lisp
@@ -511,13 +512,12 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * Elfeed RSS Reader
   RSS reader using an org-mode file for configuration.
   #+begin_src emacs-lisp
-    (use-package elfeed
-      :bind ("C-c w" . elfeed)
-
-      :config
-      (use-package elfeed-org
-        :init
-        (elfeed-org)))
+		(use-package elfeed
+			:bind ("C-c w" . elfeed)
+			:init
+			(use-package elfeed-org)
+			:config
+			(elfeed-org))
   #+end_src
 * Nov EPub Reader
   EPub reader mode.
@@ -533,7 +533,8 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+begin_src emacs-lisp
 		(use-package auctex
 			:defer t
-			:hook (LaTeX-mode . eglot-ensure)
+			;;:hook ((LaTeX-mode . (eglot-ensure visual-line-mode flyspell-mode LaTeX-math-mode))
+			;;			 (TeX-after-compilation-finished-functions . TeX-revert-document-buffer))
 			:custom
 			(TeX-auto-save t)
 			(TeX-byte-compile t)
@@ -551,16 +552,15 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 			(reftex-plug-into-AUCTeX t)
 			(TeX-error-overview-open-after-TeX-run t)
 			:config
-
-			;; formatting hooks
+			;;formatting hooks
 			(add-hook 'LaTeX-mode-hook 'visual-line-mode)
 			(add-hook 'LaTeX-mode-hook 'flyspell-mode)
 			(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 
 			;; to have the buffer refresh after compilation
 			(add-hook 'TeX-after-compilation-finished-functions
-								#'TeX-revert-document-buffer))
-
+								#'TeX-revert-document-buffer)
+			)
 		;; reference management
 		(use-package bibtex
 			:after auctex
@@ -592,31 +592,29 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   Packages and configuration related to language major/minor modes and language servers.
 ** Eglot
    #+begin_src emacs-lisp
-		 (use-package eglot)
+     (use-package eglot)
 
-		 (defhydra hydra-eglot (:color red)
-			 ("r" eglot-rename "rename")
-			 ("e" eglot "connect")
-			 ("X" eglot-shutdown "shutdown")
-			 ("R" eglot-reconnect "reconnect")
-			 ("f" eglot-format "format")
-			 ("c" eglot-code-actions "code actions")
+     (defhydra hydra-eglot (:color red)
+       ("r" eglot-rename "rename")
+       ("e" eglot "connect")
+       ("X" eglot-shutdown "shutdown")
+       ("R" eglot-reconnect "reconnect")
+       ("f" eglot-format "format")
+       ("c" eglot-code-actions "code actions")
 
-			 ("q" nil "exit" :color blue))
+       ("q" nil "exit" :color blue))
    #+end_src
 ** C
   #+begin_src emacs-lisp
-		(add-hook 'c-mode-hook 'eglot-ensure)
-		(add-to-list 'eglot-server-programs '('c-mode . ("clangd" "")))
+    (add-hook 'c-mode-hook 'eglot-ensure)
+    (add-to-list 'eglot-server-programs '('c-mode . ("clangd" "")))
   #+end_src
 ** Elisp
   #+begin_src emacs-lisp
-    ;; Help for emacs-lisp functions
-    (use-package eldoc
-      :config
-      (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-      (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-      (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode))
+		;; Help for emacs-lisp functions
+		(use-package eldoc
+			:hook
+			((emacs-lisp-mode lisp-interaction-mode ielm-mode) . turn-on-eldoc-mode))
   #+end_src
 ** Elixir
   #+begin_src emacs-lisp
@@ -675,8 +673,9 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		(use-package python
 			:hook
 			(python-mode . eglot-ensure)
+			:custom
+			(python-indent-offset 2)
 			:config
-			(setq python-indent-offset 2)
 			(cond
 			 ;; i use python3
 			 ((executable-find "python3")
@@ -684,15 +683,15 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** Rust
   #+begin_src emacs-lisp
-    ;; hook up rust-mode with the language server
-    (use-package rust-mode
-      :config
-      (setq rust-format-on-save t)
-      :hook (rust-mode . eglot-ensure))
+		;; hook up rust-mode with the language server
+		(use-package rust-mode
+			:custom
+			(rust-format-on-save t)
+			:hook (rust-mode . eglot-ensure))
 
-    ;; cargo minor mode for cargo keybindings
-    (use-package cargo
-      :hook (rust-mode . cargo-minor-mode))
+		;; cargo minor mode for cargo keybindings
+		(use-package cargo
+			:hook (rust-mode . cargo-minor-mode))
   #+end_src
 ** sh
   #+begin_src emacs-lisp
@@ -712,29 +711,29 @@ Currently not doing web development, by my estimation I will need these basic pa
   Configuration for the majestic org-mode.
 ** General
   #+begin_src emacs-lisp
-    (setq org-directory "~/Org")
+		(setq org-directory "~/Org")
 
-    ;; bullets instead of asterisks
-    (use-package org-bullets
-      :hook (org-mode . org-bullets-mode))
+		;; bullets instead of asterisks
+		(use-package org-bullets
+			:hook (org-mode . org-bullets-mode))
 
-    ;; org src blocks act more like the major mode
-    (setq org-src-fontify-natively t)
-    (setq org-src-tab-acts-natively t)
+		;; org src blocks act more like the major mode
+		(setq org-src-fontify-natively t
+					org-src-tab-acts-natively t
 
-    ;; editing source block in same window
-    (setq org-src-window-setup 'current-window)
+					;; editing source block in same window
+					org-src-window-setup 'current-window
 
-    ;; for the "old-school" <s-<tab> to make src blocks
-    (require 'org-tempo)
-    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+					org-support-shift-select t
+					org-replace-disputed-keys t)
 
-    ;; change tabs from org-mode
-    (with-eval-after-load 'org
-      (define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
+		;; for the "old-school" <s-<tab> to make src blocks
+		(require 'org-tempo)
+		(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 
-    (setq org-support-shift-select t)
-    (setq org-replace-disputed-keys t)
+		;; change tabs from org-mode
+		(with-eval-after-load 'org
+			(define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
   #+end_src
 ** hydra-org
    #+begin_src emacs-lisp
@@ -793,12 +792,15 @@ Currently not doing web development, by my estimation I will need these basic pa
    #+end_src
 ** org-projectile
    #+begin_src emacs-lisp
-     ;; put a todo file in the directory of each projectile project and link them to org-agenda
-     (use-package org-projectile
-       :config
-       (setq org-projectile-per-filepath "todo.org"
-             org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
-       (org-projectile-per-project))
+		 ;; put a todo file in the directory of each projectile project and link them to org-agenda
+		 (use-package org-projectile
+			 :custom
+			 (require 'org-projectile)
+			 (org-projectile-per-filepath "todo.org")
+			 ;;(org-agenda-files (append org-agenda-files (org-projectile-todo-files))) for some loading-order reason this function is void in :custom but not in :config
+			 :config
+			 (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+			 (org-projectile-per-project))
    #+end_src
 * EXWM
   Configuration for using emacs as an X window manager.
@@ -809,50 +811,37 @@ Currently not doing web development, by my estimation I will need these basic pa
 
 		(use-package exwm
 			:if exwm-enabled
-			:config
+			:init
 			;; package to manage bluetooth from emacs
 			(use-package bluetooth)
-
 			;; mode to bind media keys
 			(use-package desktop-environment
-				:config
+				:custom
 				;; for some reason the default volume commands do not work
-				(setq desktop-environment-volume-toggle-command       "amixer -D pulse set Master toggle"
-							desktop-environment-volume-set-command          "amixer -D pulse set Master %s"
-							desktop-environment-volume-get-command          "amixer -D pulse get Master"
-							;; brightness change amount
-							desktop-environment-brightness-normal-increment "5%+"
-							desktop-environment-brightness-normal-decrement "5%-"
-							desktop-environment-brightness-small-increment  "2%+"
-							desktop-environment-brightness-small-decrement  "2%-"
-							)
-				(desktop-environment-mode))
-
-			(setq exwm-workspace-number 2)
-			(setq exwm-randr-workspace-monitor-plist
-						'(0 "eDP-1" ;; laptop
-								1 "DP-3")) ;; external monitor via HDMI which is for some reason named DP-3
-
-			;; when window "class" updates, use it to set the buffer name
-			(defun mz/exwm-update-class ()
-				(exwm-workspace-rename-buffer exwm-class-name))
-			(add-hook 'exwm-update-class-hook #'mz/exwm-update-class)
-
+				(desktop-environment-volume-toggle-command       "amixer -D pulse set Master toggle")
+				(desktop-environment-volume-set-command          "amixer -D pulse set Master %s")
+				(desktop-environment-volume-get-command          "amixer -D pulse get Master")
+				;; brightness change amount
+				(desktop-environment-brightness-normal-increment "5%+")
+				(desktop-environment-brightness-normal-decrement "5%-")
+				(desktop-environment-brightness-small-increment  "2%+")
+				(desktop-environment-brightness-small-decrement  "2%-"))
+			:custom
+			(exwm-workspace-number 2)
+			(exwm-randr-workspace-monitor-plist
+			 '(0 "eDP-1" ;; laptop
+					 1 "DP-3")) ;; external monitor via HDMI which is for some reason named DP-3
 			;; these keys should always pass through to emacs
-			(setq exwm-input-prefix-keys
-						'(?\C-x
-							?\C-u
-							?\C-h
-							?\C-g
-							?\M-x
-							?\M-!))
-
-			;; enable the next key to be sent directly, for things like copy and paste from x windows
-			(define-key exwm-mode-map [?\C-m] 'exwm-input-send-next-key)
-
+			(exwm-input-prefix-keys
+			 '(?\C-x
+				 ?\C-u
+				 ?\C-h
+				 ?\C-g
+				 ?\M-x
+				 ?\M-!))
 			;; set up global key bindings.  these always work, no matter the input state!
 			;; keep in mind that changing this list after EXWM initializes has no effect.
-			(setq exwm-input-global-keys
+			(exwm-input-global-keys
 						`(
 							;; reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
 							([?\s-r] . exwm-reset)
@@ -870,7 +859,16 @@ Currently not doing web development, by my estimation I will need these basic pa
 							;; shortcut for terminal emulator
 							([s-return] . (lambda ()
 															(interactive)
-															(vterm-other-window))))))
+															(vterm-other-window)))))
+			:config
+			(desktop-environment-mode)
+			;; when window "class" updates, use it to set the buffer name
+			(defun mz/exwm-update-class ()
+				(exwm-workspace-rename-buffer exwm-class-name))
+			(add-hook 'exwm-update-class-hook #'mz/exwm-update-class)
+
+			;; enable the next key to be sent directly, for things like copy and paste from x windows
+			(define-key exwm-mode-map [?\C-m] 'exwm-input-send-next-key))
 
 		;; function to turn on all the exwm stuff
 		(defun mz/enable-exwm ()
