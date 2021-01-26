@@ -227,16 +227,19 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** Theme Configuration
   #+begin_src emacs-lisp
-    ;; ;; nord-theme, doesn't have tab-bar support yet
-    (use-package nord-theme)
+		;; nord-theme, doesn't have tab-bar support yet
+		(use-package nord-theme)
 
-    ;; dracula-theme, which has tab-bar support
-    (use-package dracula-theme)
+		;; dracula-theme, which has tab-bar support
+		(use-package dracula-theme)
 
-    ;; modus-vivendi, dark theme from prot
-    (use-package modus-vivendi-theme
-      :config
-      (load-theme 'modus-vivendi t))
+		;; modus-vivendi, dark theme from prot
+		(use-package modus-vivendi-theme)
+
+		;; chocolate theme, no tab bar
+		(use-package chocolate-theme)
+
+		(load-theme 'modus-vivendi t)
   #+end_src
 ** Frames Configuration
   #+begin_src emacs-lisp
