@@ -258,22 +258,26 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** tab-bar-mode
    #+begin_src emacs-lisp
-     (tab-bar-mode)
-     (global-set-key (kbd "M-[") 'tab-bar-history-back)
-     (global-set-key (kbd "M-]") 'tab-bar-history-forward)
-     ;; hydra bindings for tab-bar-mode
-     (defhydra hydra-tab-bar (:color red)
-       "Tab Bar Operations"
-       ("t" tab-new "Create a new tab" :column "Creation")
-       ("d" dired-other-tab "Open Dired in another tab")
-       ("f" find-file-other-tab "Find file in another tab")
-       ("0" tab-close "Close current tab")
-       ("m" tab-move "Move current tab" :column "Management")
-       ("r" tab-rename "Rename Tab")
-       ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
-       ("<right>" tab-next "Next Tab")
-       ("<left>" tab-previous "Previous Tab")
-       ("q" nil "exit" :color blue))
+		 ;; no GUI element unless turned on
+		 (setq tab-bar-show nil)
+
+		 (global-set-key (kbd "M-[") 'tab-bar-history-back)
+		 (global-set-key (kbd "M-]") 'tab-bar-history-forward)
+
+		 ;; hydra bindings for tab-bar-mode
+		 (defhydra hydra-tab-bar (:color red)
+			 "Tab Bar Operations"
+			 ("t" tab-new "Create a new tab" :column "Creation")
+			 ("d" dired-other-tab "Open Dired in another tab")
+			 ("f" find-file-other-tab "Find file in another tab")
+			 ("0" tab-close "Close current tab")
+			 ("m" tab-move "Move current tab" :column "Management")
+			 ("r" tab-rename "Rename Tab")
+			 ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
+			 ("<right>" tab-next "Next Tab")
+			 ("<left>" tab-previous "Previous Tab")
+			 ("SPC" tab-bar-mode "Toggle tab-bar-mode" :color blue :column "Misc")
+			 ("q" nil "exit" :color blue))
    #+end_src
 * User Interaction
   Packages and configuration related to user interaction.
@@ -608,9 +612,13 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
    #+end_src
 ** C
   #+begin_src emacs-lisp
-    (add-hook 'c-mode-hook 'eglot-ensure)
-    (add-to-list 'eglot-server-programs '('c-mode . ("clangd" "")))
+		(add-hook 'c-mode-hook 'eglot-ensure)
+		(add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd")) ;; eglot dies when this is in config. confusing.
   #+end_src
+
+	#+RESULTS:
+	: (('c-mode clangd ) (rust-mode eglot-rls rls) (python-mode pyls) ((js-mode typescript-mode) javascript-typescript-stdio) (sh-mode bash-language-server start) (php-mode php vendor/felixfbecker/language-server/bin/php-language-server.php) ((c++-mode c-mode) ccls) ((caml-mode tuareg-mode reason-mode) ocaml-language-server --stdio) (ruby-mode solargraph socket --port :autoport) (haskell-mode haskell-language-server-wrapper --lsp) (elm-mode elm-language-server) (kotlin-mode kotlin-language-server) (go-mode gopls) ((R-mode ess-r-mode) R --slave -e languageserver::run()) (java-mode . eglot--eclipse-jdt-contact) (dart-mode dart_language_server) (elixir-mode language_server.sh) (ada-mode ada_language_server) (scala-mode metals-emacs) ((tex-mode context-mode texinfo-mode bibtex-mode) digestif) (erlang-mode erlang_ls --transport stdio) (gdscript-mode localhost 6008))
+
 ** Elisp
   #+begin_src emacs-lisp
 		;; Help for emacs-lisp functions
