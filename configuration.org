@@ -14,7 +14,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - silversearcher-ag (projectile-ag)
 - clangd (C lsp-mode)
 - texlive-latex-extra, texlive-extra-utils (AUCTeX)
-- libpng-dev zlib1g-dev libpoppler-glib-dev libpoppler-private-devm imagemagick (pdf-tools)
+- libpng-dev zlib1g-dev libpoppler-glib-dev libpoppler-private-dev imagemagick (pdf-tools)
 - nodejs, npm (tide-mode)
 - playerctl, brightnessctl (exwm)
 - cmake, libtool-bin, libvterm-dev (vterm)
@@ -23,12 +23,12 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - lua5.3, liblua5.3 (latex lsp for eglot)
 ** Other Sources
 - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls.
-- Haskell Language Server: https://github.com/haskell/haskell-language-server
-- OCaml Language Server:  https://github.com/ocaml/ocaml-lsp
-- LaTeX Language Server: https://github.com/astoff/digestif
+- Haskell Language Server: https://github.com/haskell/haskell-language-server (install ghcup)
+- OCaml Language Server:  https://github.com/ocaml/ocaml-lsp (opam)
+- LaTeX Language Server: https://github.com/astoff/digestif (luarocks)
 - Java Language Server: https://github.com/eclipse/eclipse.jdt.ls
-- Python Language Server:  https://github.com/palantir/python-language-server
-- Rust Language Server:  https://github.com/rust-lang/rls
+- Python Language Server:  https://github.com/palantir/python-language-server (pip3)
+- Rust Language Server:  https://github.com/rust-lang/rls (rustup)
 * Packages Setup
   Setting up the package archives and the lisp to automatically load all my packages.
   #+begin_src emacs-lisp
@@ -389,7 +389,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 			(use-package ibuffer-projectile)
 			:custom
 			(projectile-completion-system 'ivy)
-			(projectile-project-search-path '("~/Projects"))
 			(projectile-mode-line "Projectile")
 			:config
 			(projectile-mode +1))
