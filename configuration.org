@@ -8,12 +8,12 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - TODO go through https://github.com/daviwil/dotfiles/blob/master/Emacs.org
 - emacs from scratch repo: https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Desktop-01.org
 - TODO defer packages? pin packages? learn more about use-package.
-- TODO figure out why auctex hooks are weird.
+- TODO move the manual latex config from org headers into proper configuration.
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag (projectile-ag)
 - clangd (C lsp-mode)
-- texlive-latex-extra, texlive-extra-utils (AUCTeX)
+- texlive-latex-extra, texlive-extra-utils, texlive-fonts-extra, texlive-xetex (latex)
 - libpng-dev zlib1g-dev libpoppler-glib-dev libpoppler-private-dev imagemagick (pdf-tools)
 - nodejs, npm (tide-mode)
 - playerctl, brightnessctl (exwm)
@@ -239,7 +239,10 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		;; chocolate theme, no tab bar
 		(use-package chocolate-theme)
 
-		(load-theme 'modus-vivendi t)
+		;; zenburn
+		(use-package zenburn-theme)
+
+		(load-theme 'nord t)
   #+end_src
 ** Frames Configuration
   #+begin_src emacs-lisp
@@ -338,17 +341,17 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 			 ("C-S-<right>" . windmove-swap-states-right)
 			 ("C-S-<up>" . windmove-swap-states-up)
 			 ("C-S-<down>" . windmove-swap-states-down))
-			:hook
+			;;:hook
 			;; hooks for windmove working in org mode, questionable effect.
-			((org-shiftup . windmove-up)
-			 (org-shiftleft . windmove-left)
-			 (org-shiftdown . windmove-down)
-			 (org-shiftright . windmove-right)
+			;; ((org-shiftup . windmove-up)
+			;;  (org-shiftleft . windmove-left)
+			;;  (org-shiftdown . windmove-down)
+			;;  (org-shiftright . windmove-right)
 
-			 (org-shiftcontrolup . windmove-swap-states-up)
-			 (org-shiftcontrolleft . windmove-swap-states-left)
-			 (org-shiftcontrol-down . windmove-swap-states-down)
-			 (org-shiftcontrolright . windmove-swap-states-right))
+			;;  (org-shiftcontrolup . windmove-swap-states-up)
+			;;  (org-shiftcontrolleft . windmove-swap-states-left)
+			;;  (org-shiftcontrol-down . windmove-swap-states-down)
+			;;  (org-shiftcontrolright . windmove-swap-states-right))
 			:config
 			;; use shift + arrow keys to switch between visible buffers
 			(windmove-default-keybindings))
@@ -610,15 +613,15 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 
        ("q" nil "exit" :color blue))
    #+end_src
+** Assembly
+	 #+begin_src emacs-lisp
+		 ;;(setq asm-comment-char "//")
+	 #+end_src
 ** C
   #+begin_src emacs-lisp
 		(add-hook 'c-mode-hook 'eglot-ensure)
-		(add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd")) ;; eglot dies when this is in config. confusing.
+		(add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
   #+end_src
-
-	#+RESULTS:
-	: (('c-mode clangd ) (rust-mode eglot-rls rls) (python-mode pyls) ((js-mode typescript-mode) javascript-typescript-stdio) (sh-mode bash-language-server start) (php-mode php vendor/felixfbecker/language-server/bin/php-language-server.php) ((c++-mode c-mode) ccls) ((caml-mode tuareg-mode reason-mode) ocaml-language-server --stdio) (ruby-mode solargraph socket --port :autoport) (haskell-mode haskell-language-server-wrapper --lsp) (elm-mode elm-language-server) (kotlin-mode kotlin-language-server) (go-mode gopls) ((R-mode ess-r-mode) R --slave -e languageserver::run()) (java-mode . eglot--eclipse-jdt-contact) (dart-mode dart_language_server) (elixir-mode language_server.sh) (ada-mode ada_language_server) (scala-mode metals-emacs) ((tex-mode context-mode texinfo-mode bibtex-mode) digestif) (erlang-mode erlang_ls --transport stdio) (gdscript-mode localhost 6008))
-
 ** Elisp
   #+begin_src emacs-lisp
 		;; Help for emacs-lisp functions
