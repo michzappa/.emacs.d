@@ -4,16 +4,5 @@
 
 
 * Elfeed :elfeed:
-# ** Reddit :reddit:
-# *** https://reddit.com/r/emacs.rss
-# *** https://reddit.com/r/everton/.rss
-# *** https://reddit.com/r/formula1.rss
-# *** https://reddit.com/r/france.rss
-# *** https://reddit.com/r/geopolitics.rss
-# *** https://reddit.com/r/linguistics.rss
-# *** https://reddit.com/r/linux.rss
-# *** https://reddit.com/r/mapporn.rss
-# *** https://reddit.com/r/peloton.rss
-# *** https://reddit.com/r/programminglanguages.rss
 ** HackerNews :hackernews:
 *** https://hnrss.org/frontpage

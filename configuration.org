@@ -107,6 +107,9 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		;; quit Emacs directly even if there are running processes
 		(setq confirm-kill-processes nil)
 
+		;; enable y/n answers
+		(fset 'yes-or-no-p 'y-or-n-p)
+
 		;; store all backup and autosave files in the tmp dir
 		(setq backup-directory-alist
 					`((".*" . ,temporary-file-directory)))
@@ -174,9 +177,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     ;; change font size binding
     (global-set-key (kbd "C-+") 'text-scale-increase)
     (global-set-key (kbd "C--") 'text-scale-decrease)
-
-    ;; shortcut for copying lines using verbose syntax
-    (global-set-key (kbd "C-c D") "\C-a\C- \C-n\M-w")
 
     ;; keybinding to reload configuration
     (global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
@@ -257,7 +257,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		;; zenburn
 		(use-package zenburn-theme)
 
-		(load-theme 'nord t)
+		(load-theme 'zenburn t)
   #+end_src
 ** Frames Configuration
   #+begin_src emacs-lisp
@@ -356,17 +356,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 			 ("C-S-<right>" . windmove-swap-states-right)
 			 ("C-S-<up>" . windmove-swap-states-up)
 			 ("C-S-<down>" . windmove-swap-states-down))
-			;;:hook
-			;; hooks for windmove working in org mode, questionable effect.
-			;; ((org-shiftup . windmove-up)
-			;;  (org-shiftleft . windmove-left)
-			;;  (org-shiftdown . windmove-down)
-			;;  (org-shiftright . windmove-right)
-
-			;;  (org-shiftcontrolup . windmove-swap-states-up)
-			;;  (org-shiftcontrolleft . windmove-swap-states-left)
-			;;  (org-shiftcontrol-down . windmove-swap-states-down)
-			;;  (org-shiftcontrolright . windmove-swap-states-right))
 			:config
 			;; use shift + arrow keys to switch between visible buffers
 			(windmove-default-keybindings))
@@ -385,11 +374,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 
 			("q" nil "exit" :color blue))
   #+end_src
-** Yes/No Question Configuration
-   #+begin_src emacs-lisp
-     ;; enable y/n answers
-     (fset 'yes-or-no-p 'y-or-n-p)
-   #+end_src
 * VTerm
   Preferred emacs terminal emulator.
   #+begin_src emacs-lisp
@@ -491,7 +475,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+begin_src emacs-lisp
 		(use-package rainbow-delimiters
 			:hook
-			((emacs-lisp-mode java-mode python-mode rust-mode) . rainbow-delimiters-mode))
+			((emacs-lisp-mode java-mode python-mode rust-mode c-mode) . rainbow-delimiters-mode))
   #+end_src
 ** format-all
    #+begin_src emacs-lisp
@@ -557,6 +541,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       (nov-mode . visual-line-mode))
   #+end_src
 * LaTeX
+	Packages and configuration related to editing tex files and compiling them using LaTeX.
   #+begin_src emacs-lisp
 		(use-package auctex
 			:defer t
@@ -594,23 +579,28 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 				"Ensures that each entry does not exceed 120 characters."
 				(setq fill-column 120)))
   #+end_src
+* Quelpa
+A different wrapper for package.el that can take packages from source.
+#+begin_src emacs-lisp
+	(use-package quelpa)
+#+end_src
 * PDF-Tools
+	Preffered PDF viewer.
   #+begin_src emacs-lisp
-    ;; enhanced pdf viewer
-    (use-package pdf-tools
-      :init
-      (pdf-tools-install)
-      :hook (pdf-view-mode . pdf-view-midnight-minor-mode))
+		;; enhanced pdf viewer
+		(use-package pdf-tools
+			:init
+			(pdf-tools-install)
+			:hook (pdf-view-mode . pdf-view-midnight-minor-mode))
 
-    ;; quelpa just for this right now, maybe break out when re-evaluate packaging. probably will just change to straight
-    (use-package quelpa
-      :config
-      (quelpa
-       '(pdf-continuous-scroll-mode
-         :fetcher git
-         :url "https://github.com/dalanicolai/pdf-continuous-scroll-mode.el.git"))
-      (add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
-      (setq pdf-view-have-image-mode-pixel-vscroll t))
+		;; mode for smooth scrolling through pdfs using two buffers in one
+		(with-eval-after-load 'quelpa
+			(quelpa
+			 '(pdf-continuous-scroll-mode
+				 :fetcher git
+				 :url "https://github.com/dalanicolai/pdf-continuous-scroll-mode.el.git"))
+			(add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
+			(setq pdf-view-have-image-mode-pixel-vscroll t))
   #+end_src
 * Languages and LSP Support
   Packages and configuration related to language major/minor modes and language servers.
