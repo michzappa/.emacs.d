@@ -169,26 +169,27 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * Mouse and Keys
   Mouse and keyboard settings which don't belong to any specific package or function.
   #+begin_src emacs-lisp
-    ;; scrolling
-    (setq scroll-margin 0
-          scroll-conservatively 100000
-          scroll-preserve-screen-position 1)
+		;; scrolling
+		(setq scroll-margin 0
+					mouse-wheel-progressive-speed nil
+					scroll-conservatively 100000
+					scroll-preserve-screen-position 1)
 
-    ;; change font size binding
-    (global-set-key (kbd "C-+") 'text-scale-increase)
-    (global-set-key (kbd "C--") 'text-scale-decrease)
+		;; change font size binding
+		(global-set-key (kbd "C-+") 'text-scale-increase)
+		(global-set-key (kbd "C--") 'text-scale-decrease)
 
-    ;; keybinding to reload configuration
-    (global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
+		;; keybinding to reload configuration
+		(global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
 
-    ;; keybinding to open configuration file (this file)
-    (global-set-key (kbd "C-c n") (lambda ()  (interactive) (find-file "~/.emacs.d/configuration.org")))
+		;; keybinding to open configuration file (this file)
+		(global-set-key (kbd "C-c n") (lambda ()  (interactive) (find-file "~/.emacs.d/configuration.org")))
 
-    ;; assume I want to close current buffer with ""C-x k""
-    (global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
+		;; assume I want to close current buffer with ""C-x k""
+		(global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
 
-    ;; replacing keybinding for undo as it is "C-/" by default and I use that for toggling comments.
-    (global-set-key (kbd "C-.") 'undo)
+		;; replacing keybinding for undo as it is "C-/" by default and I use that for toggling comments.
+		(global-set-key (kbd "C-.") 'undo)
   #+end_src
 * Hydra
   Hydra provides the ability to create a keybinding menu to reduce redundant keypresses.
@@ -816,7 +817,6 @@ Currently not doing web development, by my estimation I will need these basic pa
 			 :custom
 			 (require 'org-projectile)
 			 (org-projectile-per-filepath "todo.org")
-			 ;;(org-agenda-files (append org-agenda-files (org-projectile-todo-files))) for some loading-order reason this function is void in :custom but not in :config
 			 :config
 			 (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
 			 (org-projectile-per-project))
