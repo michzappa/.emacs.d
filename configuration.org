@@ -5,8 +5,6 @@
 init.el uses org-babel-load file to automatically load in the emacs-lisp
 blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and might not even be).
 
-- TODO go through https://github.com/daviwil/dotfiles/blob/master/Emacs.org
-- emacs from scratch repo: https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Desktop-01.org
 - TODO defer packages? pin packages? learn more about use-package.
 * Things to Install
 ** Apt Packages (or equivalent)
@@ -482,6 +480,10 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
    #+begin_src emacs-lisp
      (use-package format-all)
    #+end_src
+** markdown-mode
+	 #+begin_src emacs-lisp
+		 (use-package markdown-mode)
+	 #+end_src
 ** Formatting Configuration
    #+begin_src emacs-lisp
      ;; wraps visual lines
