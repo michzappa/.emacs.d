@@ -586,6 +586,12 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 A different wrapper for package.el that can take packages from source.
 #+begin_src emacs-lisp
 	(use-package quelpa)
+
+	(quelpa
+	 '(quelpa-use-package
+		 :fetcher git
+		 :url "https://github.com/quelpa/quelpa-use-package.git"))
+	(require 'quelpa-use-package)
 #+end_src
 * PDF-Tools
 	Preffered PDF viewer.
@@ -597,13 +603,23 @@ A different wrapper for package.el that can take packages from source.
 			:hook (pdf-view-mode . pdf-view-midnight-minor-mode))
 
 		;; mode for smooth scrolling through pdfs using two buffers in one
-		(with-eval-after-load 'quelpa
-			(quelpa
-			 '(pdf-continuous-scroll-mode
+		;; (with-eval-after-load 'quelpa
+		;; 	(quelpa
+		;; 	 '(pdf-continuous-scroll-mode
+		;; 		 :fetcher git
+		;; 		 :url "https://github.com/dalanicolai/pdf-continuous-scroll-mode.el.git"))
+		;; 	(add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
+		;; 	(setq pdf-view-have-image-mode-pixel-vscroll t))
+
+		(use-package pdf-continuous-scroll-mode
+			:defer t
+			:quelpa (pdf-continuous-scroll-mode
 				 :fetcher git
-				 :url "https://github.com/dalanicolai/pdf-continuous-scroll-mode.el.git"))
-			(add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
-			(setq pdf-view-have-image-mode-pixel-vscroll t))
+				 :url "https://github.com/dalanicolai/pdf-continuous-scroll-mode.el.git")
+			:hook
+			(pdf-view-mode . pdf-continuous-scroll-mode)
+			:custom
+			(pdf-view-have-image-mode-pixel-vscroll t))
   #+end_src
 * Languages and LSP Support
   Packages and configuration related to language major/minor modes and language servers.
@@ -630,8 +646,9 @@ A different wrapper for package.el that can take packages from source.
   #+begin_src emacs-lisp
 		;; Help for emacs-lisp functions
 		(use-package eldoc
+			:defer t
 			:hook
-			((emacs-lisp-mode lisp-interaction-mode ielm-mode) . turn-on-eldoc-mode))
+			((emacs-lisp-mode lisp-interaction-mode ielm-mode) . eldoc-mode))
   #+end_src
 ** Elixir
   #+begin_src emacs-lisp
