@@ -82,7 +82,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		(setq compilation-scroll-output t)
 
 		;; minor mode for inserting parens, braces, quotes and the like in pairs.
-		;;turned "<> off for org mode since it makes the shortcut for org blocks difficult."
+		;; turned "<> off for org mode since it makes the shortcut for org blocks difficult."
 		(electric-pair-mode)
 		(add-hook 'org-mode-hook
 							(lambda () (setq-local electric-pair-inhibit-predicate
@@ -135,6 +135,14 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 					 (list (region-beginning) (region-end))
 				 (message "Copied line")
 				 (list (line-beginning-position) (line-beginning-position 2)))))
+
+		;; utility function for opening eshell in another window
+		(defun mz/eshell-other-window ()
+			"Open 'eshell' in a new window."
+			(interactive)
+			(let ((buf (eshell)))
+				(switch-to-buffer (other-buffer buf))
+				(switch-to-buffer-other-window buf)))
   #+end_src
 * TRAMP
   #+begin_src emacs-lisp
@@ -190,6 +198,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 
 		;; replacing keybinding for undo as it is "C-/" by default and I use that for toggling comments.
 		;;(global-set-key (kbd "C-.") 'undo)
+		(global-set-key (kbd "C-M-<return>") 'mz/eshell-other-window)
   #+end_src
 * Hydra
   Hydra provides the ability to create a keybinding menu to reduce redundant keypresses.
@@ -413,24 +422,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 			:config
 			(projectile-mode +1))
 
-		;; utility function for opening projectile eshell in another window
-		(defun mz/projectile-eshell-other-window ()
-			"Open 'eshell' from projectile in a new window."
-			(interactive)
-			(let ((buf (projectile-run-eshell)))
-				(switch-to-buffer (other-buffer buf))
-				(switch-to-buffer-other-window buf)))
-
-		;; hydra bindings for opening projectile things in another window
-		(defhydra hydra-projectile-other-window (:color blue)
-			"projectile-other-window"
-			("f"  projectile-find-file-other-window        "file" :column "Find File")
-			("g"  projectile-find-file-dwim-other-window   "file dwim")
-			("d"  projectile-find-dir-other-window         "dir")
-			("b"  projectile-switch-to-buffer-other-window "buffer")
-			("e" mz/projectile-eshell-other-window         "eshell" :column "Misc")
-			("q"  nil                                      "exit" :color blue))
-
 		;; hydra bindings for projectile
 		(defhydra hydra-projectile (:color red)
 			"PROJECTILE: %(projectile-project-root)"
@@ -455,7 +446,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 			("p"   projectile-switch-project "switch project" :column "Project")
 			("P"   treemacs-projectile "treemacs")
 
-			("`"   hydra-projectile-other-window/body "other window" :color blue :column "Other")
 			("q"   nil "exit" :color blue))
   #+end_src
 * Text Files
