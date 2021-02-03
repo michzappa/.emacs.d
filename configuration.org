@@ -5,7 +5,6 @@
 init.el uses org-babel-load file to automatically load in the emacs-lisp
 blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and might not even be).
 
-- TODO defer packages? pin packages? learn more about use-package.
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag (projectile-ag)
@@ -20,7 +19,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - lua5.3, liblua5.3 (latex lsp for eglot)
 ** Other Sources
 - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls.
-- Haskell Language Server: https://github.com/haskell/haskell-language-server (install ghcup)
+- Haskell Language Server: https://github.com/haskell/haskell-language-server (ghcup)
 - OCaml Language Server:  https://github.com/ocaml/ocaml-lsp (opam)
 - LaTeX Language Server: https://github.com/astoff/digestif (luarocks)
 - Java Language Server: https://github.com/eclipse/eclipse.jdt.ls
@@ -107,6 +106,9 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 
 		;; enable y/n answers
 		(fset 'yes-or-no-p 'y-or-n-p)
+
+		;; reload files from disk
+		(global-auto-revert-mode)
 
 		;; store all backup and autosave files in the tmp dir
 		(setq backup-directory-alist
@@ -376,8 +378,10 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * VTerm
   Preferred emacs terminal emulator.
   #+begin_src emacs-lisp
-    (setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=no")
-    (use-package vterm)
+		(setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=no")
+		(use-package vterm
+			:bind
+			("M-RET" . vterm-other-window))
   #+end_src
 * Project Management
   Packages and configuration related to managing projects.
@@ -732,19 +736,12 @@ A different wrapper for package.el that can take packages from source.
 		(use-package cargo
 			:hook (rust-mode . cargo-minor-mode))
   #+end_src
-** sh
-  #+begin_src emacs-lisp
-    (add-hook 'shell-mode-hook
-        (lambda ()
-          (setq sh-basic-offset 2
-          shr-indentation 2)))
-  #+end_src
 ** Web Dev
 Currently not doing web development, by my estimation I will need these basic packages.
    #+begin_src emacs-lisp
-     (use-package web-mode)
-     (use-package typescript-mode)
-     (use-package tide)
+		 ;; (use-package web-mode)
+		 ;; (use-package typescript-mode)
+		 ;; (use-package tide)
    #+end_src
 * Org Mode
   Configuration for the majestic org-mode.
