@@ -8,12 +8,12 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag (projectile-ag)
-- clangd (C lsp-mode)
+- clangd (C lsp)
 - texlive-latex-extra, texlive-extra-utils, texlive-fonts-extra, texlive-xetex (latex)
 - libpng-dev zlib1g-dev libpoppler-glib-dev libpoppler-private-dev imagemagick (pdf-tools)
 - nodejs, npm (tide-mode)
 - playerctl, brightnessctl (exwm)
-- cmake, libtool-bin, libvterm-dev (vterm)
+- cmake, libtool-bin (vterm)
 - slock (exwm)
 - compton or equivalent compositor (exwm)
 - lua5.3, liblua5.3 (latex lsp for eglot)
@@ -189,7 +189,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		(global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
 
 		;; replacing keybinding for undo as it is "C-/" by default and I use that for toggling comments.
-		(global-set-key (kbd "C-.") 'undo)
+		;;(global-set-key (kbd "C-.") 'undo)
   #+end_src
 * Hydra
   Hydra provides the ability to create a keybinding menu to reduce redundant keypresses.
@@ -341,6 +341,12 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
      (use-package scratch
        :bind ("C-c s" . scratch))
    #+end_src
+** undo-tree
+	 #+begin_src emacs-lisp
+		 (use-package undo-tree
+			 :config
+			 (global-undo-tree-mode))
+	 #+end_src
 ** which-key
   #+begin_src emacs-lisp
     ;; shows possible key combinations
@@ -514,7 +520,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
          (forward-line)))
 
      ;; binding toggle-comment to "C-/" for consistency with other editors
-     (global-set-key (kbd "C-/") 'mz/comment-or-uncomment-region-or-line)
+     (global-set-key (kbd "C-.") 'mz/comment-or-uncomment-region-or-line)
 
      ;; function to untabify buffer
      (defun mz/untabify-buffer ()
