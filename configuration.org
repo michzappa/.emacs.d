@@ -476,6 +476,13 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 			:hook
 			((emacs-lisp-mode java-mode python-mode rust-mode c-mode) . rainbow-delimiters-mode))
   #+end_src
+** smartparens
+	 #+begin_src emacs-lisp
+		 (use-package smartparens
+			 :config
+			 (smartparens-global-mode)
+			 (show-smartparens-global-mode))
+	 #+end_src
 ** format-all
    #+begin_src emacs-lisp
      (use-package format-all)
