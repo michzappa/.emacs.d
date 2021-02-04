@@ -174,12 +174,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 
     (add-to-list 'tramp-remote-path "~/.local/bin")
   #+end_src
-* Evil Mode
-	#+begin_src emacs-lisp
-		(use-package evil
-			:config
-			(evil-mode +1))
-	#+end_src
 * Mouse and Keys
   Mouse and keyboard settings which don't belong to any specific package or function.
   #+begin_src emacs-lisp
