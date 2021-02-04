@@ -82,12 +82,12 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		(setq compilation-scroll-output t)
 
 		;; minor mode for inserting parens, braces, quotes and the like in pairs.
-		;; turned "<> off for org mode since it makes the shortcut for org blocks difficult."
+		;; turned "<>" off for org mode since it makes the shortcut for org blocks difficult."
 		(electric-pair-mode)
 		(add-hook 'org-mode-hook
 							(lambda () (setq-local electric-pair-inhibit-predicate
 																(lambda (c)
-																	(if (eq c ?<)
+																	(if (eq c ?\<)
 																			t
 																		(electric-pair-inhibit-predicate c))))))
 
@@ -174,6 +174,12 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 
     (add-to-list 'tramp-remote-path "~/.local/bin")
   #+end_src
+* Evil Mode
+	#+begin_src emacs-lisp
+		(use-package evil
+			:config
+			(evil-mode +1))
+	#+end_src
 * Mouse and Keys
   Mouse and keyboard settings which don't belong to any specific package or function.
   #+begin_src emacs-lisp
@@ -196,8 +202,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		;; assume I want to close current buffer with ""C-x k""
 		(global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
 
-		;; replacing keybinding for undo as it is "C-/" by default and I use that for toggling comments.
-		;;(global-set-key (kbd "C-.") 'undo)
+		;; shortcut to open eshell in another window. mimics that to open vterm in another window
 		(global-set-key (kbd "C-M-<return>") 'mz/eshell-other-window)
   #+end_src
 * Hydra
@@ -480,6 +485,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 	 #+begin_src emacs-lisp
 		 (use-package smartparens
 			 :config
+			 (require 'smartparens-config)
 			 (smartparens-global-mode)
 			 (show-smartparens-global-mode))
 	 #+end_src
@@ -516,7 +522,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
          (comment-or-uncomment-region beg end)
          (forward-line)))
 
-     ;; binding toggle-comment to "C-/" for consistency with other editors
+     ;; binding toggle-comment to "C-."
      (global-set-key (kbd "C-.") 'mz/comment-or-uncomment-region-or-line)
 
      ;; function to untabify buffer
@@ -550,6 +556,11 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       :hook
       (nov-mode . visual-line-mode))
   #+end_src
+* Anki
+Not working properly with AnkiConnect.
+	#+begin_src emacs-lisp
+		(use-package anki-editor)
+	#+end_src
 * LaTeX
 	Packages and configuration related to editing tex files and compiling them using LaTeX.
   #+begin_src emacs-lisp
