@@ -4,5 +4,5 @@
 
 
 * Elfeed :elfeed:
-** HackerNews :hackernews:
-*** https://hnrss.org/frontpage
+** XKCD :xkcd
+*** https://xkcd.com/rss.xml
