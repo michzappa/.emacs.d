@@ -27,7 +27,6 @@
   "Prompt for a character, return it"
   (setq josh/chinese-word (read-from-minibuffer "Word/Phrase: ")))
 
-
 (defun josh/chinese-dict-find (phrase)
   "Find a chinese word or phrase in the dictionary"
   (with-temp-buffer

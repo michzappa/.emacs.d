@@ -5,7 +5,6 @@
 init.el uses org-babel-load file to automatically load in the emacs-lisp
 blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and might not even be).
 
-- TODO org-drill with org-capture for chinese
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag (projectile-ag)
@@ -80,6 +79,9 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * Misc
   Miscellanious things which might be put somewhere else eventually.
   #+begin_src emacs-lisp
+		;; load the directory where the additional elisp resides
+		(add-to-list 'load-path "~/.emacs.d/elisp")
+
 		;; scroll compilation output in the window
 		(setq compilation-scroll-output t)
 
@@ -968,7 +970,6 @@ Currently not doing web development, by my estimation I will need these basic pa
 ** TODO if I make changes to the code that I understand, rebrand functions and module
 ** code
 	#+begin_src emacs-lisp
-		(add-to-list 'load-path "~/.emacs.d/elisp")
 		(require 'josh-chinese)
 
 		;; adding the custom cangjie input method
@@ -980,15 +981,14 @@ Currently not doing web development, by my estimation I will need these basic pa
 		(mz/add-capture-template '("c" "Chinese"))
 		(mz/add-capture-template '("cw" "Word" entry
 															 (file+headline "chinese.org" "Words")
-															 "* <[%(josh/chinese-prompt)]> :drill:\n
+															 "* <%(josh/chinese-prompt)> :drill: \n
 		Added: %U\n
-		Definition:\n
+		,** Definition:\n
 		%(josh/chinese-get-definition (josh/chinese-dict-find josh/chinese-word))\n
-		,** Characters\n
-		%(josh/chinese-get-word josh/chinese-word-dict)\n
 		,** Pronunciation\n
 		%(josh/chinese-get-pronunciation josh/chinese-word-dict)\n
+		,** Characters\n
+		%(josh/chinese-get-word josh/chinese-word-dict)\n
 		,** Cangjie\n
-		%(josh/chinese-cangjie-codes josh/chinese-words)\n
-						"))
+		%(josh/chinese-cangjie-codes josh/chinese-words)\n"))
 	#+end_src
