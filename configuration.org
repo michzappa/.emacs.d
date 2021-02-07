@@ -5,6 +5,7 @@
 init.el uses org-babel-load file to automatically load in the emacs-lisp
 blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and might not even be).
 
+- TODO org-drill with org-capture for chinese
 * Things to Install
 ** Apt Packages (or equivalent)
 - silversearcher-ag (projectile-ag)
@@ -481,8 +482,8 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		 (use-package smartparens
 			 :config
 			 (require 'smartparens-config)
-			 (smartparens-global-mode)
-			 (show-smartparens-global-mode))
+			 ;; (smartparens-global-mode)
+				(show-smartparens-global-mode))
 	 #+end_src
 ** format-all
    #+begin_src emacs-lisp
@@ -794,33 +795,46 @@ Currently not doing web development, by my estimation I will need these basic pa
        ("a" org-agenda "agenda")
        ("p" org-projectile-project-todo-completing-read "projectile"))
    #+end_src
-** org-capture
-   #+begin_src emacs-lisp
-     (global-set-key (kbd "C-c c") 'org-capture)
-
-     ;; abstracted template for a TODO to take place on some day, like an assignment due date.
-     (defun mz/todo-on-day-template ()
-       "* TODO %? %^t")
-
-     (setq org-capture-templates
-           '(("c" "Class Task")
-             ("cs" "Systems Task" entry
-              (file+headline "cs3650.org" "Systems")
-              (function mz/todo-on-day-template))
-             ("cn" "Networks Task" entry
-              (file+headline "cs3700.org" "Networks")
-              (function mz/todo-on-day-template))
-             ("cc" "Cyber Task" entry
-              (file+headline "cy2550.org" "Cyber")
-              (function mz/todo-on-day-template))
-             ("cp" "Phonology Task" entry
-              (file+headline "ling3422.org" "Phonology")
-              (function mz/todo-on-day-template))))
-   #+end_src
 ** org-agenda
    #+begin_src emacs-lisp
-     (setq org-agenda-files (append org-agenda-files '("~/Org")))
+     (setq org-agenda-files (append org-agenda-files '("~/org")))
    #+end_src
+** org-capture
+   #+begin_src emacs-lisp
+		 (global-set-key (kbd "C-c c") 'org-capture)
+		 (setq org-capture-templates '())
+
+		 ;; helper function to add a template to org-capture-templates
+		 (defun mz/add-capture-template (template)
+			 (let ((key (car template)))
+				 (setq org-capture-templates
+							 (cl-remove-if (lambda (x) (equal (car x) key)) org-capture-templates))
+				 (add-to-list 'org-capture-templates
+											template)))
+
+		 ;; abstracted template for a TODO to take place on some day, like an assignment due date.
+		 (defun mz/todo-on-day-template ()
+			 "* TODO %? %^t")
+
+		 (mz/add-capture-template '("c" "Class Task"))
+		 (mz/add-capture-template '("cs" "Systems Task" entry
+																(file+headline "cs3650.org" "Systems")
+																(function mz/todo-on-day-template)))
+		 (mz/add-capture-template '("cn" "Networks Task" entry
+																(file+headline "cs3700.org" "Networks")
+																(function mz/todo-on-day-template)))
+		 (mz/add-capture-template '("cc" "Cyber Task" entry
+																(file+headline "cy2550.org" "Cyber")
+																(function mz/todo-on-day-template)))
+		 (mz/add-capture-template '("cp" "Phonology Task" entry
+																(file+headline "ling3422.org" "Phonology")
+																(function mz/todo-on-day-template)))
+   #+end_src
+** org-drill
+	 #+begin_src emacs-lisp
+		 (use-package org-drill
+			 )
+	 #+end_src
 ** org-present
    #+begin_src emacs-lisp
      (use-package org-present
