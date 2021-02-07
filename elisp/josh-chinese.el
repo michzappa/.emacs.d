@@ -41,8 +41,7 @@
 	   (if (equal (length definitions) 1)
 	       (car definitions)
 	     (ivy-read "Pick a definition: "
-			     definitions
-			     :nomark t))))))
+			     definitions))))))
 
 (defun josh/chinese-get-pronunciation (dictentry)
   "Get a pronunciation from a dictionary entry."

@@ -961,7 +961,7 @@ Currently not doing web development, by my estimation I will need these basic pa
 * Chinese
 ** TODO the helm function is void, find an ivy equivalent? or work around it?
 ** TODO if I make changes to the code that I understand, rebrand functions and module
-
+** code
 	#+begin_src emacs-lisp
 		(add-to-list 'load-path "~/.emacs.d/elisp")
 		(require 'josh-chinese)
