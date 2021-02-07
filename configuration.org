@@ -763,7 +763,7 @@ Currently not doing web development, by my estimation I will need these basic pa
   Configuration for the majestic org-mode.
 ** General
   #+begin_src emacs-lisp
-		(setq org-directory "~/Org")
+		(setq org-directory "~/org")
 
 		;; bullets instead of asterisks
 		(use-package org-bullets
