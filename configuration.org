@@ -802,7 +802,7 @@ Currently not doing web development, by my estimation I will need these basic pa
 ** org-capture
    #+begin_src emacs-lisp
 		 (global-set-key (kbd "C-c c") 'org-capture)
-
+		 (setq org-capture-templates '())
 		 ;; helper function to add a template to org-capture-templates
 		 (defun mz/add-capture-template (template)
 			 (let ((key (car template)))
@@ -961,6 +961,7 @@ Currently not doing web development, by my estimation I will need these basic pa
 * Chinese
 ** TODO the helm function is void, find an ivy equivalent? or work around it?
 ** TODO if I make changes to the code that I understand, rebrand functions and module
+
 	#+begin_src emacs-lisp
 		(add-to-list 'load-path "~/.emacs.d/elisp")
 		(require 'josh-chinese)
