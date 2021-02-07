@@ -802,7 +802,6 @@ Currently not doing web development, by my estimation I will need these basic pa
 ** org-capture
    #+begin_src emacs-lisp
 		 (global-set-key (kbd "C-c c") 'org-capture)
-		 (setq org-capture-templates '())
 
 		 ;; helper function to add a template to org-capture-templates
 		 (defun mz/add-capture-template (template)
@@ -832,8 +831,7 @@ Currently not doing web development, by my estimation I will need these basic pa
    #+end_src
 ** org-drill
 	 #+begin_src emacs-lisp
-		 (use-package org-drill
-			 )
+		 (use-package org-drill)
 	 #+end_src
 ** org-present
    #+begin_src emacs-lisp
@@ -960,3 +958,31 @@ Currently not doing web development, by my estimation I will need these basic pa
 
 		(if exwm-enabled (mz/enable-exwm) ())
   #+end_src
+* Chinese
+** TODO the helm function is void, find an ivy equivalent? or work around it?
+** TODO if I make changes to the code that I understand, rebrand functions and module
+	#+begin_src emacs-lisp
+		(add-to-list 'load-path "~/.emacs.d/elisp")
+		(require 'josh-chinese)
+
+		;; adding the custom cangjie input method
+		(register-input-method
+		 "Cangjie5" "Chinese-BIG5" 'quail-use-package
+		 "C5" "Cangjie version 5"
+		 "cangjie5.el")
+
+		(mz/add-capture-template '("d" "Drill"))
+		(mz/add-capture-template '("dc" "Chinese"))
+		(mz/add-capture-template '("dcw" "Word" entry
+															 (file+headline "chinese.org" "Words")
+															 "* <[%(josh/chinese-prompt)]> :drill:\n
+						Added: %U\n
+						Definition:\n
+						%(josh/chinese-get-definition (josh/chinese-dict-find josh/chinese-word))\n
+						,** Characters\n
+						%(josh/chinese-get-word josh/chinese-word-dict)\n
+						,** Pronunciation\n
+						%(josh/chinese-get-pronunciation josh/chinese-word-dict)\n
+						,** Cangjie\n%(josh/chinese-cangjie-codes josh/chinese-words)\n
+						"))
+	#+end_src
