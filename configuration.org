@@ -25,6 +25,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - LaTeX Language Server: https://github.com/astoff/digestif (luarocks)
 - Java Language Server: https://github.com/eclipse/eclipse.jdt.ls
 - Pyright Language Server:  https://github.com/palantir/python-language-server (npm)
+- Palantir Language Server: https://github.com/palantir/python-language-server (pip)
 - Rust Language Server:  https://github.com/rust-lang/rls (rustup)
 * Packages Setup
   Setting up the package archives and the lisp to automatically load all my packages.
@@ -735,13 +736,13 @@ A different wrapper for package.el that can take packages from source.
    #+end_src
 ** Python
   #+begin_src emacs-lisp
-		(add-to-list 'eglot-server-programs '(python-mode "pyright-langserver" "--stdio"))
+		;; (add-to-list 'eglot-server-programs '(python-mode "pyright-langserver" "--stdio"))
 
 		(use-package python
 			:hook
 			(python-mode . eglot-ensure)
 			:custom
-			(python-indent-offset 2)
+			(python-indent-offset 4)
 			:config
 			(cond
 			 ;; i use python3
@@ -978,8 +979,7 @@ Currently not doing web development, by my estimation I will need these basic pa
 		 "C5" "Cangjie version 5"
 		 "cangjie5.el")
 
-		(mz/add-capture-template '("c" "Chinese"))
-		(mz/add-capture-template '("cw" "Word" entry
+		(mz/add-capture-template '("c" "Chinese" entry
 															 (file+headline "chinese.org" "Words")
 															 "* <%(josh/chinese-prompt)> :drill: \n
 		Added: %U\n
