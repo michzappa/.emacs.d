@@ -406,7 +406,11 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		(setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=no")
 		(use-package vterm
 			:bind
-			("M-RET" . vterm-other-window))
+			("M-RET" . vterm-other-window)
+			:config
+			;; if the fish shell is installed, use that for VTerm's shell
+			(when (executable-find "fish")
+				(setq vterm-shell (executable-find "fish"))))
   #+end_src
 * Project Management
   Packages and configuration related to managing projects.
