@@ -17,6 +17,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - slock (exwm)
 - compton or equivalent compositor (exwm)
 - lua5.3, liblua5.3 (latex lsp for eglot)
+- graphviz, sqlite3, sqlitebrowser (optional) (org-roam)
 ** Other Sources
 - Bash Language Server: https://github.com/bash-lsp/bash-language-server (npm)
 - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls
@@ -207,14 +208,15 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * Hydra
   Hydra provides the ability to create a keybinding menu to reduce redundant keypresses.
   #+begin_src emacs-lisp
-    (use-package hydra
-      :bind
-      (("C-c f" . hydra-formatting/body)
-       ("C-x t" . hydra-tab-bar/body)
-       ("C-c e" . hydra-eglot/body)
-       ("C-c o" . hydra-org/body)
-       ("C-c p" . hydra-projectile/body)
-       ("C-x w" . hydra-windmove/body)))
+		(use-package hydra
+			:bind
+			(("C-c f" . hydra-formatting/body)
+			 ("C-x t" . hydra-tab-bar/body)
+			 ("C-c e" . hydra-eglot/body)
+			 ("C-c o" . hydra-org/body)
+			 ("C-c r" . hydra-org-roam/body)
+			 ("C-c p" . hydra-projectile/body)
+			 ("C-x w" . hydra-windmove/body)))
   #+end_src
 * User Interface
   Packages and configuration related to modifying the user-interface.
@@ -269,7 +271,9 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		(use-package dracula-theme)
 
 		;; modus-vivendi, dark theme from prot
-		(use-package modus-vivendi-theme)
+		(use-package modus-themes
+			:bind
+			("C-c T" . modus-themes-toggle))
 
 		;; chocolate theme, no tab bar
 		(use-package chocolate-theme)
@@ -277,7 +281,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 		;; zenburn
 		(use-package zenburn-theme)
 
-		(load-theme 'zenburn t)
+		(load-theme 'modus-vivendi t)
   #+end_src
 ** Frames Configuration
   #+begin_src emacs-lisp
@@ -540,7 +544,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
        (untabify (point-min) (point-max)))
 
      ;; hydra for formatting files
-     (defhydra hydra-formatting (:color blue)
+     (defhydra hydra-formatting (:color red)
        "formatting"
        ("f" format-all-buffer "format-all")
        ("u" mz/untabify-buffer "untabify"))
@@ -802,11 +806,12 @@ Currently not doing web development, by my estimation I will need these basic pa
   #+end_src
 ** hydra-org
    #+begin_src emacs-lisp
-     (defhydra hydra-org (:color blue)
-       "orgmode"
-       ("c" org-capture "capture")
-       ("a" org-agenda "agenda")
-       ("p" org-projectile-project-todo-completing-read "projectile"))
+		 (defhydra hydra-org (:color red)
+			 "orgmode"
+			 ("c" org-capture "capture")
+			 ("a" org-agenda "agenda")
+			 ("p" org-projectile-project-todo-completing-read "projectile")
+			 ("q" nil "exit" :color blue))
    #+end_src
 ** org-agenda
    #+begin_src emacs-lisp
@@ -877,6 +882,95 @@ Currently not doing web development, by my estimation I will need these basic pa
 			 (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
 			 (org-projectile-per-project))
    #+end_src
+** org-roam
+	 #+begin_src emacs-lisp
+		 (defhydra hydra-org-roam (:color blue)
+			 "org-roam operations"
+			 ("r" org-roam "org-roam" :column " ")
+			 ("g" org-roam-graph "graph")
+			 ("d" org-roam-db-build-cache "build cache")
+			 ("q" nil "exit")
+			 ("f" org-roam-find-file "find file" :column "Navigation")
+			 ("d" org-roam-find-directory "find directory")
+			 ("b" org-roam-switch-to-buffer "switch buffer")
+			 ("i" org-roam-insert "insert" :column "Insert"))
+
+		 (use-package org-roam
+			 :hook
+			 (after-init . org-roam-mode)
+			 (before-save . zp/org-set-last-modified)
+			 :custom
+			 (org-roam-directory "~/org/roam")
+			 :config
+			 (setq org-roam-capture-templates
+						 '(("d" "default" plain
+								(function org-roam-capture--get-point)
+								"%?"
+								:file-name "%<%Y%m%d%H%M%S>-${slug}"
+								:head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
+								:unnarrowed t))
+						 org-roam-capture-ref-templates
+						 '(("r" "ref" plain
+								(function org-roam-capture--get-point)
+								""
+								:file-name "caps/${slug}"
+								:head "#+TITLE: ${title}\n#+ROAM_KEY: ${ref}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
+								:unnarrowed t))))
+
+
+		 ;;--------------------------
+		 ;; Handling file properties for ‘CREATED’ & ‘LAST_MODIFIED’
+		 ;; from zaeph (Leo Vivier)'s config
+		 ;;--------------------------
+
+
+		 (defun zp/org-find-time-file-property (property &optional anywhere)
+			 "Return the position of the time file PROPERTY if it exists.
+		 When ANYWHERE is non-nil, search beyond the preamble."
+			 (save-excursion
+				 (goto-char (point-min))
+				 (let ((first-heading
+								(save-excursion
+									(re-search-forward org-outline-regexp-bol nil t))))
+					 (when (re-search-forward (format "^#\\+%s:" property)
+																		(if anywhere nil first-heading)
+																		t)
+						 (point)))))
+
+		 (defun zp/org-has-time-file-property-p (property &optional anywhere)
+			 "Return the position of time file PROPERTY if it is defined.
+		 As a special case, return -1 if the time file PROPERTY exists but
+		 is not defined."
+			 (when-let ((pos (zp/org-find-time-file-property property anywhere)))
+				 (save-excursion
+					 (goto-char pos)
+					 (if (and (looking-at-p " ")
+										(progn (forward-char)
+													 (org-at-timestamp-p 'lax)))
+							 pos
+						 -1))))
+
+		 (defun zp/org-set-time-file-property (property &optional anywhere pos)
+			 "Set the time file PROPERTY in the preamble.
+		 When ANYWHERE is non-nil, search beyond the preamble.
+		 If the position of the file PROPERTY has already been computed,
+		 it can be passed in POS."
+			 (when-let ((pos (or pos
+													 (zp/org-find-time-file-property property))))
+				 (save-excursion
+					 (goto-char pos)
+					 (if (looking-at-p " ")
+							 (forward-char)
+						 (insert " "))
+					 (delete-region (point) (line-end-position))
+					 (let* ((now (format-time-string "[%Y-%m-%d %a %H:%M]")))
+						 (insert now)))))
+
+		 (defun zp/org-set-last-modified ()
+			 "Update the LAST_MODIFIED file property in the preamble."
+			 (when (derived-mode-p 'org-mode)
+				 (zp/org-set-time-file-property "LAST_MODIFIED")))
+	 #+end_src
 * EXWM
   Configuration for using emacs as an X window manager.
   #+begin_src emacs-lisp
@@ -972,9 +1066,8 @@ Currently not doing web development, by my estimation I will need these basic pa
 		(if exwm-enabled (mz/enable-exwm) ())
   #+end_src
 * Chinese
-** TODO if I make changes to the code that I understand, rebrand functions and module
-** code
 	#+begin_src emacs-lisp
+		;; from Josh Moller-Mara's config
 		(require 'josh-chinese)
 
 		;; adding the custom cangjie input method
@@ -986,13 +1079,13 @@ Currently not doing web development, by my estimation I will need these basic pa
 		(mz/add-capture-template '("c" "Chinese" entry
 															 (file+headline "chinese.org" "Words")
 															 "* <%(josh/chinese-prompt)> :drill: \n
-		Added: %U\n
-		,** Definition:\n
-		%(josh/chinese-get-definition (josh/chinese-dict-find josh/chinese-word))\n
-		,** Pronunciation\n
-		%(josh/chinese-get-pronunciation josh/chinese-word-dict)\n
-		,** Characters\n
-		%(josh/chinese-get-word josh/chinese-word-dict)\n
-		,** Cangjie\n
-		%(josh/chinese-cangjie-codes josh/chinese-words)\n"))
+				Added: %U\n
+				,** Definition:\n
+				%(josh/chinese-get-definition (josh/chinese-dict-find josh/chinese-word))\n
+				,** Pronunciation\n
+				%(josh/chinese-get-pronunciation josh/chinese-word-dict)\n
+				,** Characters\n
+				%(josh/chinese-get-word josh/chinese-word-dict)\n
+				,** Cangjie\n
+				%(josh/chinese-cangjie-codes josh/chinese-words)\n"))
 	#+end_src
