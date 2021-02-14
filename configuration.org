@@ -236,7 +236,10 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 			(minions-mode 1))
   #+end_src
 ** default-text-scale
+	 Package for modifying the text scale, as well as setting my preferred startup value.
 	 #+begin_src emacs-lisp
+		 (set-face-attribute 'default nil :height 141)
+
 		 (use-package default-text-scale
 			 :config
 			 (default-text-scale-mode))
