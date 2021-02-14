@@ -81,74 +81,74 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * Misc
   Miscellanious things which might be put somewhere else eventually.
   #+begin_src emacs-lisp
-		;; load the directory where the additional elisp resides
-		(add-to-list 'load-path "~/.emacs.d/elisp")
+    ;; load the directory where the additional elisp resides
+    (add-to-list 'load-path "~/.emacs.d/elisp")
 
-		;; scroll compilation output in the window
-		(setq compilation-scroll-output t)
+    ;; scroll compilation output in the window
+    (setq compilation-scroll-output t)
 
-		;; minor mode for inserting parens, braces, quotes and the like in pairs.
-		;; turned "<>" off for org mode since it makes the shortcut for org blocks difficult."
-		(electric-pair-mode)
-		(add-hook 'org-mode-hook
-							(lambda () (setq-local electric-pair-inhibit-predicate
-																(lambda (c)
-																	(if (eq c ?\<)
-																			t
-																		(electric-pair-inhibit-predicate c))))))
+    ;; minor mode for inserting parens, braces, quotes and the like in pairs.
+    ;; turned "<>" off for org mode since it makes the shortcut for org blocks difficult."
+    (electric-pair-mode)
+    (add-hook 'org-mode-hook
+              (lambda () (setq-local electric-pair-inhibit-predicate
+                                (lambda (c)
+                                  (if (eq c ?\<)
+                                      t
+                                    (electric-pair-inhibit-predicate c))))))
 
-		;; pretty symbols like lambda
-		(global-prettify-symbols-mode t)
+    ;; pretty symbols like lambda
+    (global-prettify-symbols-mode t)
 
-		;; reduce the frequency of garbage collection by making it happen on
-		;; each 50MB of allocated data (the default is on every 0.76MB)
-		(setq gc-cons-threshold 50000000)
+    ;; reduce the frequency of garbage collection by making it happen on
+    ;; each 50MB of allocated data (the default is on every 0.76MB)
+    (setq gc-cons-threshold 50000000)
 
-		;; warn when opening files bigger than 100MB
-		(setq large-file-warning-threshold 100000000)
+    ;; warn when opening files bigger than 100MB
+    (setq large-file-warning-threshold 100000000)
 
-		;; quit Emacs directly even if there are running processes
-		(setq confirm-kill-processes nil)
+    ;; quit Emacs directly even if there are running processes
+    (setq confirm-kill-processes nil)
 
-		;; enable y/n answers
-		(fset 'yes-or-no-p 'y-or-n-p)
+    ;; enable y/n answers
+    (fset 'yes-or-no-p 'y-or-n-p)
 
-		;; reload files from disk
-		(global-auto-revert-mode)
+    ;; reload files from disk
+    (global-auto-revert-mode)
 
-		;; store all backup and autosave files in the tmp dir
-		(setq backup-directory-alist
-					`((".*" . ,temporary-file-directory)))
-		(setq auto-save-file-name-transforms
-					`((".*" ,temporary-file-directory t)))
+    ;; store all backup and autosave files in the tmp dir
+    (setq backup-directory-alist
+          `((".*" . ,temporary-file-directory)))
+    (setq auto-save-file-name-transforms
+          `((".*" ,temporary-file-directory t)))
 
-		;; Add color formatting to *compilation* buffer
-		(add-hook 'compilation-filter-hook
-							(lambda () (ansi-color-apply-on-region (point-min) (point-max))))
+    ;; Add color formatting to *compilation* buffer
+    (add-hook 'compilation-filter-hook
+              (lambda () (ansi-color-apply-on-region (point-min) (point-max))))
 
-		;; C-w to kill line, M-w to copy line
-		(defadvice kill-region (before slick-cut activate compile)
-			"When called interactively with no active region, kill a single line instead."
-			(interactive
-			 (if mark-active
-					 (list (region-beginning) (region-end))
-				 (list (line-beginning-position) (line-beginning-position 2)))))
+    ;; C-w to kill line, M-w to copy line
+    (defadvice kill-region (before slick-cut activate compile)
+      "When called interactively with no active region, kill a single line instead."
+      (interactive
+       (if mark-active
+           (list (region-beginning) (region-end))
+         (list (line-beginning-position) (line-beginning-position 2)))))
 
-		(defadvice kill-ring-save (before slick-copy activate compile)
-			"When called interactively with no active region, copy a single line instead."
-			(interactive
-			 (if mark-active
-					 (list (region-beginning) (region-end))
-				 (message "Copied line")
-				 (list (line-beginning-position) (line-beginning-position 2)))))
+    (defadvice kill-ring-save (before slick-copy activate compile)
+      "When called interactively with no active region, copy a single line instead."
+      (interactive
+       (if mark-active
+           (list (region-beginning) (region-end))
+         (message "Copied line")
+         (list (line-beginning-position) (line-beginning-position 2)))))
 
-		;; utility function for opening eshell in another window
-		(defun mz/eshell-other-window ()
-			"Open 'eshell' in a new window."
-			(interactive)
-			(let ((buf (eshell)))
-				(switch-to-buffer (other-buffer buf))
-				(switch-to-buffer-other-window buf)))
+    ;; utility function for opening eshell in another window
+    (defun mz/eshell-other-window ()
+      "Open 'eshell' in a new window."
+      (interactive)
+      (let ((buf (eshell)))
+        (switch-to-buffer (other-buffer buf))
+        (switch-to-buffer-other-window buf)))
   #+end_src
 * TRAMP
   #+begin_src emacs-lisp
@@ -183,40 +183,40 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * Mouse and Keys
   Mouse and keyboard settings which don't belong to any specific package or function.
   #+begin_src emacs-lisp
-		;; scrolling
-		(setq scroll-margin 0
-					mouse-wheel-progressive-speed nil
-					scroll-conservatively 100000
-					scroll-preserve-screen-position 1)
+    ;; scrolling
+    (setq scroll-margin 0
+          mouse-wheel-progressive-speed nil
+          scroll-conservatively 100000
+          scroll-preserve-screen-position 1)
 
-		;; change font size binding
-		(global-set-key (kbd "C-+") 'text-scale-increase)
-		(global-set-key (kbd "C--") 'text-scale-decrease)
+    ;; change font size binding
+    (global-set-key (kbd "C-+") 'text-scale-increase)
+    (global-set-key (kbd "C--") 'text-scale-decrease)
 
-		;; keybinding to reload configuration
-		(global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
+    ;; keybinding to reload configuration
+    (global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
 
-		;; keybinding to open configuration file (this file)
-		(global-set-key (kbd "C-c n") (lambda ()  (interactive) (find-file "~/.emacs.d/configuration.org")))
+    ;; keybinding to open configuration file (this file)
+    (global-set-key (kbd "C-c n") (lambda ()  (interactive) (find-file "~/.emacs.d/configuration.org")))
 
-		;; assume I want to close current buffer with ""C-x k""
-		(global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
+    ;; assume I want to close current buffer with ""C-x k""
+    (global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
 
-		;; shortcut to open eshell in another window. mimics that to open vterm in another window
-		(global-set-key (kbd "C-M-<return>") 'mz/eshell-other-window)
+    ;; shortcut to open eshell in another window. mimics that to open vterm in another window
+    (global-set-key (kbd "C-M-<return>") 'mz/eshell-other-window)
   #+end_src
 * Hydra
   Hydra provides the ability to create a keybinding menu to reduce redundant keypresses.
   #+begin_src emacs-lisp
-		(use-package hydra
-			:bind
-			(("C-c f" . hydra-formatting/body)
-			 ("C-x t" . hydra-tab-bar/body)
-			 ("C-c e" . hydra-eglot/body)
-			 ("C-c o" . hydra-org/body)
-			 ("C-c r" . hydra-org-roam/body)
-			 ("C-c p" . hydra-projectile/body)
-			 ("C-x w" . hydra-windmove/body)))
+    (use-package hydra
+      :bind
+      (("C-c f" . hydra-formatting/body)
+       ("C-x t" . hydra-tab-bar/body)
+       ("C-c e" . hydra-eglot/body)
+       ("C-c o" . hydra-org/body)
+       ("C-c r" . hydra-org-roam/body)
+       ("C-c p" . hydra-projectile/body)
+       ("C-x w" . hydra-windmove/body)))
   #+end_src
 * User Interface
   Packages and configuration related to modifying the user-interface.
@@ -227,23 +227,23 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** minions
   #+begin_src emacs-lisp
-		;; turns off all minor modes in modeline
-		(use-package minions
-			:custom
-			(minions-mode-line-lighter "")
-			(minions-mode-line-delimiters '("" . ""))
-			:config
-			(minions-mode 1))
+    ;; turns off all minor modes in modeline
+    (use-package minions
+      :custom
+      (minions-mode-line-lighter "")
+      (minions-mode-line-delimiters '("" . ""))
+      :config
+      (minions-mode 1))
   #+end_src
 ** default-text-scale
-	 Package for modifying the text scale, as well as setting my preferred startup value.
-	 #+begin_src emacs-lisp
-		 (set-face-attribute 'default nil :height 141)
+   Package for modifying the text scale, as well as setting my preferred startup value.
+   #+begin_src emacs-lisp
+     (set-face-attribute 'default nil :height 141)
 
-		 (use-package default-text-scale
-			 :config
-			 (default-text-scale-mode))
-	 #+end_src
+     (use-package default-text-scale
+       :config
+       (default-text-scale-mode))
+   #+end_src
 ** Startup Configuration
   #+begin_src emacs-lisp
     ;; scratch screen
@@ -267,24 +267,24 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** Theme Configuration
   #+begin_src emacs-lisp
-		;; nord-theme, doesn't have tab-bar support yet
-		(use-package nord-theme)
+    ;; nord-theme, doesn't have tab-bar support yet
+    (use-package nord-theme)
 
-		;; dracula-theme, which has tab-bar support
-		(use-package dracula-theme)
+    ;; dracula-theme, which has tab-bar support
+    (use-package dracula-theme)
 
-		;; modus-vivendi, dark theme from prot
-		(use-package modus-themes
-			:bind
-			("C-c T" . modus-themes-toggle))
+    ;; modus-vivendi, dark theme from prot
+    (use-package modus-themes
+      :bind
+      ("C-c T" . modus-themes-toggle))
 
-		;; chocolate theme, no tab bar
-		(use-package chocolate-theme)
+    ;; chocolate theme, no tab bar
+    (use-package chocolate-theme)
 
-		;; zenburn
-		(use-package zenburn-theme)
+    ;; zenburn
+    (use-package zenburn-theme)
 
-		(load-theme 'modus-vivendi t)
+    (load-theme 'modus-vivendi t)
   #+end_src
 ** Frames Configuration
   #+begin_src emacs-lisp
@@ -303,26 +303,26 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** tab-bar-mode
    #+begin_src emacs-lisp
-		 ;; no GUI element unless turned on
-		 (setq tab-bar-show nil)
+     ;; no GUI element unless turned on
+     (setq tab-bar-show nil)
 
-		 (global-set-key (kbd "M-[") 'tab-bar-history-back)
-		 (global-set-key (kbd "M-]") 'tab-bar-history-forward)
+     (global-set-key (kbd "M-[") 'tab-bar-history-back)
+     (global-set-key (kbd "M-]") 'tab-bar-history-forward)
 
-		 ;; hydra bindings for tab-bar-mode
-		 (defhydra hydra-tab-bar (:color red)
-			 "Tab Bar Operations"
-			 ("t" tab-new "Create a new tab" :column "Creation")
-			 ("d" dired-other-tab "Open Dired in another tab")
-			 ("f" find-file-other-tab "Find file in another tab")
-			 ("0" tab-close "Close current tab")
-			 ("m" tab-move "Move current tab" :column "Management")
-			 ("r" tab-rename "Rename Tab")
-			 ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
-			 ("<right>" tab-next "Next Tab")
-			 ("<left>" tab-previous "Previous Tab")
-			 ("SPC" tab-bar-mode "Toggle tab-bar-mode" :color blue :column "Misc")
-			 ("q" nil "exit" :color blue))
+     ;; hydra bindings for tab-bar-mode
+     (defhydra hydra-tab-bar (:color red)
+       "Tab Bar Operations"
+       ("t" tab-new "Create a new tab" :column "Creation")
+       ("d" dired-other-tab "Open Dired in another tab")
+       ("f" find-file-other-tab "Find file in another tab")
+       ("0" tab-close "Close current tab")
+       ("m" tab-move "Move current tab" :column "Management")
+       ("r" tab-rename "Rename Tab")
+       ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
+       ("<right>" tab-next "Next Tab")
+       ("<left>" tab-previous "Previous Tab")
+       ("SPC" tab-bar-mode "Toggle tab-bar-mode" :color blue :column "Misc")
+       ("q" nil "exit" :color blue))
    #+end_src
 * User Interaction
   Packages and configuration related to user interaction.
@@ -368,11 +368,11 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
        :bind ("C-c s" . scratch))
    #+end_src
 ** undo-tree
-	 #+begin_src emacs-lisp
-		 (use-package undo-tree
-			 :config
-			 (global-undo-tree-mode))
-	 #+end_src
+   #+begin_src emacs-lisp
+     (use-package undo-tree
+       :config
+       (global-undo-tree-mode))
+   #+end_src
 ** which-key
   #+begin_src emacs-lisp
     ;; shows possible key combinations
@@ -382,92 +382,92 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** windmove
   #+begin_src emacs-lisp
-		(use-package windmove
-			;; default keybindings are S-s-<direction>, but super doesn't get past GNOME shell
-			:bind
-			(("C-S-<left>" . windmove-swap-states-left)
-			 ("C-S-<right>" . windmove-swap-states-right)
-			 ("C-S-<up>" . windmove-swap-states-up)
-			 ("C-S-<down>" . windmove-swap-states-down))
-			:config
-			;; use shift + arrow keys to switch between visible buffers
-			(windmove-default-keybindings))
+    (use-package windmove
+      ;; default keybindings are S-s-<direction>, but super doesn't get past GNOME shell
+      :bind
+      (("C-S-<left>" . windmove-swap-states-left)
+       ("C-S-<right>" . windmove-swap-states-right)
+       ("C-S-<up>" . windmove-swap-states-up)
+       ("C-S-<down>" . windmove-swap-states-down))
+      :config
+      ;; use shift + arrow keys to switch between visible buffers
+      (windmove-default-keybindings))
 
-		(defhydra hydra-windmove (:color red)
-			"Windmove Operations"
-			("<left>" windmove-left "left" :column "Change window")
-			("<right>" windmove-right "right")
-			("<up>" windmove-up "up")
-			("<down>" windmove-down "down")
+    (defhydra hydra-windmove (:color red)
+      "Windmove Operations"
+      ("<left>" windmove-left "left" :column "Change window")
+      ("<right>" windmove-right "right")
+      ("<up>" windmove-up "up")
+      ("<down>" windmove-down "down")
 
-			("C-<left>" windmove-swap-states-left "move left" :column "Move window")
-			("C-<right>" windmove-swap-states-right "move right")
-			("C-<up>" windmove-swap-states-up "move up")
-			("C-<down>" windmove-swap-states-down "move down")
+      ("C-<left>" windmove-swap-states-left "move left" :column "Move window")
+      ("C-<right>" windmove-swap-states-right "move right")
+      ("C-<up>" windmove-swap-states-up "move up")
+      ("C-<down>" windmove-swap-states-down "move down")
 
-			("q" nil "exit" :color blue))
+      ("q" nil "exit" :color blue))
   #+end_src
 * VTerm
   Preferred emacs terminal emulator.
   #+begin_src emacs-lisp
-		(setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=no")
-		(use-package vterm
-			:bind
-			("M-RET" . vterm-other-window)
-			:config
-			;; if the fish shell is installed, use that for VTerm's shell
-			(when (executable-find "fish")
-				(setq vterm-shell (executable-find "fish"))))
+    (setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=no")
+    (use-package vterm
+      :bind
+      ("M-RET" . vterm-other-window)
+      :config
+      ;; if the fish shell is installed, use that for VTerm's shell
+      (when (executable-find "fish")
+        (setq vterm-shell (executable-find "fish"))))
   #+end_src
 * Project Management
   Packages and configuration related to managing projects.
 ** magit
   #+begin_src emacs-lisp
-		;; magit git interface
-		(use-package magit
-			:custom
-			(magit-completing-read-function 'ivy-completing-read)
-			:bind
-			("C-x g" . magit))
+    ;; magit git interface
+    (use-package magit
+      :custom
+      (magit-completing-read-function 'ivy-completing-read)
+      :bind
+      ("C-x g" . magit))
   #+end_src
 ** projectile
   #+begin_src emacs-lisp
-		;; project manager
-		(use-package projectile
-			:init
-			(use-package ag)
-			(use-package ibuffer-projectile)
-			:custom
-			(projectile-completion-system 'ivy)
-			(projectile-mode-line "Projectile")
-			:config
-			(projectile-mode +1))
+    ;; project manager
+    (use-package projectile
+      :init
+      (use-package ag)
+      (use-package ibuffer-projectile)
+      :custom
+      (projectile-completion-system 'ivy)
+      (projectile-mode-line "Projectile")
+      :config
+      (projectile-mode +1))
 
-		;; hydra bindings for projectile
-		(defhydra hydra-projectile (:color red)
-			"PROJECTILE: %(projectile-project-root)"
+    ;; hydra bindings for projectile
+    (defhydra hydra-projectile (:color red)
+      "PROJECTILE: %(projectile-project-root)"
 
-			("ff"  projectile-find-file "file" :column "Find File")
-			("s-f" projectile-find-file-dwim "file dwim")
-			("fd"  projectile-find-file-in-directory "file curr dir")
-			("r"   projectile-recentf "recent file")
-			("d"   projectile-find-dir "dir")
+      ("ff"  projectile-find-file "file" :column "Find File")
+      ("s-f" projectile-find-file-dwim "file dwim")
+      ("fd"  projectile-find-file-in-directory "file curr dir")
+      ("r"   projectile-recentf "recent file")
+      ("d"   projectile-find-dir "dir")
 
-			("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
-			("i"   projectile-ibuffer "ibuffer")
-			("K"   projectile-kill-buffers "kill all buffers")
-			("e"   projectile-run-eshell "eshell" :color blue)
+      ("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
+      ("i"   projectile-ibuffer "ibuffer")
+      ("K"   projectile-kill-buffers "kill all buffers")
+      ("e"   projectile-run-eshell "eshell" :color blue)
 
-			("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
-			("x"   projectile-remove-known-project "remove known project")
-			("X"   projectile-cleanup-known-projects "cleanup projects")
-			("z"   projectile-cache-current-file "cache current project")
+      ("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
+      ("x"   projectile-remove-known-project "remove known project")
+      ("X"   projectile-cleanup-known-projects "cleanup projects")
+      ("z"   projectile-cache-current-file "cache current project")
 
-			("a"   projectile-ag "ag" :column "Project")
-			("p"   projectile-switch-project "switch project" :column "Project")
-			("P"   treemacs-projectile "treemacs")
+      ("a"   projectile-ag "ag" :column "Project")
+      ("p"   projectile-switch-project "switch project" :column "Project")
+      ("P"   treemacs-projectile "treemacs")
 
-			("q"   nil "exit" :color blue))
+      ("q"   nil "exit" :color blue))
   #+end_src
 * Text Files
   Packages and configuration related to displaying, editing, and formatting text files.
@@ -493,26 +493,26 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** rainbow-delimiters
   #+begin_src emacs-lisp
-		(use-package rainbow-delimiters
-			:hook
-			((emacs-lisp-mode java-mode python-mode rust-mode c-mode) . rainbow-delimiters-mode))
+    (use-package rainbow-delimiters
+      :hook
+      ((emacs-lisp-mode java-mode python-mode rust-mode c-mode) . rainbow-delimiters-mode))
   #+end_src
 ** smartparens
-	 #+begin_src emacs-lisp
-		 (use-package smartparens
-			 :config
-			 (require 'smartparens-config)
-			 ;; (smartparens-global-mode)
-				(show-smartparens-global-mode))
-	 #+end_src
+   #+begin_src emacs-lisp
+     (use-package smartparens
+       :config
+       (require 'smartparens-config)
+       ;; (smartparens-global-mode)
+        (show-smartparens-global-mode))
+   #+end_src
 ** format-all
    #+begin_src emacs-lisp
      (use-package format-all)
    #+end_src
 ** markdown-mode
-	 #+begin_src emacs-lisp
-		 (use-package markdown-mode)
-	 #+end_src
+   #+begin_src emacs-lisp
+     (use-package markdown-mode)
+   #+end_src
 ** Formatting Configuration
    #+begin_src emacs-lisp
      ;; wraps visual lines
@@ -555,12 +555,12 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * Elfeed RSS Reader
   RSS reader using an org-mode file for configuration.
   #+begin_src emacs-lisp
-		(use-package elfeed
-			:bind ("C-c w" . elfeed)
-			:init
-			(use-package elfeed-org)
-			:config
-			(elfeed-org))
+    (use-package elfeed
+      :bind ("C-c w" . elfeed)
+      :init
+      (use-package elfeed-org)
+      :config
+      (elfeed-org))
   #+end_src
 * Nov EPub Reader
   EPub reader mode.
@@ -574,86 +574,86 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 * Anki
 Not working properly with AnkiConnect.
-	#+begin_src emacs-lisp
-		(use-package anki-editor)
-	#+end_src
-* LaTeX
-	Packages and configuration related to editing tex files and compiling them using LaTeX.
   #+begin_src emacs-lisp
-		(use-package auctex
-			:defer t
-			:hook ((LaTeX-mode . eglot-ensure)
-						 (LaTeX-mode . visual-line-mode)
-						 (LaTeX-mode . flyspell-mode)
-						 (LaTeX-mode . LaTeX-math-mode))
-			:custom
-			(TeX-auto-save t)
-			(TeX-byte-compile t)
-			(TeX-clean-confirm nil)
-			(TeX-master 'dwim)
-			(TeX-parse-self t)
-			(TeX-source-correlate-mode t)
+    (use-package anki-editor)
+  #+end_src
+* LaTeX
+  Packages and configuration related to editing tex files and compiling them using LaTeX.
+  #+begin_src emacs-lisp
+    (use-package auctex
+      :defer t
+      :hook ((LaTeX-mode . eglot-ensure)
+             (LaTeX-mode . visual-line-mode)
+             (LaTeX-mode . flyspell-mode)
+             (LaTeX-mode . LaTeX-math-mode))
+      :custom
+      (TeX-auto-save t)
+      (TeX-byte-compile t)
+      (TeX-clean-confirm nil)
+      (TeX-master 'dwim)
+      (TeX-parse-self t)
+      (TeX-source-correlate-mode t)
 
-			;; pdf mode
-			(TeX-PDF-mode t)
-			(TeX-view-program-selection '((output-pdf "PDF Tools")))
-			(TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
-			(TeX-source-correlate-start-server t)
+      ;; pdf mode
+      (TeX-PDF-mode t)
+      (TeX-view-program-selection '((output-pdf "PDF Tools")))
+      (TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
+      (TeX-source-correlate-start-server t)
 
-			(reftex-plug-into-AUCTeX t)
-			(TeX-error-overview-open-after-TeX-run t)
-			:config
-			;; to have the buffer refresh after compilation. can't be in :hook since it's not a mode hook
-			(add-hook 'TeX-after-compilation-finished-functions
-								#'TeX-revert-document-buffer))
+      (reftex-plug-into-AUCTeX t)
+      (TeX-error-overview-open-after-TeX-run t)
+      :config
+      ;; to have the buffer refresh after compilation. can't be in :hook since it's not a mode hook
+      (add-hook 'TeX-after-compilation-finished-functions
+                #'TeX-revert-document-buffer))
 
-		;; reference management
-		(use-package bibtex
-			:after auctex
-			:hook (bibtex-mode . my/bibtex-fill-column)
-			:preface
-			(defun mz/bibtex-fill-column ()
-				"Ensures that each entry does not exceed 120 characters."
-				(setq fill-column 120)))
+    ;; reference management
+    (use-package bibtex
+      :after auctex
+      :hook (bibtex-mode . my/bibtex-fill-column)
+      :preface
+      (defun mz/bibtex-fill-column ()
+        "Ensures that each entry does not exceed 120 characters."
+        (setq fill-column 120)))
   #+end_src
 * Quelpa
 A different wrapper for package.el that can take packages from source.
 #+begin_src emacs-lisp
-	(use-package quelpa)
+  (use-package quelpa)
 
-	(quelpa
-	 '(quelpa-use-package
-		 :fetcher git
-		 :url "https://github.com/quelpa/quelpa-use-package.git"))
-	(require 'quelpa-use-package)
+  (quelpa
+   '(quelpa-use-package
+     :fetcher git
+     :url "https://github.com/quelpa/quelpa-use-package.git"))
+  (require 'quelpa-use-package)
 #+end_src
 * PDF-Tools
-	Preffered PDF viewer.
+  Preffered PDF viewer.
   #+begin_src emacs-lisp
-		;; enhanced pdf viewer
-		(use-package pdf-tools
-			:init
-			(pdf-tools-install)
-			:hook (pdf-view-mode . pdf-view-midnight-minor-mode))
+    ;; enhanced pdf viewer
+    (use-package pdf-tools
+      :init
+      (pdf-tools-install)
+      :hook (pdf-view-mode . pdf-view-midnight-minor-mode))
 
-		;; mode for smooth scrolling through pdfs using two buffers in one
-		;; (with-eval-after-load 'quelpa
-		;; 	(quelpa
-		;; 	 '(pdf-continuous-scroll-mode
-		;; 		 :fetcher git
-		;; 		 :url "https://github.com/dalanicolai/pdf-continuous-scroll-mode.el.git"))
-		;; 	(add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
-		;; 	(setq pdf-view-have-image-mode-pixel-vscroll t))
+    ;; mode for smooth scrolling through pdfs using two buffers in one
+    ;; (with-eval-after-load 'quelpa
+    ;;  (quelpa
+    ;;   '(pdf-continuous-scroll-mode
+    ;;     :fetcher git
+    ;;     :url "https://github.com/dalanicolai/pdf-continuous-scroll-mode.el.git"))
+    ;;  (add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
+    ;;  (setq pdf-view-have-image-mode-pixel-vscroll t))
 
-		(use-package pdf-continuous-scroll-mode
-			:defer t
-			:quelpa (pdf-continuous-scroll-mode
-				 :fetcher git
-				 :url "https://github.com/dalanicolai/pdf-continuous-scroll-mode.el.git")
-			:hook
-			(pdf-view-mode . pdf-continuous-scroll-mode)
-			:custom
-			(pdf-view-have-image-mode-pixel-vscroll t))
+    (use-package pdf-continuous-scroll-mode
+      :defer t
+      :quelpa (pdf-continuous-scroll-mode
+         :fetcher git
+         :url "https://github.com/dalanicolai/pdf-continuous-scroll-mode.el.git")
+      :hook
+      (pdf-view-mode . pdf-continuous-scroll-mode)
+      :custom
+      (pdf-view-have-image-mode-pixel-vscroll t))
   #+end_src
 * Languages and LSP Support
   Packages and configuration related to language major/minor modes and language servers.
@@ -672,21 +672,21 @@ A different wrapper for package.el that can take packages from source.
        ("q" nil "exit" :color blue))
    #+end_src
 ** Bash
-	 #+begin_src emacs-lisp
-		 (add-hook 'sh-mode-hook 'eglot-ensure)
-	 #+end_src
+   #+begin_src emacs-lisp
+     (add-hook 'sh-mode-hook 'eglot-ensure)
+   #+end_src
 ** C
   #+begin_src emacs-lisp
-		(add-hook 'c-mode-hook 'eglot-ensure)
-		(add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
+    (add-hook 'c-mode-hook 'eglot-ensure)
+    (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
   #+end_src
 ** Elisp
   #+begin_src emacs-lisp
-		;; Help for emacs-lisp functions
-		(use-package eldoc
-			:defer t
-			:hook
-			((emacs-lisp-mode lisp-interaction-mode ielm-mode) . eldoc-mode))
+    ;; Help for emacs-lisp functions
+    (use-package eldoc
+      :defer t
+      :hook
+      ((emacs-lisp-mode lisp-interaction-mode ielm-mode) . eldoc-mode))
   #+end_src
 ** Elixir
   #+begin_src emacs-lisp
@@ -699,10 +699,10 @@ A different wrapper for package.el that can take packages from source.
       :hook (elixir-mode mix-minor-mode))
   #+end_src
 ** Haskell
-	 #+begin_src emacs-lisp
-		 (use-package haskell-mode
-			 :hook (haskell-mode . eglot-ensure))
-	 #+end_src
+   #+begin_src emacs-lisp
+     (use-package haskell-mode
+       :hook (haskell-mode . eglot-ensure))
+   #+end_src
 ** OCaml
   #+begin_src emacs-lisp
     ;; OCaml major mode
@@ -747,74 +747,74 @@ A different wrapper for package.el that can take packages from source.
    #+end_src
 ** Python
   #+begin_src emacs-lisp
-		;; (add-to-list 'eglot-server-programs '(python-mode "pyright-langserver" "--stdio"))
+    ;; (add-to-list 'eglot-server-programs '(python-mode "pyright-langserver" "--stdio"))
 
-		(use-package python
-			:hook
-			(python-mode . eglot-ensure)
-			:custom
-			(python-indent-offset 4)
-			:config
-			(cond
-			 ;; i use python3
-			 ((executable-find "python3")
-				(setq python-shell-interpreter "python3"))))
+    (use-package python
+      :hook
+      (python-mode . eglot-ensure)
+      :custom
+      (python-indent-offset 4)
+      :config
+      (cond
+       ;; i use python3
+       ((executable-find "python3")
+        (setq python-shell-interpreter "python3"))))
   #+end_src
 ** Rust
   #+begin_src emacs-lisp
-		;; hook up rust-mode with the language server
-		(use-package rust-mode
-			:custom
-			(rust-format-on-save t)
-			:hook (rust-mode . eglot-ensure))
+    ;; hook up rust-mode with the language server
+    (use-package rust-mode
+      :custom
+      (rust-format-on-save t)
+      :hook (rust-mode . eglot-ensure))
 
-		;; cargo minor mode for cargo keybindings
-		(use-package cargo
-			:hook (rust-mode . cargo-minor-mode))
+    ;; cargo minor mode for cargo keybindings
+    (use-package cargo
+      :hook (rust-mode . cargo-minor-mode))
   #+end_src
 ** Web Dev
 Currently not doing web development, by my estimation I will need these basic packages.
    #+begin_src emacs-lisp
-		 ;; (use-package web-mode)
-		 ;; (use-package typescript-mode)
-		 ;; (use-package tide)
+     ;; (use-package web-mode)
+     ;; (use-package typescript-mode)
+     ;; (use-package tide)
    #+end_src
 * Org Mode
   Configuration for the majestic org-mode.
 ** General
   #+begin_src emacs-lisp
-		(setq org-directory "~/org")
+    (setq org-directory "~/org")
 
-		;; bullets instead of asterisks
-		(use-package org-bullets
-			:hook (org-mode . org-bullets-mode))
+    ;; bullets instead of asterisks
+    (use-package org-bullets
+      :hook (org-mode . org-bullets-mode))
 
-		;; org src blocks act more like the major mode
-		(setq org-src-fontify-natively t
-					org-src-tab-acts-natively t
+    ;; org src blocks act more like the major mode
+    (setq org-src-fontify-natively t
+          org-src-tab-acts-natively t
 
-					;; editing source block in same window
-					org-src-window-setup 'current-window
+          ;; editing source block in same window
+          org-src-window-setup 'current-window
 
-					org-support-shift-select t
-					org-replace-disputed-keys t)
+          org-support-shift-select t
+          org-replace-disputed-keys t)
 
-		;; for the "old-school" <s-<tab> to make src blocks
-		(require 'org-tempo)
-		(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+    ;; for the "old-school" <s-<tab> to make src blocks
+    (require 'org-tempo)
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 
-		;; change tabs from org-mode
-		(with-eval-after-load 'org
-			(define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
+    ;; change tabs from org-mode
+    (with-eval-after-load 'org
+      (define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
   #+end_src
 ** hydra-org
    #+begin_src emacs-lisp
-		 (defhydra hydra-org (:color red)
-			 "orgmode"
-			 ("c" org-capture "capture")
-			 ("a" org-agenda "agenda")
-			 ("p" org-projectile-project-todo-completing-read "projectile")
-			 ("q" nil "exit" :color blue))
+     (defhydra hydra-org (:color red)
+       "orgmode"
+       ("c" org-capture "capture")
+       ("a" org-agenda "agenda")
+       ("p" org-projectile-project-todo-completing-read "projectile")
+       ("q" nil "exit" :color blue))
    #+end_src
 ** org-agenda
    #+begin_src emacs-lisp
@@ -822,38 +822,38 @@ Currently not doing web development, by my estimation I will need these basic pa
    #+end_src
 ** org-capture
    #+begin_src emacs-lisp
-		 (global-set-key (kbd "C-c c") 'org-capture)
-		 (setq org-capture-templates '())
-		 ;; helper function to add a template to org-capture-templates
-		 (defun mz/add-capture-template (template)
-			 (let ((key (car template)))
-				 (setq org-capture-templates
-							 (cl-remove-if (lambda (x) (equal (car x) key)) org-capture-templates))
-				 (add-to-list 'org-capture-templates
-											template)))
+     (global-set-key (kbd "C-c c") 'org-capture)
+     (setq org-capture-templates '())
+     ;; helper function to add a template to org-capture-templates
+     (defun mz/add-capture-template (template)
+       (let ((key (car template)))
+         (setq org-capture-templates
+               (cl-remove-if (lambda (x) (equal (car x) key)) org-capture-templates))
+         (add-to-list 'org-capture-templates
+                      template)))
 
-		 ;; abstracted template for a TODO to take place on some day, like an assignment due date.
-		 (defun mz/todo-on-day-template ()
-			 "* TODO %? %^t")
+     ;; abstracted template for a TODO to take place on some day, like an assignment due date.
+     (defun mz/todo-on-day-template ()
+       "* TODO %? %^t")
 
-		 ;; (mz/add-capture-template '("c" "Class Task"))
-		 ;; (mz/add-capture-template '("cs" "Systems Task" entry
-		 ;; 													 (file+headline "cs3650.org" "Systems")
-		 ;; 													 (function mz/todo-on-day-template)))
-		 ;; (mz/add-capture-template '("cn" "Networks Task" entry
-		 ;; 													 (file+headline "cs3700.org" "Networks")
-		 ;; 													 (function mz/todo-on-day-template)))
-		 ;; (mz/add-capture-template '("cc" "Cyber Task" entry
-		 ;; 													 (file+headline "cy2550.org" "Cyber")
-		 ;; 													 (function mz/todo-on-day-template)))
-		 ;; (mz/add-capture-template '("cp" "Phonology Task" entry
-		 ;; 													 (file+headline "ling3422.org" "Phonology")
-		 ;; 													 (function mz/todo-on-day-template)))
+     ;; (mz/add-capture-template '("c" "Class Task"))
+     ;; (mz/add-capture-template '("cs" "Systems Task" entry
+     ;;                            (file+headline "cs3650.org" "Systems")
+     ;;                            (function mz/todo-on-day-template)))
+     ;; (mz/add-capture-template '("cn" "Networks Task" entry
+     ;;                            (file+headline "cs3700.org" "Networks")
+     ;;                            (function mz/todo-on-day-template)))
+     ;; (mz/add-capture-template '("cc" "Cyber Task" entry
+     ;;                            (file+headline "cy2550.org" "Cyber")
+     ;;                            (function mz/todo-on-day-template)))
+     ;; (mz/add-capture-template '("cp" "Phonology Task" entry
+     ;;                            (file+headline "ling3422.org" "Phonology")
+     ;;                            (function mz/todo-on-day-template)))
    #+end_src
 ** org-drill
-	 #+begin_src emacs-lisp
-		 (use-package org-drill)
-	 #+end_src
+   #+begin_src emacs-lisp
+     (use-package org-drill)
+   #+end_src
 ** org-present
    #+begin_src emacs-lisp
      (use-package org-present
@@ -876,219 +876,219 @@ Currently not doing web development, by my estimation I will need these basic pa
    #+end_src
 ** org-projectile
    #+begin_src emacs-lisp
-		 ;; put a todo file in the directory of each projectile project and link them to org-agenda
-		 (use-package org-projectile
-			 :custom
-			 (require 'org-projectile)
-			 (org-projectile-per-filepath "todo.org")
-			 :config
-			 (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
-			 (org-projectile-per-project))
+     ;; put a todo file in the directory of each projectile project and link them to org-agenda
+     (use-package org-projectile
+       :custom
+       (require 'org-projectile)
+       (org-projectile-per-filepath "todo.org")
+       :config
+       (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+       (org-projectile-per-project))
    #+end_src
 ** org-roam
-	 #+begin_src emacs-lisp
-		 (defhydra hydra-org-roam (:color blue)
-			 "org-roam operations"
-			 ("r" org-roam "org-roam" :column " ")
-			 ("g" org-roam-graph "graph")
-			 ("d" org-roam-db-build-cache "build cache")
-			 ("q" nil "exit")
-			 ("f" org-roam-find-file "find file" :column "Navigation")
-			 ("d" org-roam-find-directory "find directory")
-			 ("b" org-roam-switch-to-buffer "switch buffer")
-			 ("i" org-roam-insert "insert" :column "Insert"))
+   #+begin_src emacs-lisp
+     (defhydra hydra-org-roam (:color blue)
+       "org-roam operations"
+       ("r" org-roam "org-roam" :column " ")
+       ("g" org-roam-graph "graph")
+       ("d" org-roam-db-build-cache "build cache")
+       ("q" nil "exit")
+       ("f" org-roam-find-file "find file" :column "Navigation")
+       ("d" org-roam-find-directory "find directory")
+       ("b" org-roam-switch-to-buffer "switch buffer")
+       ("i" org-roam-insert "insert" :column "Insert"))
 
-		 (use-package org-roam
-			 :hook
-			 (after-init . org-roam-mode)
-			 (before-save . zp/org-set-last-modified)
-			 :custom
-			 (org-roam-directory "~/org/roam")
-			 :config
-			 (setq org-roam-capture-templates
-						 '(("d" "default" plain
-								(function org-roam-capture--get-point)
-								"%?"
-								:file-name "%<%Y%m%d%H%M%S>-${slug}"
-								:head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
-								:unnarrowed t))
-						 org-roam-capture-ref-templates
-						 '(("r" "ref" plain
-								(function org-roam-capture--get-point)
-								""
-								:file-name "caps/${slug}"
-								:head "#+TITLE: ${title}\n#+ROAM_KEY: ${ref}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
-								:unnarrowed t))))
-
-
-		 ;;--------------------------
-		 ;; Handling file properties for ‘CREATED’ & ‘LAST_MODIFIED’
-		 ;; from zaeph (Leo Vivier)'s config
-		 ;;--------------------------
+     (use-package org-roam
+       :hook
+       (after-init . org-roam-mode)
+       (before-save . zp/org-set-last-modified)
+       :custom
+       (org-roam-directory "~/org/roam")
+       :config
+       (setq org-roam-capture-templates
+             '(("d" "default" plain
+                (function org-roam-capture--get-point)
+                "%?"
+                :file-name "%<%Y%m%d%H%M%S>-${slug}"
+                :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
+                :unnarrowed t))
+             org-roam-capture-ref-templates
+             '(("r" "ref" plain
+                (function org-roam-capture--get-point)
+                ""
+                :file-name "caps/${slug}"
+                :head "#+TITLE: ${title}\n#+ROAM_KEY: ${ref}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
+                :unnarrowed t))))
 
 
-		 (defun zp/org-find-time-file-property (property &optional anywhere)
-			 "Return the position of the time file PROPERTY if it exists.
-		 When ANYWHERE is non-nil, search beyond the preamble."
-			 (save-excursion
-				 (goto-char (point-min))
-				 (let ((first-heading
-								(save-excursion
-									(re-search-forward org-outline-regexp-bol nil t))))
-					 (when (re-search-forward (format "^#\\+%s:" property)
-																		(if anywhere nil first-heading)
-																		t)
-						 (point)))))
+     ;;--------------------------
+     ;; Handling file properties for ‘CREATED’ & ‘LAST_MODIFIED’
+     ;; from zaeph (Leo Vivier)'s config
+     ;;--------------------------
 
-		 (defun zp/org-has-time-file-property-p (property &optional anywhere)
-			 "Return the position of time file PROPERTY if it is defined.
-		 As a special case, return -1 if the time file PROPERTY exists but
-		 is not defined."
-			 (when-let ((pos (zp/org-find-time-file-property property anywhere)))
-				 (save-excursion
-					 (goto-char pos)
-					 (if (and (looking-at-p " ")
-										(progn (forward-char)
-													 (org-at-timestamp-p 'lax)))
-							 pos
-						 -1))))
 
-		 (defun zp/org-set-time-file-property (property &optional anywhere pos)
-			 "Set the time file PROPERTY in the preamble.
-		 When ANYWHERE is non-nil, search beyond the preamble.
-		 If the position of the file PROPERTY has already been computed,
-		 it can be passed in POS."
-			 (when-let ((pos (or pos
-													 (zp/org-find-time-file-property property))))
-				 (save-excursion
-					 (goto-char pos)
-					 (if (looking-at-p " ")
-							 (forward-char)
-						 (insert " "))
-					 (delete-region (point) (line-end-position))
-					 (let* ((now (format-time-string "[%Y-%m-%d %a %H:%M]")))
-						 (insert now)))))
+     (defun zp/org-find-time-file-property (property &optional anywhere)
+       "Return the position of the time file PROPERTY if it exists.
+     When ANYWHERE is non-nil, search beyond the preamble."
+       (save-excursion
+         (goto-char (point-min))
+         (let ((first-heading
+                (save-excursion
+                  (re-search-forward org-outline-regexp-bol nil t))))
+           (when (re-search-forward (format "^#\\+%s:" property)
+                                    (if anywhere nil first-heading)
+                                    t)
+             (point)))))
 
-		 (defun zp/org-set-last-modified ()
-			 "Update the LAST_MODIFIED file property in the preamble."
-			 (when (derived-mode-p 'org-mode)
-				 (zp/org-set-time-file-property "LAST_MODIFIED")))
-	 #+end_src
+     (defun zp/org-has-time-file-property-p (property &optional anywhere)
+       "Return the position of time file PROPERTY if it is defined.
+     As a special case, return -1 if the time file PROPERTY exists but
+     is not defined."
+       (when-let ((pos (zp/org-find-time-file-property property anywhere)))
+         (save-excursion
+           (goto-char pos)
+           (if (and (looking-at-p " ")
+                    (progn (forward-char)
+                           (org-at-timestamp-p 'lax)))
+               pos
+             -1))))
+
+     (defun zp/org-set-time-file-property (property &optional anywhere pos)
+       "Set the time file PROPERTY in the preamble.
+     When ANYWHERE is non-nil, search beyond the preamble.
+     If the position of the file PROPERTY has already been computed,
+     it can be passed in POS."
+       (when-let ((pos (or pos
+                           (zp/org-find-time-file-property property))))
+         (save-excursion
+           (goto-char pos)
+           (if (looking-at-p " ")
+               (forward-char)
+             (insert " "))
+           (delete-region (point) (line-end-position))
+           (let* ((now (format-time-string "[%Y-%m-%d %a %H:%M]")))
+             (insert now)))))
+
+     (defun zp/org-set-last-modified ()
+       "Update the LAST_MODIFIED file property in the preamble."
+       (when (derived-mode-p 'org-mode)
+         (zp/org-set-time-file-property "LAST_MODIFIED")))
+   #+end_src
 * EXWM
   Configuration for using emacs as an X window manager.
   #+begin_src emacs-lisp
-		;; should exwm be enabled?
-		(setq exwm-enabled (and (eq window-system 'x)
-														(seq-contains command-line-args "--use-exwm")))
+    ;; should exwm be enabled?
+    (setq exwm-enabled (and (eq window-system 'x)
+                            (seq-contains command-line-args "--use-exwm")))
 
-		(use-package exwm
-			:if exwm-enabled
-			:init
-			;; package to manage bluetooth from emacs
-			(use-package bluetooth)
-			;; mode to bind media keys
-			(use-package desktop-environment
-				:custom
-				;; for some reason the default volume commands do not work
-				(desktop-environment-volume-toggle-command       "amixer -D pulse set Master toggle")
-				(desktop-environment-volume-set-command          "amixer -D pulse set Master %s")
-				(desktop-environment-volume-get-command          "amixer -D pulse get Master")
-				;; brightness change amount
-				(desktop-environment-brightness-normal-increment "5%+")
-				(desktop-environment-brightness-normal-decrement "5%-")
-				(desktop-environment-brightness-small-increment  "2%+")
-				(desktop-environment-brightness-small-decrement  "2%-"))
-			:custom
-			(exwm-workspace-number 2)
-			(exwm-randr-workspace-monitor-plist
-			 '(0 "eDP-1" ;; laptop
-					 1 "DP-3")) ;; external monitor via HDMI which is for some reason named DP-3
-			;; these keys should always pass through to emacs
-			(exwm-input-prefix-keys
-			 '(?\C-x
-				 ?\C-u
-				 ?\C-h
-				 ?\C-g
-				 ?\M-x
-				 ?\M-!))
-			;; set up global key bindings.  these always work, no matter the input state!
-			;; keep in mind that changing this list after EXWM initializes has no effect.
-			(exwm-input-global-keys
-						`(
-							;; reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
-							([?\s-r] . exwm-reset)
+    (use-package exwm
+      :if exwm-enabled
+      :init
+      ;; package to manage bluetooth from emacs
+      (use-package bluetooth)
+      ;; mode to bind media keys
+      (use-package desktop-environment
+        :custom
+        ;; for some reason the default volume commands do not work
+        (desktop-environment-volume-toggle-command       "amixer -D pulse set Master toggle")
+        (desktop-environment-volume-set-command          "amixer -D pulse set Master %s")
+        (desktop-environment-volume-get-command          "amixer -D pulse get Master")
+        ;; brightness change amount
+        (desktop-environment-brightness-normal-increment "5%+")
+        (desktop-environment-brightness-normal-decrement "5%-")
+        (desktop-environment-brightness-small-increment  "2%+")
+        (desktop-environment-brightness-small-decrement  "2%-"))
+      :custom
+      (exwm-workspace-number 2)
+      (exwm-randr-workspace-monitor-plist
+       '(0 "eDP-1" ;; laptop
+           1 "DP-3")) ;; external monitor via HDMI which is for some reason named DP-3
+      ;; these keys should always pass through to emacs
+      (exwm-input-prefix-keys
+       '(?\C-x
+         ?\C-u
+         ?\C-h
+         ?\C-g
+         ?\M-x
+         ?\M-!))
+      ;; set up global key bindings.  these always work, no matter the input state!
+      ;; keep in mind that changing this list after EXWM initializes has no effect.
+      (exwm-input-global-keys
+            `(
+              ;; reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+              ([?\s-r] . exwm-reset)
 
-							;; general app launcher
-							([?\s-/] . (lambda ()
-													 (interactive)
-													 (counsel-linux-app)))
+              ;; general app launcher
+              ([?\s-/] . (lambda ()
+                           (interactive)
+                           (counsel-linux-app)))
 
-							;; shortcut for firefox
-							([?\s-x] . (lambda ()
-													 (interactive)
-													 (shell-command "firefox")))
+              ;; shortcut for firefox
+              ([?\s-x] . (lambda ()
+                           (interactive)
+                           (shell-command "firefox")))
 
-							;; shortcut for terminal emulator
-							([s-return] . (lambda ()
-															(interactive)
-															(vterm-other-window)))))
-			:config
-			(desktop-environment-mode)
-			;; when window "class" updates, use it to set the buffer name
-			(defun mz/exwm-update-class ()
-				(exwm-workspace-rename-buffer exwm-class-name))
-			(add-hook 'exwm-update-class-hook #'mz/exwm-update-class)
+              ;; shortcut for terminal emulator
+              ([s-return] . (lambda ()
+                              (interactive)
+                              (vterm-other-window)))))
+      :config
+      (desktop-environment-mode)
+      ;; when window "class" updates, use it to set the buffer name
+      (defun mz/exwm-update-class ()
+        (exwm-workspace-rename-buffer exwm-class-name))
+      (add-hook 'exwm-update-class-hook #'mz/exwm-update-class)
 
-			;; enable the next key to be sent directly, for things like copy and paste from x windows
-			(define-key exwm-mode-map [?\C-m] 'exwm-input-send-next-key))
+      ;; enable the next key to be sent directly, for things like copy and paste from x windows
+      (define-key exwm-mode-map [?\C-m] 'exwm-input-send-next-key))
 
-		;; function to turn on all the exwm stuff
-		(defun mz/enable-exwm ()
-			"Enables the features of EXWM."
+    ;; function to turn on all the exwm stuff
+    (defun mz/enable-exwm ()
+      "Enables the features of EXWM."
 
-			;; ensure screen updates with xrandr will refresh EXWM frames
-			(require 'exwm-randr)
-			(exwm-randr-enable)
+      ;; ensure screen updates with xrandr will refresh EXWM frames
+      (require 'exwm-randr)
+      (exwm-randr-enable)
 
-			;; use default super+shift keybindings
-			(windmove-swap-states-default-keybindings)
+      ;; use default super+shift keybindings
+      (windmove-swap-states-default-keybindings)
 
-			;; remap capsLock to ctrl
-			(start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/xmodmap")
+      ;; remap capsLock to ctrl
+      (start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/xmodmap")
 
-			;; display time
-			(setq display-time-default-load-average nil)
-			(display-time-mode t)
+      ;; display time
+      (setq display-time-default-load-average nil)
+      (display-time-mode t)
 
-			;; Show battery status in the mode line
-			(display-battery-mode 1)
+      ;; Show battery status in the mode line
+      (display-battery-mode 1)
 
-			(exwm-enable)
-			(exwm-init))
+      (exwm-enable)
+      (exwm-init))
 
-		(if exwm-enabled (mz/enable-exwm) ())
+    (if exwm-enabled (mz/enable-exwm) ())
   #+end_src
 * Chinese
-	#+begin_src emacs-lisp
-		;; from Josh Moller-Mara's config
-		(require 'josh-chinese)
+  #+begin_src emacs-lisp
+    ;; from Josh Moller-Mara's config
+    (require 'josh-chinese)
 
-		;; adding the custom cangjie input method
-		(register-input-method
-		 "Cangjie5" "Chinese-BIG5" 'quail-use-package
-		 "C5" "Cangjie version 5"
-		 "cangjie5.el")
+    ;; adding the custom cangjie input method
+    (register-input-method
+     "Cangjie5" "Chinese-BIG5" 'quail-use-package
+     "C5" "Cangjie version 5"
+     "cangjie5.el")
 
-		(mz/add-capture-template '("c" "Chinese" entry
-															 (file+headline "chinese.org" "Words")
-															 "* <%(josh/chinese-prompt)> :drill: \n
-				Added: %U\n
-				,** Definition:\n
-				%(josh/chinese-get-definition (josh/chinese-dict-find josh/chinese-word))\n
-				,** Pronunciation\n
-				%(josh/chinese-get-pronunciation josh/chinese-word-dict)\n
-				,** Characters\n
-				%(josh/chinese-get-word josh/chinese-word-dict)\n
-				,** Cangjie\n
-				%(josh/chinese-cangjie-codes josh/chinese-words)\n"))
-	#+end_src
+    (mz/add-capture-template '("c" "Chinese" entry
+                               (file+headline "chinese.org" "Words")
+                               "* <%(josh/chinese-prompt)> :drill: \n
+        Added: %U\n
+        ,** Definition:\n
+        %(josh/chinese-get-definition (josh/chinese-dict-find josh/chinese-word))\n
+        ,** Pronunciation\n
+        %(josh/chinese-get-pronunciation josh/chinese-word-dict)\n
+        ,** Characters\n
+        %(josh/chinese-get-word josh/chinese-word-dict)\n
+        ,** Cangjie\n
+        %(josh/chinese-cangjie-codes josh/chinese-words)\n"))
+  #+end_src
