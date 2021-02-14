@@ -1,8 +1,8 @@
-#+TITLE: Emacs Configuration
+#+TITLE: Emacs Configuratiopn
 #+DESCRIPTION: My literate emacs configuration using org-mode.
 #+AUTHOR: Michael Zappa
 
-init.el uses org-babel-load file to automatically load in the emacs-lisp
+init.el uses org-babel-load-file to automatically load in the emacs-lisp
 blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and might not even be).
 
 * Things to Install
@@ -116,6 +116,11 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     ;; reload files from disk
     (global-auto-revert-mode)
 
+    ;; recent file store
+    (recentf-mode 1)
+    (setq recentf-max-menu-items 25)
+    (setq recentf-max-saved-items 25)
+
     ;; store all backup and autosave files in the tmp dir
     (setq backup-directory-alist
           `((".*" . ,temporary-file-directory)))
@@ -150,74 +155,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
         (switch-to-buffer (other-buffer buf))
         (switch-to-buffer-other-window buf)))
   #+end_src
-* TRAMP
-  #+begin_src emacs-lisp
-    ;; loading manually compiled tramp for latest version,
-    ;; hoping to get bug fix for lsp over tramp
-    ;; (add-to-list 'load-path "~/.emacs.d/tramp")
-    (require 'tramp)
-
-    (setq tramp-default-method "ssh")
-
-    ;; helper function to sudo a file
-    (defun mz/sudo ()
-      "Use TRAMP to `sudo' the current buffer"
-      (interactive)
-      (when buffer-file-name
-        (find-alternate-file
-         (concat "/sudo:root@localhost:"
-                 buffer-file-name))))
-
-    ;; attempt to speed things up
-    (defadvice projectile-project-root (around ignore-remote first activate)
-      (unless (file-remote-p default-directory) ad-do-it))
-    (setq remote-file-name-inhibit-cache nil)
-    (setq vc-ignore-dir-regexp
-          (format "%s\\|%s"
-                  vc-ignore-dir-regexp
-                  tramp-file-name-regexp))
-    (setq tramp-verbose 1)
-
-    (add-to-list 'tramp-remote-path "~/.local/bin")
-  #+end_src
-* Mouse and Keys
-  Mouse and keyboard settings which don't belong to any specific package or function.
-  #+begin_src emacs-lisp
-    ;; scrolling
-    (setq scroll-margin 0
-          mouse-wheel-progressive-speed nil
-          scroll-conservatively 100000
-          scroll-preserve-screen-position 1)
-
-    ;; change font size binding
-    (global-set-key (kbd "C-+") 'text-scale-increase)
-    (global-set-key (kbd "C--") 'text-scale-decrease)
-
-    ;; keybinding to reload configuration
-    (global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
-
-    ;; keybinding to open configuration file (this file)
-    (global-set-key (kbd "C-c n") (lambda ()  (interactive) (find-file "~/.emacs.d/configuration.org")))
-
-    ;; assume I want to close current buffer with ""C-x k""
-    (global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
-
-    ;; shortcut to open eshell in another window. mimics that to open vterm in another window
-    (global-set-key (kbd "C-M-<return>") 'mz/eshell-other-window)
-  #+end_src
-* Hydra
-  Hydra provides the ability to create a keybinding menu to reduce redundant keypresses.
-  #+begin_src emacs-lisp
-    (use-package hydra
-      :bind
-      (("C-c f" . hydra-formatting/body)
-       ("C-x t" . hydra-tab-bar/body)
-       ("C-c e" . hydra-eglot/body)
-       ("C-c o" . hydra-org/body)
-       ("C-c r" . hydra-org-roam/body)
-       ("C-c p" . hydra-projectile/body)
-       ("C-x w" . hydra-windmove/body)))
-  #+end_src
 * User Interface
   Packages and configuration related to modifying the user-interface.
 ** all-the-icons
@@ -246,24 +183,27 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
    #+end_src
 ** Startup Configuration
   #+begin_src emacs-lisp
-    ;; scratch screen
-    (setq inhibit-startup-screen t)
-    (setq initial-scratch-message "")
+		;; scratch screen
+		(setq inhibit-startup-screen t)
+		(setq initial-scratch-message "")
 
-    ;; hecking bell
-    (setq ring-bell-function 'ignore)
+		;; turn off the hecking bell
+		(setq ring-bell-function 'ignore)
 
-    ;; shallow tabs
-    (setq-default tab-width 2)
+		;; shallow tabs
+		(setq-default tab-width 2)
 
-    ;; turn off things
-    (menu-bar-mode -1)
-    (scroll-bar-mode -1)
-    (tool-bar-mode -1)
-    (blink-cursor-mode -1)
+		;; <tab> inserts spaces by default
+		(setq-default indent-tabs-mode nil)
 
-    ;; initial frame maximized
-    (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+		;; turn off things
+		(menu-bar-mode -1)
+		(scroll-bar-mode -1)
+		(tool-bar-mode -1)
+		(blink-cursor-mode -1)
+
+		;; initial frame maximized
+		(add-to-list 'initial-frame-alist '(fullscreen . maximized))
   #+end_src
 ** Theme Configuration
   #+begin_src emacs-lisp
@@ -407,253 +347,44 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 
       ("q" nil "exit" :color blue))
   #+end_src
-* VTerm
-  Preferred emacs terminal emulator.
+* Mouse and Keys
+  Mouse and keyboard settings which don't belong to any specific package.
   #+begin_src emacs-lisp
-    (setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=no")
-    (use-package vterm
+    ;; scrolling
+    (setq scroll-margin 0
+          mouse-wheel-progressive-speed nil
+          scroll-conservatively 100000
+          scroll-preserve-screen-position 1)
+
+    ;; change font size binding
+    (global-set-key (kbd "C-+") 'text-scale-increase)
+    (global-set-key (kbd "C--") 'text-scale-decrease)
+
+    ;; keybinding to reload configuration
+    (global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
+
+    ;; keybinding to open configuration file (this file)
+    (global-set-key (kbd "C-c n") (lambda ()  (interactive) (find-file "~/.emacs.d/configuration.org")))
+
+    ;; assume I want to close current buffer with ""C-x k""
+    (global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
+
+    ;; shortcut to open eshell in another window. mimics that to open vterm in another window
+    (global-set-key (kbd "C-M-<return>") 'mz/eshell-other-window)
+  #+end_src
+* Hydra
+  Hydra provides the ability to create a keybinding menu to reduce redundant keypresses. I also use it for creating restricted, on-demand keymaps.
+  #+begin_src emacs-lisp
+    (use-package hydra
       :bind
-      ("M-RET" . vterm-other-window)
-      :config
-      ;; if the fish shell is installed, use that for VTerm's shell
-      (when (executable-find "fish")
-        (setq vterm-shell (executable-find "fish"))))
-  #+end_src
-* Project Management
-  Packages and configuration related to managing projects.
-** magit
-  #+begin_src emacs-lisp
-    ;; magit git interface
-    (use-package magit
-      :custom
-      (magit-completing-read-function 'ivy-completing-read)
-      :bind
-      ("C-x g" . magit))
-  #+end_src
-** projectile
-  #+begin_src emacs-lisp
-    ;; project manager
-    (use-package projectile
-      :init
-      (use-package ag)
-      (use-package ibuffer-projectile)
-      :custom
-      (projectile-completion-system 'ivy)
-      (projectile-mode-line "Projectile")
-      :config
-      (projectile-mode +1))
-
-    ;; hydra bindings for projectile
-    (defhydra hydra-projectile (:color red)
-      "PROJECTILE: %(projectile-project-root)"
-
-      ("ff"  projectile-find-file "file" :column "Find File")
-      ("s-f" projectile-find-file-dwim "file dwim")
-      ("fd"  projectile-find-file-in-directory "file curr dir")
-      ("r"   projectile-recentf "recent file")
-      ("d"   projectile-find-dir "dir")
-
-      ("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
-      ("i"   projectile-ibuffer "ibuffer")
-      ("K"   projectile-kill-buffers "kill all buffers")
-      ("e"   projectile-run-eshell "eshell" :color blue)
-
-      ("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
-      ("x"   projectile-remove-known-project "remove known project")
-      ("X"   projectile-cleanup-known-projects "cleanup projects")
-      ("z"   projectile-cache-current-file "cache current project")
-
-      ("a"   projectile-ag "ag" :column "Project")
-      ("p"   projectile-switch-project "switch project" :column "Project")
-      ("P"   treemacs-projectile "treemacs")
-
-      ("q"   nil "exit" :color blue))
-  #+end_src
-* Text Files
-  Packages and configuration related to displaying, editing, and formatting text files.
-** company
- #+begin_src emacs-lisp
-   ;; company for text-completion
-   (use-package company
-     :config
-     (global-company-mode))
-  #+end_src
-** hl-line
-  #+begin_src emacs-lisp
-    ;; highlight the current line
-    (use-package hl-line
-      :config
-      (global-hl-line-mode +1))
-  #+end_src
-** paredit
-  #+begin_src emacs-lisp
-    (use-package paredit
-      :config
-      (add-hook 'emacs-lisp-mode-hook (lambda () (setq show-paren-style 'expression))))
-  #+end_src
-** rainbow-delimiters
-  #+begin_src emacs-lisp
-    (use-package rainbow-delimiters
-      :hook
-      ((emacs-lisp-mode java-mode python-mode rust-mode c-mode) . rainbow-delimiters-mode))
-  #+end_src
-** smartparens
-   #+begin_src emacs-lisp
-     (use-package smartparens
-       :config
-       (require 'smartparens-config)
-       ;; (smartparens-global-mode)
-        (show-smartparens-global-mode))
-   #+end_src
-** format-all
-   #+begin_src emacs-lisp
-     (use-package format-all)
-   #+end_src
-** markdown-mode
-   #+begin_src emacs-lisp
-     (use-package markdown-mode)
-   #+end_src
-** Formatting Configuration
-   #+begin_src emacs-lisp
-     ;; wraps visual lines
-     (global-visual-line-mode)
-
-     ;; newline at end of file
-     (setq require-final-newline t)
-
-     ;; wrap lines at 80 characters
-     (setq-default fill-column 100)
-
-     ;; delete trailing whitespace when saving.
-     (add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-     ;; function for toggling comments
-     (defun mz/comment-or-uncomment-region-or-line ()
-       "Comments or uncomments the region or the current line if there's no active region."
-       (interactive)
-       (let (beg end)
-         (if (region-active-p)
-             (setq beg (region-beginning) end (region-end))
-           (setq beg (line-beginning-position) end (line-end-position)))
-         (comment-or-uncomment-region beg end)
-         (forward-line)))
-
-     ;; binding toggle-comment to "C-."
-     (global-set-key (kbd "C-.") 'mz/comment-or-uncomment-region-or-line)
-
-     ;; function to untabify buffer
-     (defun mz/untabify-buffer ()
-       (interactive)
-       (untabify (point-min) (point-max)))
-
-     ;; hydra for formatting files
-     (defhydra hydra-formatting (:color red)
-       "formatting"
-       ("f" format-all-buffer "format-all")
-       ("u" mz/untabify-buffer "untabify"))
-   #+end_src
-* Elfeed RSS Reader
-  RSS reader using an org-mode file for configuration.
-  #+begin_src emacs-lisp
-    (use-package elfeed
-      :bind ("C-c w" . elfeed)
-      :init
-      (use-package elfeed-org)
-      :config
-      (elfeed-org))
-  #+end_src
-* Nov EPub Reader
-  EPub reader mode.
-  #+begin_src emacs-lisp
-    ;; epub reader mode
-    (use-package nov
-      :config
-      (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
-      :hook
-      (nov-mode . visual-line-mode))
-  #+end_src
-* Anki
-Not working properly with AnkiConnect.
-  #+begin_src emacs-lisp
-    (use-package anki-editor)
-  #+end_src
-* LaTeX
-  Packages and configuration related to editing tex files and compiling them using LaTeX.
-  #+begin_src emacs-lisp
-    (use-package auctex
-      :defer t
-      :hook ((LaTeX-mode . eglot-ensure)
-             (LaTeX-mode . visual-line-mode)
-             (LaTeX-mode . flyspell-mode)
-             (LaTeX-mode . LaTeX-math-mode))
-      :custom
-      (TeX-auto-save t)
-      (TeX-byte-compile t)
-      (TeX-clean-confirm nil)
-      (TeX-master 'dwim)
-      (TeX-parse-self t)
-      (TeX-source-correlate-mode t)
-
-      ;; pdf mode
-      (TeX-PDF-mode t)
-      (TeX-view-program-selection '((output-pdf "PDF Tools")))
-      (TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
-      (TeX-source-correlate-start-server t)
-
-      (reftex-plug-into-AUCTeX t)
-      (TeX-error-overview-open-after-TeX-run t)
-      :config
-      ;; to have the buffer refresh after compilation. can't be in :hook since it's not a mode hook
-      (add-hook 'TeX-after-compilation-finished-functions
-                #'TeX-revert-document-buffer))
-
-    ;; reference management
-    (use-package bibtex
-      :after auctex
-      :hook (bibtex-mode . my/bibtex-fill-column)
-      :preface
-      (defun mz/bibtex-fill-column ()
-        "Ensures that each entry does not exceed 120 characters."
-        (setq fill-column 120)))
-  #+end_src
-* Quelpa
-A different wrapper for package.el that can take packages from source.
-#+begin_src emacs-lisp
-  (use-package quelpa)
-
-  (quelpa
-   '(quelpa-use-package
-     :fetcher git
-     :url "https://github.com/quelpa/quelpa-use-package.git"))
-  (require 'quelpa-use-package)
-#+end_src
-* PDF-Tools
-  Preffered PDF viewer.
-  #+begin_src emacs-lisp
-    ;; enhanced pdf viewer
-    (use-package pdf-tools
-      :init
-      (pdf-tools-install)
-      :hook (pdf-view-mode . pdf-view-midnight-minor-mode))
-
-    ;; mode for smooth scrolling through pdfs using two buffers in one
-    ;; (with-eval-after-load 'quelpa
-    ;;  (quelpa
-    ;;   '(pdf-continuous-scroll-mode
-    ;;     :fetcher git
-    ;;     :url "https://github.com/dalanicolai/pdf-continuous-scroll-mode.el.git"))
-    ;;  (add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
-    ;;  (setq pdf-view-have-image-mode-pixel-vscroll t))
-
-    (use-package pdf-continuous-scroll-mode
-      :defer t
-      :quelpa (pdf-continuous-scroll-mode
-         :fetcher git
-         :url "https://github.com/dalanicolai/pdf-continuous-scroll-mode.el.git")
-      :hook
-      (pdf-view-mode . pdf-continuous-scroll-mode)
-      :custom
-      (pdf-view-have-image-mode-pixel-vscroll t))
+      (("C-c f" . hydra-formatting/body)
+       ("C-x t" . hydra-tab-bar/body)
+       ("C-c e" . hydra-eglot/body)
+       ("C-c o" . hydra-org/body)
+       ("C-c r" . hydra-org-roam/body)
+       ("C-c b" . hydra-org-brain/body)
+       ("C-c p" . hydra-projectile/body)
+       ("C-x w" . hydra-windmove/body)))
   #+end_src
 * Languages and LSP Support
   Packages and configuration related to language major/minor modes and language servers.
@@ -778,6 +509,137 @@ Currently not doing web development, by my estimation I will need these basic pa
      ;; (use-package web-mode)
      ;; (use-package typescript-mode)
      ;; (use-package tide)
+   #+end_src
+* Project Management
+  Packages and configuration related to managing projects.
+** magit
+  #+begin_src emacs-lisp
+    ;; magit git interface
+    (use-package magit
+      :custom
+      (magit-completing-read-function 'ivy-completing-read)
+      :bind
+      ("C-x g" . magit))
+  #+end_src
+** projectile
+  #+begin_src emacs-lisp
+    ;; project manager
+    (use-package projectile
+      :init
+      (use-package ag)
+      (use-package ibuffer-projectile)
+      :custom
+      (projectile-completion-system 'ivy)
+      (projectile-mode-line "Projectile")
+      :config
+      (projectile-mode +1))
+
+    ;; hydra bindings for projectile
+    (defhydra hydra-projectile (:color red)
+      "PROJECTILE: %(projectile-project-root)"
+
+      ("ff"  projectile-find-file "file" :column "Find File")
+      ("fd"  projectile-find-file-in-directory "file curr dir")
+      ("r"   projectile-recentf "recent file")
+      ("d"   projectile-find-dir "dir")
+
+      ("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
+      ("i"   projectile-ibuffer "ibuffer")
+      ("K"   projectile-kill-buffers "kill all buffers")
+      ("e"   projectile-run-eshell "eshell" :color blue)
+
+      ("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
+      ("x"   projectile-remove-known-project "remove known project")
+      ("X"   projectile-cleanup-known-projects "cleanup projects")
+      ("z"   projectile-cache-current-file "cache current project")
+
+      ("a"   projectile-ag "ag" :column "Project")
+      ("p"   projectile-switch-project "switch project" :column "Project" :color blue)
+
+      ("q"   nil "exit" :color blue))
+  #+end_src
+* Text Files
+  Packages and configuration related to displaying, editing, and formatting text files.
+** company
+ #+begin_src emacs-lisp
+   ;; company for text-completion
+   (use-package company
+     :config
+     (global-company-mode))
+  #+end_src
+** hl-line
+  #+begin_src emacs-lisp
+    ;; highlight the current line
+    (use-package hl-line
+      :config
+      (global-hl-line-mode +1))
+  #+end_src
+** paredit
+  #+begin_src emacs-lisp
+    (use-package paredit
+      :config
+      (add-hook 'emacs-lisp-mode-hook (lambda () (setq show-paren-style 'expression))))
+  #+end_src
+** rainbow-delimiters
+  #+begin_src emacs-lisp
+    (use-package rainbow-delimiters
+      :hook
+      ((emacs-lisp-mode java-mode python-mode rust-mode c-mode) . rainbow-delimiters-mode))
+  #+end_src
+** smartparens
+   #+begin_src emacs-lisp
+     (use-package smartparens
+       :config
+       (require 'smartparens-config)
+       ;; (smartparens-global-mode)
+        (show-smartparens-global-mode))
+   #+end_src
+** format-all
+   #+begin_src emacs-lisp
+     (use-package format-all)
+   #+end_src
+** markdown-mode
+   #+begin_src emacs-lisp
+     (use-package markdown-mode)
+   #+end_src
+** Formatting Configuration
+   #+begin_src emacs-lisp
+     ;; wraps visual lines
+     (global-visual-line-mode)
+
+     ;; newline at end of file
+     (setq require-final-newline t)
+
+     ;; wrap lines at 80 characters
+     (setq-default fill-column 100)
+
+     ;; delete trailing whitespace when saving.
+     (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+     ;; function for toggling comments
+     (defun mz/comment-or-uncomment-region-or-line ()
+       "Comments or uncomments the region or the current line if there's no active region."
+       (interactive)
+       (let (beg end)
+         (if (region-active-p)
+             (setq beg (region-beginning) end (region-end))
+           (setq beg (line-beginning-position) end (line-end-position)))
+         (comment-or-uncomment-region beg end)
+         (forward-line)))
+
+     ;; binding toggle-comment to "C-."
+     (global-set-key (kbd "C-.") 'mz/comment-or-uncomment-region-or-line)
+
+     ;; function to untabify buffer
+     (defun mz/untabify-buffer ()
+       (interactive)
+       (untabify (point-min) (point-max)))
+
+     ;; hydra for formatting files
+     (defhydra hydra-formatting (:color red)
+       "formatting"
+       ("f" format-all-buffer "format-all")
+       ("u" mz/untabify-buffer "untabify"))
    #+end_src
 * Org Mode
   Configuration for the majestic org-mode.
@@ -974,6 +836,136 @@ Currently not doing web development, by my estimation I will need these basic pa
        (when (derived-mode-p 'org-mode)
          (zp/org-set-time-file-property "LAST_MODIFIED")))
    #+end_src
+* TRAMP
+  Config for Emac's built-in remote file-editing client.
+  #+begin_src emacs-lisp
+    (require 'tramp)
+
+    (setq tramp-default-method "ssh")
+
+    ;; helper function to sudo a file
+    (defun mz/sudo ()
+      "Use TRAMP to `sudo' the current buffer"
+      (interactive)
+      (when buffer-file-name
+        (find-alternate-file
+         (concat "/sudo:root@localhost:"
+                 buffer-file-name))))
+
+    ;; attempt to speed things up
+    (defadvice projectile-project-root (around ignore-remote first activate)
+      (unless (file-remote-p default-directory) ad-do-it))
+    (setq remote-file-name-inhibit-cache nil)
+    (setq vc-ignore-dir-regexp
+          (format "%s\\|%s"
+                  vc-ignore-dir-regexp
+                  tramp-file-name-regexp))
+    (setq tramp-verbose 1)
+
+    (add-to-list 'tramp-remote-path "~/.local/bin")
+  #+end_src
+* VTerm
+  Preferred emacs terminal emulator.
+  #+begin_src emacs-lisp
+    (setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=no")
+    (use-package vterm
+      :bind
+      ("M-RET" . vterm-other-window)
+      :config
+      ;; if the fish shell is installed, use that for VTerm's shell
+      (when (executable-find "fish")
+        (setq vterm-shell (executable-find "fish"))))
+  #+end_src
+* Elfeed RSS Reader
+  RSS reader using an org-mode file for configuration.
+  #+begin_src emacs-lisp
+    (use-package elfeed
+      :bind ("C-c w" . elfeed)
+      :init
+      (use-package elfeed-org)
+      :config
+      (elfeed-org))
+  #+end_src
+* Nov EPub Reader
+  EPub reader mode.
+  #+begin_src emacs-lisp
+    ;; epub reader mode
+    (use-package nov
+      :config
+      (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+      :hook
+      (nov-mode . visual-line-mode))
+  #+end_src
+* LaTeX
+  Packages and configuration related to editing tex files and compiling them using LaTeX.
+  #+begin_src emacs-lisp
+    (use-package auctex
+      :defer t
+      :hook ((LaTeX-mode . eglot-ensure)
+             (LaTeX-mode . visual-line-mode)
+             (LaTeX-mode . flyspell-mode)
+             (LaTeX-mode . LaTeX-math-mode))
+      :custom
+      (TeX-auto-save t)
+      (TeX-byte-compile t)
+      (TeX-clean-confirm nil)
+      (TeX-master 'dwim)
+      (TeX-parse-self t)
+      (TeX-source-correlate-mode t)
+
+      ;; pdf mode
+      (TeX-PDF-mode t)
+      (TeX-view-program-selection '((output-pdf "PDF Tools")))
+      (TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
+      (TeX-source-correlate-start-server t)
+
+      (reftex-plug-into-AUCTeX t)
+      (TeX-error-overview-open-after-TeX-run t)
+      :config
+      ;; to have the buffer refresh after compilation. can't be in :hook since it's not a mode hook
+      (add-hook 'TeX-after-compilation-finished-functions
+                #'TeX-revert-document-buffer))
+
+    ;; reference management, not terribly sure how to use.
+    (use-package bibtex
+      :after auctex
+      :hook (bibtex-mode . my/bibtex-fill-column)
+      :preface
+      (defun mz/bibtex-fill-column ()
+        "Ensures that each entry does not exceed 120 characters."
+        (setq fill-column 120)))
+  #+end_src
+* Quelpa
+A different wrapper for package.el that can take packages from source.
+#+begin_src emacs-lisp
+  (use-package quelpa)
+
+  (quelpa
+   '(quelpa-use-package
+     :fetcher git
+     :url "https://github.com/quelpa/quelpa-use-package.git"))
+  (require 'quelpa-use-package)
+#+end_src
+* PDF-Tools
+  Prefered PDF viewer.
+  #+begin_src emacs-lisp
+    ;; enhanced pdf viewer
+    (use-package pdf-tools
+      :init
+      (pdf-tools-install)
+      :hook (pdf-view-mode . pdf-view-midnight-minor-mode))
+
+    ;; bit of a bodge to smoothly scroll through pdfs using multiple buffers
+    (use-package pdf-continuous-scroll-mode
+      :defer t
+      :quelpa (pdf-continuous-scroll-mode
+         :fetcher git
+         :url "https://github.com/dalanicolai/pdf-continuous-scroll-mode.el.git")
+      :hook
+      (pdf-view-mode . pdf-continuous-scroll-mode)
+      :custom
+      (pdf-view-have-image-mode-pixel-vscroll t))
+  #+end_src
 * EXWM
   Configuration for using emacs as an X window manager.
   #+begin_src emacs-lisp
@@ -1069,9 +1061,14 @@ Currently not doing web development, by my estimation I will need these basic pa
     (if exwm-enabled (mz/enable-exwm) ())
   #+end_src
 * Chinese
+  Cool stuff with org-capture and org-drill to learn Chinese vocabulary. From Josh Moller-Mara.
   #+begin_src emacs-lisp
     ;; from Josh Moller-Mara's config
     (require 'josh-chinese)
+
+    ;; added to over come some function undefined errors which cropped up out of nowhere.
+    (require 'cl-lib)
+    (require 'subr-x)
 
     ;; adding the custom cangjie input method
     (register-input-method
@@ -1082,13 +1079,13 @@ Currently not doing web development, by my estimation I will need these basic pa
     (mz/add-capture-template '("c" "Chinese" entry
                                (file+headline "chinese.org" "Words")
                                "* <%(josh/chinese-prompt)> :drill: \n
-        Added: %U\n
-        ,** Definition:\n
-        %(josh/chinese-get-definition (josh/chinese-dict-find josh/chinese-word))\n
-        ,** Pronunciation\n
-        %(josh/chinese-get-pronunciation josh/chinese-word-dict)\n
-        ,** Characters\n
-        %(josh/chinese-get-word josh/chinese-word-dict)\n
-        ,** Cangjie\n
-        %(josh/chinese-cangjie-codes josh/chinese-words)\n"))
+            Added: %U\n
+            ,** Definition:\n
+            %(josh/chinese-get-definition (josh/chinese-dict-find josh/chinese-word))\n
+            ,** Pronunciation\n
+            %(josh/chinese-get-pronunciation josh/chinese-word-dict)\n
+            ,** Characters\n
+            %(josh/chinese-get-word josh/chinese-word-dict)\n
+            ,** Cangjie\n
+            %(josh/chinese-cangjie-codes josh/chinese-words)\n"))
   #+end_src
