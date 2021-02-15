@@ -16,7 +16,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - cmake, libtool-bin (vterm)
 - slock (exwm)
 - compton or equivalent compositor (exwm)
-- lua5.3, liblua5.3 (latex lsp for eglot)
+- lua5.3, liblua5.3, liblua5.3-dev, luarocks (latex lsp for eglot)
 - graphviz, sqlite3, sqlitebrowser (optional) (org-roam)
 ** Other Sources
 - Bash Language Server: https://github.com/bash-lsp/bash-language-server (npm)
@@ -183,27 +183,27 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
    #+end_src
 ** Startup Configuration
   #+begin_src emacs-lisp
-		;; scratch screen
-		(setq inhibit-startup-screen t)
-		(setq initial-scratch-message "")
+    ;; scratch screen
+    (setq inhibit-startup-screen t)
+    (setq initial-scratch-message "")
 
-		;; turn off the hecking bell
-		(setq ring-bell-function 'ignore)
+    ;; turn off the hecking bell
+    (setq ring-bell-function 'ignore)
 
-		;; shallow tabs
-		(setq-default tab-width 2)
+    ;; shallow tabs
+    (setq-default tab-width 2)
 
-		;; <tab> inserts spaces by default
-		(setq-default indent-tabs-mode nil)
+    ;; <tab> inserts spaces by default
+    (setq-default indent-tabs-mode nil)
 
-		;; turn off things
-		(menu-bar-mode -1)
-		(scroll-bar-mode -1)
-		(tool-bar-mode -1)
-		(blink-cursor-mode -1)
+    ;; turn off things
+    (menu-bar-mode -1)
+    (scroll-bar-mode -1)
+    (tool-bar-mode -1)
+    (blink-cursor-mode -1)
 
-		;; initial frame maximized
-		(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+    ;; initial frame maximized
+    (add-to-list 'initial-frame-alist '(fullscreen . maximized))
   #+end_src
 ** Theme Configuration
   #+begin_src emacs-lisp
@@ -371,6 +371,9 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 
     ;; shortcut to open eshell in another window. mimics that to open vterm in another window
     (global-set-key (kbd "C-M-<return>") 'mz/eshell-other-window)
+
+    ;; shortcut to view definition of functions
+    (global-set-key (kbd "C-h C-f") 'find-function)
   #+end_src
 * Hydra
   Hydra provides the ability to create a keybinding menu to reduce redundant keypresses. I also use it for creating restricted, on-demand keymaps.
@@ -636,7 +639,7 @@ Currently not doing web development, by my estimation I will need these basic pa
        (untabify (point-min) (point-max)))
 
      ;; hydra for formatting files
-     (defhydra hydra-formatting (:color red)
+     (defhydra hydra-formatting (:color blue)
        "formatting"
        ("f" format-all-buffer "format-all")
        ("u" mz/untabify-buffer "untabify"))
@@ -1088,4 +1091,18 @@ A different wrapper for package.el that can take packages from source.
             %(josh/chinese-get-word josh/chinese-word-dict)\n
             ,** Cangjie\n
             %(josh/chinese-cangjie-codes josh/chinese-words)\n"))
+  #+end_src
+* French
+  #+begin_src emacs-lisp
+    (add-to-list 'load-path "~/.emacs.d/french")
+    (require 'mz-french)
+
+    (mz/add-capture-template '("f" "French" entry
+                               (file+headline "french.org" "Words")
+                               "* <%(mz/french-prompt)> :drill: \n
+    Added: %U\n
+    ,** Definition:\n
+    %(mz/french-definition (mz/french-dict-find mz/french-word))\n
+    ,** Part Of Speech\n
+    %(mz/french-part-of-speech mz/french-word-dict)\n"))
   #+end_src
