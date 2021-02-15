@@ -19,7 +19,8 @@
               (concat
                "^"
                phrase
-               "\\( \\({.*}\\)?\\(qc.\\)?\\(qn.\\)?\\)?\t.*$") nil t)
+               ".*\t.*$")
+               nil t)
         (push (buffer-substring (match-beginning 0)
                                 (match-end 0))
               definitions))
