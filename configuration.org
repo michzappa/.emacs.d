@@ -1093,6 +1093,7 @@ A different wrapper for package.el that can take packages from source.
             %(josh/chinese-cangjie-codes josh/chinese-words)\n"))
   #+end_src
 * French
+Org-capture/org-drill for French.
   #+begin_src emacs-lisp
     (add-to-list 'load-path "~/.emacs.d/french")
     (require 'mz-french)

@@ -15,7 +15,11 @@
   (with-temp-buffer
     (insert-file-contents mz/french-dictionary-path)
     (let (definitions)
-      (while (re-search-forward (concat "^" phrase "\\( {.}\\)?\t.*$") nil t)
+      (while (re-search-forward
+              (concat
+               "^"
+               phrase
+               "\\( \\({.*}\\)?\\(qc.\\)?\\(qn.\\)?\\)?\t.*$") nil t)
         (push (buffer-substring (match-beginning 0)
                                 (match-end 0))
               definitions))
