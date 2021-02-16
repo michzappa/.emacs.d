@@ -2,9 +2,8 @@
 #+DECSRIPTION: Literate configuration for elfeed RSS reader using elfeed-org
 #+AUTHOR: Michael Zappa
 
-
 * Elfeed :elfeed:
-** XKCD :xkcd
+** XKCD :xkcd:
 *** https://xkcd.com/rss.xml
 ** Le Monde :lemonde:
 *** https://www.lemonde.fr/rss/une.xml

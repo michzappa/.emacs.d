@@ -1,4 +1,4 @@
-;; Utilities to read a FR-EN dictionary file. Heavily inspired by Josh Moller-Mara's Chinese functions.q
+;; Utilities to read a FR-EN dictionary file. Heavily inspired by Josh Moller-Mara's Chinese functions.
 ;; - Michael Zappa
 
 (defvar mz/french-dictionary-path
