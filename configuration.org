@@ -81,9 +81,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * Misc
   Miscellanious things which might be put somewhere else eventually.
   #+begin_src emacs-lisp
-    ;; load the directory where the additional elisp resides
-    (add-to-list 'load-path "~/.emacs.d/elisp")
-
     ;; scroll compilation output in the window
     (setq compilation-scroll-output t)
 
@@ -206,6 +203,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     (add-to-list 'initial-frame-alist '(fullscreen . maximized))
   #+end_src
 ** Theme Configuration
+*** TODO add configuration for modus themes?
   #+begin_src emacs-lisp
     ;; nord-theme, doesn't have tab-bar support yet
     (use-package nord-theme)
@@ -275,7 +273,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+end_src
 ** counsel
   #+begin_src emacs-lisp
-    ;; autocomplete interface for search
+    ;; autocomplete interface
     (use-package counsel
       :bind
       (("C-s" . swiper)
@@ -290,6 +288,20 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       (ivy-mode 1)
       (use-package ivy-hydra))
   #+end_src
+** ido
+   #+begin_src emacs-lisp
+     ;; (use-package ido
+     ;;   :bind
+     ;;   ("M-x" . smex)
+     ;;   :custom
+     ;;   (ido-enable-flex-matching t)
+     ;;   (ido-everywhere t)
+     ;;   (ido-use-filename-at-point 'guess)
+     ;;   (ido-create-new-buffer 'always)
+     ;;   :config
+     ;;   (smex-initialize)
+     ;;   (ido-mode 1))
+   #+end_src
 ** exec-path-from-shell
   #+begin_src emacs-lisp
     ;; Force Emacs to use shell path
@@ -567,7 +579,15 @@ Currently not doing web development, by my estimation I will need these basic pa
  #+begin_src emacs-lisp
    ;; company for text-completion
    (use-package company
+     :custom
+     (company-idle-delay 0)
+     (company-show-numbers t)
      :config
+     (use-package company-tabnine
+       :ensure t
+       :pin melpa-unstable
+       :config
+       (add-to-list 'company-backends 'company-tabline))
      (global-company-mode))
   #+end_src
 ** hl-line
@@ -1066,6 +1086,9 @@ A different wrapper for package.el that can also take packages from source.
 * Chinese
   Cool stuff with org-capture and org-drill to learn Chinese vocabulary. From Josh Moller-Mara.
   #+begin_src emacs-lisp
+    ;; load the directory where the additional elisp resides
+    (add-to-list 'load-path "~/.emacs.d/elisp")
+
     ;; from Josh Moller-Mara's config
     (require 'josh-chinese)
 
