@@ -159,16 +159,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     ;; font for more emacs icons
     (use-package all-the-icons)
   #+end_src
-** minions
-  #+begin_src emacs-lisp
-    ;; turns off all minor modes in modeline
-    (use-package minions
-      :custom
-      (minions-mode-line-lighter "")
-      (minions-mode-line-delimiters '("" . ""))
-      :config
-      (minions-mode 1))
-  #+end_src
 ** default-text-scale
    Package for modifying the text scale, as well as setting my preferred startup value.
    #+begin_src emacs-lisp
@@ -177,6 +167,29 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
      (use-package default-text-scale
        :config
        (default-text-scale-mode))
+   #+end_src
+** tab-bar-mode
+   #+begin_src emacs-lisp
+     ;; no GUI element unless turned on
+     (setq tab-bar-show nil)
+
+     (global-set-key (kbd "M-[") 'tab-bar-history-back)
+     (global-set-key (kbd "M-]") 'tab-bar-history-forward)
+
+     ;; hydra bindings for tab-bar-mode
+     (defhydra hydra-tab-bar (:color red)
+       "Tab Bar Operations"
+       ("t" tab-new "Create a new tab" :column "Creation")
+       ("d" dired-other-tab "Open Dired in another tab")
+       ("f" find-file-other-tab "Find file in another tab")
+       ("0" tab-close "Close current tab")
+       ("m" tab-move "Move current tab" :column "Management")
+       ("r" tab-rename "Rename Tab")
+       ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
+       ("<right>" tab-next "Next Tab")
+       ("<left>" tab-previous "Previous Tab")
+       ("SPC" tab-bar-mode "Toggle tab-bar-mode" :color blue :column "Misc")
+       ("q" nil "exit" :color blue))
    #+end_src
 ** Startup Configuration
   #+begin_src emacs-lisp
@@ -202,29 +215,40 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     ;; initial frame maximized
     (add-to-list 'initial-frame-alist '(fullscreen . maximized))
   #+end_src
-** Theme Configuration
-*** TODO add configuration for modus themes?
+** Appearance
   #+begin_src emacs-lisp
-    ;; nord-theme, doesn't have tab-bar support yet
-    (use-package nord-theme)
-
-    ;; dracula-theme, which has tab-bar support
-    (use-package dracula-theme)
-
     ;; modus-vivendi, dark theme from prot
     (use-package modus-themes
       :bind
       ("C-c T" . modus-themes-toggle))
+    ;; (load-theme 'modus-vivendi t)
 
-    ;; chocolate theme, no tab bar
-    (use-package chocolate-theme)
+    (use-package moe-theme
+      :config
+      (moe-dark))
 
-    ;; zenburn
-    (use-package zenburn-theme)
+    (use-package powerline
+      :after
+      (moe-theme)
+      :custom
+      (moe-theme-resize-org-title '(2.2 1.8 1.6 1.4 1.2 1.0 1.0 1.0 1.0))
+      :config
+      (powerline-moe-theme))
 
-    (load-theme 'modus-vivendi t)
+    ;; turns off all minor modes in modeline
+    (use-package minions
+      :after
+      (powerline)
+      :custom
+      (minions-mode-line-lighter "")
+      (minions-mode-line-delimiters '("" . ""))
+      :config
+      (defpowerline powerline-major-mode "")
+      (defpowerline powerline-process "")
+      (defpowerline powerline-minor-modes minions-mode-line-modes)
+      (minions-mode 1))
   #+end_src
-** Frames Configuration
+** Frame Configuration
   #+begin_src emacs-lisp
     ;; more useful frame title, that show either a file or a
     ;; buffer name (if the buffer isn't visiting a file)
@@ -239,29 +263,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     ;; winner-mode to undo and redo window configurations
     (winner-mode)
   #+end_src
-** tab-bar-mode
-   #+begin_src emacs-lisp
-     ;; no GUI element unless turned on
-     (setq tab-bar-show nil)
-
-     (global-set-key (kbd "M-[") 'tab-bar-history-back)
-     (global-set-key (kbd "M-]") 'tab-bar-history-forward)
-
-     ;; hydra bindings for tab-bar-mode
-     (defhydra hydra-tab-bar (:color red)
-       "Tab Bar Operations"
-       ("t" tab-new "Create a new tab" :column "Creation")
-       ("d" dired-other-tab "Open Dired in another tab")
-       ("f" find-file-other-tab "Find file in another tab")
-       ("0" tab-close "Close current tab")
-       ("m" tab-move "Move current tab" :column "Management")
-       ("r" tab-rename "Rename Tab")
-       ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
-       ("<right>" tab-next "Next Tab")
-       ("<left>" tab-previous "Previous Tab")
-       ("SPC" tab-bar-mode "Toggle tab-bar-mode" :color blue :column "Misc")
-       ("q" nil "exit" :color blue))
-   #+end_src
 * User Interaction
   Packages and configuration related to user interaction.
 ** avy
