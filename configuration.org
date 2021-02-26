@@ -46,7 +46,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     '(("melpa" . 50)
       ("gnu" . 10)
       ("org" . 10)
-      ("melpa-unstable" . 0)))
+      ("melpa-unstable" . 1)))
 
     ;; install use-package if not installed
     (when (not (package-installed-p 'use-package))
@@ -230,8 +230,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     (use-package powerline
       :after
       (moe-theme)
-      :custom
-      (moe-theme-resize-org-title '(2.2 1.8 1.6 1.4 1.2 1.0 1.0 1.0 1.0))
       :config
       (powerline-moe-theme))
 
@@ -586,7 +584,6 @@ Currently not doing web development, by my estimation I will need these basic pa
      :config
      (use-package company-tabnine
        :ensure t
-       :pin melpa-unstable
        :config
        (add-to-list 'company-backends 'company-tabline))
      (global-company-mode))
