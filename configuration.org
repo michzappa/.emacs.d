@@ -216,7 +216,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     (add-to-list 'initial-frame-alist '(fullscreen . maximized))
   #+end_src
 ** Appearance
-Different themes I use, along with modeline configuration.
+   Different themes I use, along with modeline configuration.
   #+begin_src emacs-lisp
     ;; modus-vivendi, dark theme from prot
     ;; (use-package modus-themes
@@ -225,25 +225,21 @@ Different themes I use, along with modeline configuration.
     ;;   :config
     ;;   (load-theme 'modus-vivendi t))
 
-    ;; (use-package zenburn-theme
-    ;;   :config
-    ;;   (load-theme 'zenburn t)
-    ;;   (powerline-default-theme)
-    ;;   )
+    (use-package powerline)
 
     (use-package moe-theme
       :config
       (moe-dark)
-      (powerline-moe-theme)
-
-      ;; using the moe-light powerline colors in dark mode
+      ;; ripped from the definition of powerline-moe-theme and modified to be darker
       (set-face-attribute 'mode-line-buffer-id nil :background nil :foreground "#1c1c1c")
-      (set-face-attribute 'mode-line-inactive nil :background "#b2b2b2" :foreground "#ffffff")
+      (set-face-attribute 'mode-line-inactive nil :background "#585858" :foreground "#ffffff")
       (set-face-attribute 'powerline-active2 nil :background "#585858" :foreground "#ffffff")
-      (set-face-attribute 'powerline-inactive1 nil :background "#c6c6c6" :foreground "#585858")
-      (set-face-attribute 'powerline-inactive2 nil :background "#e4e4e4" :foreground "#585858"))
-
-    (use-package powerline)
+      (set-face-attribute 'powerline-inactive1 nil :background "#585858" :foreground "#ffffff")
+      (set-face-attribute 'powerline-inactive2 nil :background "#585858" :foreground "#ffffff")
+      (set-face-attribute 'mode-line nil :background "#5fafd7" :foreground "#1c1c1c")
+      (set-face-attribute 'powerline-active1 nil :background "#afd7ff" :foreground "#005faf")
+      (powerline-default-theme)
+      (powerline-reset))
 
     ;; turns off all minor modes in modeline
     (use-package minions
@@ -629,12 +625,11 @@ Currently not doing web development, by my estimation I will need these basic pa
       ((emacs-lisp-mode java-mode python-mode rust-mode c-mode) . rainbow-delimiters-mode))
   #+end_src
 ** rainbow-mode
-*** TODO add hook to org mode
-Displays colors over hex color descriptions
+    Displays colors over hex color descriptions
    #+begin_src emacs-lisp
      (use-package rainbow-mode
        :hook
-       ((emacs-lisp-mode org-mode) . rainbow-mode))
+       (emacs-lisp-mode . rainbow-mode))
    #+end_src
 ** smartparens
    #+begin_src emacs-lisp
@@ -763,10 +758,12 @@ Displays colors over hex color descriptions
      ;;                            (function mz/todo-on-day-template)))
    #+end_src
 ** org-drill
+SRS system in org-mode.
    #+begin_src emacs-lisp
      (use-package org-drill)
    #+end_src
 ** org-present
+Make presentations from org-mode.
    #+begin_src emacs-lisp
      (use-package org-present
        :config
