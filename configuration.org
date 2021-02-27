@@ -216,22 +216,34 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     (add-to-list 'initial-frame-alist '(fullscreen . maximized))
   #+end_src
 ** Appearance
+Different themes I use, along with modeline configuration.
   #+begin_src emacs-lisp
     ;; modus-vivendi, dark theme from prot
-    (use-package modus-themes
-      :bind
-      ("C-c T" . modus-themes-toggle))
-    ;; (load-theme 'modus-vivendi t)
+    ;; (use-package modus-themes
+    ;;   :bind
+    ;;   ("C-c T" . modus-themes-toggle)
+    ;;   :config
+    ;;   (load-theme 'modus-vivendi t))
+
+    ;; (use-package zenburn-theme
+    ;;   :config
+    ;;   (load-theme 'zenburn t)
+    ;;   (powerline-default-theme)
+    ;;   )
 
     (use-package moe-theme
       :config
-      (moe-dark))
+      (moe-dark)
+      (powerline-moe-theme)
 
-    (use-package powerline
-      :after
-      (moe-theme)
-      :config
-      (powerline-moe-theme))
+      ;; using the moe-light powerline colors in dark mode
+      (set-face-attribute 'mode-line-buffer-id nil :background nil :foreground "#1c1c1c")
+      (set-face-attribute 'mode-line-inactive nil :background "#b2b2b2" :foreground "#ffffff")
+      (set-face-attribute 'powerline-active2 nil :background "#585858" :foreground "#ffffff")
+      (set-face-attribute 'powerline-inactive1 nil :background "#c6c6c6" :foreground "#585858")
+      (set-face-attribute 'powerline-inactive2 nil :background "#e4e4e4" :foreground "#585858"))
+
+    (use-package powerline)
 
     ;; turns off all minor modes in modeline
     (use-package minions
@@ -286,6 +298,23 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       (counsel-mode 1)
       (ivy-mode 1)
       (use-package ivy-hydra))
+  #+end_src
+** company
+ #+begin_src emacs-lisp
+   ;; company for text-completion
+   (use-package company
+     :custom
+     (company-idle-delay 0)
+     (company-show-numbers t)
+     :config
+     (global-company-mode))
+
+   ;; tabnine is an AI completion engine
+   (use-package company-tabnine
+     :after
+     (company)
+     :config
+     (add-to-list 'company-backends 'company-tabline))
   #+end_src
 ** ido
    #+begin_src emacs-lisp
@@ -425,6 +454,12 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     (add-hook 'c-mode-hook 'eglot-ensure)
     (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
   #+end_src
+** Common Lisp
+   #+begin_src emacs-lisp
+     (use-package slime
+       :custom
+       (inferior-lisp-program "sbcl"))
+   #+end_src
 ** Elisp
   #+begin_src emacs-lisp
     ;; Help for emacs-lisp functions
@@ -574,20 +609,6 @@ Currently not doing web development, by my estimation I will need these basic pa
   #+end_src
 * Text Files
   Packages and configuration related to displaying, editing, and formatting text files.
-** company
- #+begin_src emacs-lisp
-   ;; company for text-completion
-   (use-package company
-     :custom
-     (company-idle-delay 0)
-     (company-show-numbers t)
-     :config
-     (use-package company-tabnine
-       :ensure t
-       :config
-       (add-to-list 'company-backends 'company-tabline))
-     (global-company-mode))
-  #+end_src
 ** hl-line
   #+begin_src emacs-lisp
     ;; highlight the current line
@@ -607,6 +628,14 @@ Currently not doing web development, by my estimation I will need these basic pa
       :hook
       ((emacs-lisp-mode java-mode python-mode rust-mode c-mode) . rainbow-delimiters-mode))
   #+end_src
+** rainbow-mode
+*** TODO add hook to org mode
+Displays colors over hex color descriptions
+   #+begin_src emacs-lisp
+     (use-package rainbow-mode
+       :hook
+       ((emacs-lisp-mode org-mode) . rainbow-mode))
+   #+end_src
 ** smartparens
    #+begin_src emacs-lisp
      (use-package smartparens
