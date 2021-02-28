@@ -113,6 +113,12 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     ;; reload files from disk
     (global-auto-revert-mode)
 
+    ;; don't overwrite outside program item on clipboard when switching to emacs
+    (setq save-interprogram-paste-before-kill t)
+
+    ;; add newline at end of files by default, required by some modes
+    (setq mode-require-final-newline 'visit-save)
+
     ;; recent file store
     (recentf-mode 1)
     (setq recentf-max-menu-items 25)
@@ -222,14 +228,18 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 
     ;; restrained themes designed for readability.
     (use-package modus-themes
+      :init
+      (modus-themes-load-themes)
+      :custom
+      (modus-themes-intense-hl-line t)
+      :config
+      (modus-themes-load-vivendi)
       :bind
       ("C-c T" . modus-themes-toggle))
 
-    (load-theme 'modus-vivendi t)
-
     (use-package powerline)
 
-    ;; much more colorful theme, but also very busy and weird highlighting. Requires too much customization
+    ;;much more colorful theme, but also very busy and weird highlighting. Requires too much customization
     ;; (use-package moe-theme
     ;;   :after
     ;;   (powerline)
@@ -240,7 +250,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     ;;   ;; ripped from the definition of powerline-moe-theme and modified to be darker
     ;;   (set-face-attribute 'mode-line nil :background "#5fafd7" :foreground "#1c1c1c")
     ;;   ;; trying to get the colors not to be weird when focus is in a different application
-    ;;   (set-face-attribute 'mode-line-inactive nil :background "#ff45ab" :foreground "#ffffff")
+    ;;   ;; (set-face-attribute 'mode-line-inactive nil :background "#ff45ab" :foreground "#ffffff")
 
     ;;   (set-face-attribute 'powerline-active1 nil :background "#afd7ff" :foreground "#005faf")
     ;;   (set-face-attribute 'powerline-active2 nil :background "#585858" :foreground "#ffffff")
@@ -294,8 +304,8 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       (global-set-key (kbd "C-;") 'avy-goto-char-2))
   #+end_src
 ** counsel
+Completion interface for files, M-x, etc.
   #+begin_src emacs-lisp
-    ;; autocomplete interface
     (use-package counsel
       :bind
       (("C-s" . swiper)
@@ -328,6 +338,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
      (add-to-list 'company-backends 'company-tabline))
   #+end_src
 ** ido
+More minimalist, built-in completion tool.
    #+begin_src emacs-lisp
      ;; (use-package ido
      ;;   :bind
@@ -340,6 +351,16 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
      ;;   :config
      ;;   (smex-initialize)
      ;;   (ido-mode 1))
+
+     ;; ;; display the results of ido vertically, more intuitive and readable for me
+     ;; (use-package ido-vertical-mode
+     ;;   :config
+     ;;   (ido-vertical-mode 1)
+     ;;   (setq ido-vertical-define-keys 'C-n-and-C-p-only))
+
+     ;; (use-package ido-completing-read+
+     ;;   :config
+     ;;   (ido-ubiquitous-mode 1))
    #+end_src
 ** exec-path-from-shell
   #+begin_src emacs-lisp
@@ -637,7 +658,7 @@ Currently not doing web development, by my estimation I will need these basic pa
   #+begin_src emacs-lisp
     (use-package rainbow-delimiters
       :hook
-      ((emacs-lisp-mode java-mode python-mode rust-mode c-mode) . rainbow-delimiters-mode))
+      ((emacs-lisp-mode lisp-mode java-mode python-mode rust-mode c-mode) . rainbow-delimiters-mode))
   #+end_src
 ** rainbow-mode
     Displays colors over hex color descriptions
