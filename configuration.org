@@ -216,46 +216,45 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     (add-to-list 'initial-frame-alist '(fullscreen . maximized))
   #+end_src
 ** Appearance
-   Different themes I use, along with modeline configuration.
   #+begin_src emacs-lisp
-    ;; modus-vivendi, dark theme from prot
-    ;; (use-package modus-themes
-    ;;   :bind
-    ;;   ("C-c T" . modus-themes-toggle)
+    ;; kind of my personal favorite but a little too blue sometimes
+    (use-package nord-theme)
+
+    ;; restrained themes designed for readability.
+    (use-package modus-themes
+      :bind
+      ("C-c T" . modus-themes-toggle))
+
+    (load-theme 'modus-vivendi t)
+
+    (use-package powerline)
+
+    ;; much more colorful theme, but also very busy and weird highlighting. Requires too much customization
+    ;; (use-package moe-theme
+    ;;   :after
+    ;;   (powerline)
     ;;   :config
-    ;;   (load-theme 'modus-vivendi t))
+    ;;   (moe-dark)
+    ;;   ;; ;; run this, though I change some colors, to set the right variables
+    ;;   (powerline-moe-theme)
+    ;;   ;; ripped from the definition of powerline-moe-theme and modified to be darker
+    ;;   (set-face-attribute 'mode-line nil :background "#5fafd7" :foreground "#1c1c1c")
+    ;;   ;; trying to get the colors not to be weird when focus is in a different application
+    ;;   (set-face-attribute 'mode-line-inactive nil :background "#ff45ab" :foreground "#ffffff")
 
-    (use-package powerline
-      :quelpa (powerline
-               :fetcher git
-               :url "https://github.com/milkypostman/powerline.git"))
+    ;;   (set-face-attribute 'powerline-active1 nil :background "#afd7ff" :foreground "#005faf")
+    ;;   (set-face-attribute 'powerline-active2 nil :background "#585858" :foreground "#ffffff")
 
-    (use-package moe-theme
-      :after
-      (powerline)
-      :config
-      (moe-dark)
-      ;; run this, though I change some colors, to set the right variables
-      (powerline-moe-theme)
+    ;;   (set-face-attribute 'mode-line-inactive nil :background "#585858" :foreground "#ffffff")
+    ;;   (set-face-attribute 'powerline-inactive1 nil :background "#585858" :foreground "#ffffff")
+    ;;   (set-face-attribute 'powerline-inactive2 nil :background "#585858" :foreground "#ffffff")
 
-      ;; ripped from the definition of powerline-moe-theme and modified to be darker
-      (set-face-attribute 'mode-line nil :background "#5fafd7" :foreground "#1c1c1c")
-      ;; trying to get the colors not to be weird when focus is in a different application
-      (set-face-attribute 'mode-line-inactive nil :background "#ff45ab" :foreground "#ffffff")
+    ;;   (set-face-attribute 'mode-line-buffer-id nil :background nil :foreground "#1c1c1c")
 
-      (set-face-attribute 'powerline-active1 nil :background "#afd7ff" :foreground "#005faf")
-      (set-face-attribute 'powerline-active2 nil :background "#585858" :foreground "#ffffff")
+    ;;   (set-face-attribute 'minibuffer-prompt nil :background "#afd7ff" :foreground "#005faf")
 
-      (set-face-attribute 'mode-line-inactive nil :background "#585858" :foreground "#ffffff")
-      (set-face-attribute 'powerline-inactive1 nil :background "#585858" :foreground "#ffffff")
-      (set-face-attribute 'powerline-inactive2 nil :background "#585858" :foreground "#ffffff")
-
-      (set-face-attribute 'mode-line-buffer-id nil :background nil :foreground "#1c1c1c")
-
-      (set-face-attribute 'minibuffer-prompt nil :background "#afd7ff" :foreground "#005faf")
-
-      (powerline-default-theme)
-      (powerline-reset))
+    ;;   (powerline-default-theme)
+    ;;   (powerline-reset))
 
     ;; turns off all minor modes in modeline
     (use-package minions
