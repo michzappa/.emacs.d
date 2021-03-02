@@ -43,10 +43,10 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 
 
     (setq package-archive-priorities
-    '(("melpa" . 50)
-      ("gnu" . 10)
-      ("org" . 10)
-      ("melpa-unstable" . 1)))
+          '(("melpa" . 50)
+            ("gnu" . 10)
+            ("org" . 10)
+            ("melpa-unstable" . 1)))
 
     ;; install use-package if not installed
     (when (not (package-installed-p 'use-package))
@@ -70,13 +70,13 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * Personal
   Giving emacs my information.
   #+begin_src emacs-lisp
-    (setq user-emacs-directory "~/.emacs.d/user-dir")
-    (setq custom-file          "~/.emacs.d/custom.el")
-    (setq bookmark-default-file "~/.emacs.d/bookmarks.el")
-    (setq abbrev-file-name     "~/.emacs.d/abbrev_defs")
+    (setq user-emacs-directory "~/.emacs.d/user-dir"
+          custom-file          "~/.emacs.d/custom.el"
+          bookmark-default-file "~/.emacs.d/bookmarks.el"
+          abbrev-file-name     "~/.emacs.d/abbrev_defs"
 
-    (setq user-full-name       "Michael Zappa")
-    (setq user-mail-address    "zapprich@gmail.com")
+          user-full-name       "Michael Zappa"
+          user-mail-address    "zapprich@gmail.com")
   #+end_src
 * Misc
   Miscellanious things which might be put somewhere else eventually.
@@ -84,17 +84,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     ;; scroll compilation output in the window
     (setq compilation-scroll-output t)
 
-    ;; minor mode for inserting parens, braces, quotes and the like in pairs.
-    ;; turned "<>" off for org mode since it makes the shortcut for org blocks difficult."
-    (electric-pair-mode)
-    (add-hook 'org-mode-hook
-              (lambda () (setq-local electric-pair-inhibit-predicate
-                                (lambda (c)
-                                  (if (eq c ?\<)
-                                      t
-                                    (electric-pair-inhibit-predicate c))))))
-
-    ;; pretty symbols like lambda
+    ;; pretty symbols like lambda, and, and or in certain modes
     (global-prettify-symbols-mode t)
 
     ;; reduce the frequency of garbage collection by making it happen on
@@ -161,8 +151,8 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * User Interface
   Packages and configuration related to modifying the user-interface.
 ** all-the-icons
+   Font package for more emacs icons which are used in some packages
   #+begin_src emacs-lisp
-    ;; font for more emacs icons
     (use-package all-the-icons)
   #+end_src
 ** default-text-scale
@@ -297,21 +287,22 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * User Interaction
   Packages and configuration related to user interaction.
 ** avy
+   Enables navigation around the screen by jumpting to characters.
   #+begin_src emacs-lisp
-    ;skip around the screen
     (use-package avy
       :config
       (global-set-key (kbd "C-;") 'avy-goto-char-2))
   #+end_src
 ** counsel
-Completion interface for files, M-x, etc.
+   Completion interface for files, M-x, etc.
   #+begin_src emacs-lisp
     (use-package counsel
       :bind
       (("C-s" . swiper)
        ("C-x C-r" . counsel-recentf)
        ("M-x" . counsel-M-x)
-       ("C-x C-f" . counsel-find-file))
+       ("C-x C-f" . counsel-find-file)
+       ("C-x b" . ivy-switch-buffer))
       :config
       (setcdr (assoc 'counsel-M-x ivy-initial-inputs-alist) "") ;; not only prefixes
       ;; for some reason just turning on counsel-mode doesn't properly replace functions on start,
@@ -363,36 +354,39 @@ More minimalist, built-in completion tool.
      ;;   (ido-ubiquitous-mode 1))
    #+end_src
 ** exec-path-from-shell
+   Package to feed emacs by shell path on startup.
   #+begin_src emacs-lisp
-    ;; Force Emacs to use shell path
     (use-package exec-path-from-shell
       :config
       (exec-path-from-shell-initialize))
   #+end_src
 ** smex
+   An M-x enhancer which ties in with counsel.
   #+begin_src emacs-lisp
-    ;; M-x enhancement
     (use-package smex)
   #+end_src
 ** scratch
+   Opens up a new scratch buffer in the mode of the current buffer.
    #+begin_src emacs-lisp
      (use-package scratch
        :bind ("C-c s" . scratch))
    #+end_src
 ** undo-tree
+   Dealing with undo/redo in a tree structure, enables visualization of said tree.
    #+begin_src emacs-lisp
      (use-package undo-tree
        :config
        (global-undo-tree-mode))
    #+end_src
 ** which-key
+   Shows possible key combinations for multi-chord bindings.
   #+begin_src emacs-lisp
-    ;; shows possible key combinations
     (use-package which-key
       :config
       (which-key-mode))
   #+end_src
 ** windmove
+   Navigate between windows using keyboard.
   #+begin_src emacs-lisp
     (use-package windmove
       ;; default keybindings are S-s-<direction>, but super doesn't get past GNOME shell
@@ -559,6 +553,7 @@ More minimalist, built-in completion tool.
    #+end_src
 ** Python
   #+begin_src emacs-lisp
+    ;; currenty switching between pyright and the palantir pyls.
     ;; (add-to-list 'eglot-server-programs '(python-mode "pyright-langserver" "--stdio"))
 
     (use-package python
@@ -572,6 +567,10 @@ More minimalist, built-in completion tool.
        ((executable-find "python3")
         (setq python-shell-interpreter "python3"))))
   #+end_src
+** Racket
+   #+begin_src emacs-lisp
+     (use-package racket-mode)
+   #+end_src
 ** Rust
   #+begin_src emacs-lisp
     ;; hook up rust-mode with the language server
@@ -594,8 +593,8 @@ Currently not doing web development, by my estimation I will need these basic pa
 * Project Management
   Packages and configuration related to managing projects.
 ** magit
+   Excellent interface for Git.
   #+begin_src emacs-lisp
-    ;; magit git interface
     (use-package magit
       :custom
       (magit-completing-read-function 'ivy-completing-read)
@@ -603,6 +602,7 @@ Currently not doing web development, by my estimation I will need these basic pa
       ("C-x g" . magit))
   #+end_src
 ** projectile
+   Manages projects, configure common keybindings into a hydra.
   #+begin_src emacs-lisp
     ;; project manager
     (use-package projectile
@@ -648,17 +648,11 @@ Currently not doing web development, by my estimation I will need these basic pa
       :config
       (global-hl-line-mode +1))
   #+end_src
-** paredit
-  #+begin_src emacs-lisp
-    (use-package paredit
-      :config
-      (add-hook 'emacs-lisp-mode-hook (lambda () (setq show-paren-style 'expression))))
-  #+end_src
 ** rainbow-delimiters
   #+begin_src emacs-lisp
     (use-package rainbow-delimiters
       :hook
-      ((emacs-lisp-mode lisp-mode java-mode python-mode rust-mode c-mode) . rainbow-delimiters-mode))
+      ((prog-mode) . rainbow-delimiters-mode))
   #+end_src
 ** rainbow-mode
     Displays colors over hex color descriptions
@@ -668,12 +662,14 @@ Currently not doing web development, by my estimation I will need these basic pa
        (emacs-lisp-mode . rainbow-mode))
    #+end_src
 ** smartparens
+   Dealing with paren (and other delimiter) pairs.
    #+begin_src emacs-lisp
      (use-package smartparens
        :config
        (require 'smartparens-config)
-       ;; (smartparens-global-mode)
-        (show-smartparens-global-mode))
+       (smartparens-global-mode)
+       (smartparens-strict-mode)
+       (show-smartparens-global-mode))
    #+end_src
 ** format-all
    #+begin_src emacs-lisp
@@ -778,20 +774,6 @@ Currently not doing web development, by my estimation I will need these basic pa
      ;; abstracted template for a TODO to take place on some day, like an assignment due date.
      (defun mz/todo-on-day-template ()
        "* TODO %? %^t")
-
-     ;; (mz/add-capture-template '("c" "Class Task"))
-     ;; (mz/add-capture-template '("cs" "Systems Task" entry
-     ;;                            (file+headline "cs3650.org" "Systems")
-     ;;                            (function mz/todo-on-day-template)))
-     ;; (mz/add-capture-template '("cn" "Networks Task" entry
-     ;;                            (file+headline "cs3700.org" "Networks")
-     ;;                            (function mz/todo-on-day-template)))
-     ;; (mz/add-capture-template '("cc" "Cyber Task" entry
-     ;;                            (file+headline "cy2550.org" "Cyber")
-     ;;                            (function mz/todo-on-day-template)))
-     ;; (mz/add-capture-template '("cp" "Phonology Task" entry
-     ;;                            (file+headline "ling3422.org" "Phonology")
-     ;;                            (function mz/todo-on-day-template)))
    #+end_src
 ** org-drill
 SRS system in org-mode.
@@ -972,7 +954,6 @@ Make presentations from org-mode.
 * Nov EPub Reader
   EPub reader mode.
   #+begin_src emacs-lisp
-    ;; epub reader mode
     (use-package nov
       :config
       (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
@@ -1032,7 +1013,6 @@ A different wrapper for package.el that can also take packages from source.
 * PDF-Tools
   Prefered PDF viewer.
   #+begin_src emacs-lisp
-    ;; enhanced pdf viewer
     (use-package pdf-tools
       :init
       (pdf-tools-install)
