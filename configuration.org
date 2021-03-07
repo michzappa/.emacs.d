@@ -27,7 +27,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - Java Language Server: https://github.com/eclipse/eclipse.jdt.ls
 - Pyright Language Server:  https://github.com/palantir/python-language-server (npm)
 - Palantir Language Server: https://github.com/palantir/python-language-server (pip)
-- Rust Language Server:  https://github.com/rust-lang/rls (rustup)
+- rust-analyzer:  https://rust-analyzer.github.io/manual.html#installation
 * Packages Setup
   Setting up the package archives and the lisp to automatically load all my packages.
   #+begin_src emacs-lisp
@@ -478,6 +478,8 @@ More minimalist, built-in completion tool.
 ** C
   #+begin_src emacs-lisp
     (add-hook 'c-mode-hook 'eglot-ensure)
+    ;; use '//' comments instead of '/* */' comments in C-mode
+    (add-hook 'c-mode-hook (lambda () (c-toggle-comment-style -1)))
     (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
   #+end_src
 ** Common Lisp
@@ -573,6 +575,9 @@ More minimalist, built-in completion tool.
    #+end_src
 ** Rust
   #+begin_src emacs-lisp
+    ;; tell eglot to use the rust-analyzer binary as the language server
+    (add-to-list 'eglot-server-programs '(rust-mode "rust-analyzer"))
+
     ;; hook up rust-mode with the language server
     (use-package rust-mode
       :custom
@@ -668,7 +673,6 @@ Currently not doing web development, by my estimation I will need these basic pa
        :config
        (require 'smartparens-config)
        (smartparens-global-mode)
-       (smartparens-strict-mode)
        (show-smartparens-global-mode))
    #+end_src
 ** format-all
