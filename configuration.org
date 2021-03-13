@@ -148,142 +148,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
         (switch-to-buffer (other-buffer buf))
         (switch-to-buffer-other-window buf)))
   #+end_src
-* User Interface
-  Packages and configuration related to modifying the user-interface.
-** all-the-icons
-   Font package for more emacs icons which are used in some packages
-  #+begin_src emacs-lisp
-    (use-package all-the-icons)
-  #+end_src
-** default-text-scale
-   Package for modifying the text scale, as well as setting my preferred startup value.
-   #+begin_src emacs-lisp
-     (set-face-attribute 'default nil :height 141)
-
-     (use-package default-text-scale
-       :config
-       (default-text-scale-mode))
-   #+end_src
-** tab-bar-mode
-   #+begin_src emacs-lisp
-     ;; no GUI element unless turned on
-     (setq tab-bar-show nil)
-
-     (global-set-key (kbd "M-[") 'tab-bar-history-back)
-     (global-set-key (kbd "M-]") 'tab-bar-history-forward)
-
-     ;; hydra bindings for tab-bar-mode
-     (defhydra hydra-tab-bar (:color red)
-       "Tab Bar Operations"
-       ("t" tab-new "Create a new tab" :column "Creation")
-       ("d" dired-other-tab "Open Dired in another tab")
-       ("f" find-file-other-tab "Find file in another tab")
-       ("0" tab-close "Close current tab")
-       ("m" tab-move "Move current tab" :column "Management")
-       ("r" tab-rename "Rename Tab")
-       ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
-       ("<right>" tab-next "Next Tab")
-       ("<left>" tab-previous "Previous Tab")
-       ("SPC" tab-bar-mode "Toggle tab-bar-mode" :color blue :column "Misc")
-       ("q" nil "exit" :color blue))
-   #+end_src
-** Startup Configuration
-  #+begin_src emacs-lisp
-    ;; scratch screen
-    (setq inhibit-startup-screen t)
-    (setq initial-scratch-message "")
-
-    ;; turn off the hecking bell
-    (setq ring-bell-function 'ignore)
-
-    ;; shallow tabs
-    (setq-default tab-width 2)
-
-    ;; <tab> inserts spaces by default
-    (setq-default indent-tabs-mode nil)
-
-    ;; turn off things
-    (menu-bar-mode -1)
-    (scroll-bar-mode -1)
-    (tool-bar-mode -1)
-    (blink-cursor-mode -1)
-
-    ;; initial frame maximized
-    (add-to-list 'initial-frame-alist '(fullscreen . maximized))
-  #+end_src
-** Appearance
-  #+begin_src emacs-lisp
-    ;; kind of my personal favorite but a little too blue sometimes
-    (use-package nord-theme)
-
-    ;; restrained themes designed for readability.
-    (use-package modus-themes
-      :init
-      (modus-themes-load-themes)
-      :custom
-      (modus-themes-intense-hl-line t)
-      :config
-      (modus-themes-load-vivendi)
-      :bind
-      ("C-c T" . modus-themes-toggle))
-
-    (use-package powerline)
-
-    ;;much more colorful theme, but also very busy and weird highlighting. Requires too much customization
-    ;; (use-package moe-theme
-    ;;   :after
-    ;;   (powerline)
-    ;;   :config
-    ;;   (moe-dark)
-    ;;   ;; ;; run this, though I change some colors, to set the right variables
-    ;;   (powerline-moe-theme)
-    ;;   ;; ripped from the definition of powerline-moe-theme and modified to be darker
-    ;;   (set-face-attribute 'mode-line nil :background "#5fafd7" :foreground "#1c1c1c")
-    ;;   ;; trying to get the colors not to be weird when focus is in a different application
-    ;;   ;; (set-face-attribute 'mode-line-inactive nil :background "#ff45ab" :foreground "#ffffff")
-
-    ;;   (set-face-attribute 'powerline-active1 nil :background "#afd7ff" :foreground "#005faf")
-    ;;   (set-face-attribute 'powerline-active2 nil :background "#585858" :foreground "#ffffff")
-
-    ;;   (set-face-attribute 'mode-line-inactive nil :background "#585858" :foreground "#ffffff")
-    ;;   (set-face-attribute 'powerline-inactive1 nil :background "#585858" :foreground "#ffffff")
-    ;;   (set-face-attribute 'powerline-inactive2 nil :background "#585858" :foreground "#ffffff")
-
-    ;;   (set-face-attribute 'mode-line-buffer-id nil :background nil :foreground "#1c1c1c")
-
-    ;;   (set-face-attribute 'minibuffer-prompt nil :background "#afd7ff" :foreground "#005faf")
-
-    ;;   (powerline-default-theme)
-    ;;   (powerline-reset))
-
-    ;; turns off all minor modes in modeline
-    (use-package minions
-      :after
-      (powerline)
-      :custom
-      (minions-mode-line-lighter "")
-      (minions-mode-line-delimiters '("" . ""))
-      :config
-      (defpowerline powerline-major-mode "")
-      (defpowerline powerline-process "")
-      (defpowerline powerline-minor-modes minions-mode-line-modes)
-      (minions-mode 1))
-  #+end_src
-** Frame Configuration
-  #+begin_src emacs-lisp
-    ;; more useful frame title, that show either a file or a
-    ;; buffer name (if the buffer isn't visiting a file)
-    (setq frame-title-format '((:eval (projectile-project-name))))
-
-    ;; line numbers, column number, size indication
-    (global-display-line-numbers-mode)
-    (line-number-mode t)
-    (column-number-mode t)
-    (size-indication-mode t)
-
-    ;; winner-mode to undo and redo window configurations
-    (winner-mode)
-  #+end_src
 * User Interaction
   Packages and configuration related to user interaction.
 ** avy
@@ -327,6 +191,20 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
      (company)
      :config
      (add-to-list 'company-backends 'company-tabline))
+  #+end_src
+** hydra
+  Hydra provides the ability to create a keybinding menu to reduce redundant keypresses. I also use it for creating restricted, on-demand keymaps.
+  #+begin_src emacs-lisp
+    (use-package hydra
+      :bind
+      (("C-c f" . hydra-formatting/body)
+       ("C-x t" . hydra-tab-bar/body)
+       ("C-c e" . hydra-eglot/body)
+       ("C-c o" . hydra-org/body)
+       ("C-c r" . hydra-org-roam/body)
+       ("C-c b" . hydra-org-brain/body)
+       ("C-c p" . hydra-projectile/body)
+       ("C-x w" . hydra-windmove/body)))
   #+end_src
 ** ido
 More minimalist, built-in completion tool.
@@ -413,6 +291,142 @@ More minimalist, built-in completion tool.
 
       ("q" nil "exit" :color blue))
   #+end_src
+* User Interface
+  Packages and configuration related to modifying the user-interface.
+** all-the-icons
+   Font package for more emacs icons which are used in some packages
+  #+begin_src emacs-lisp
+    (use-package all-the-icons)
+  #+end_src
+** default-text-scale
+   Package for modifying the text scale, as well as setting my preferred startup value.
+   #+begin_src emacs-lisp
+     (set-face-attribute 'default nil :height 141)
+
+     (use-package default-text-scale
+       :config
+       (default-text-scale-mode))
+   #+end_src
+** tab-bar-mode
+   #+begin_src emacs-lisp
+     ;; no GUI element unless turned on
+     (setq tab-bar-show nil)
+
+     (global-set-key (kbd "M-[") 'tab-bar-history-back)
+     (global-set-key (kbd "M-]") 'tab-bar-history-forward)
+
+     ;; hydra bindings for tab-bar-mode
+     (defhydra hydra-tab-bar (:color red)
+       "Tab Bar Operations"
+       ("t" tab-new "Create a new tab" :column "Creation")
+       ("d" dired-other-tab "Open Dired in another tab")
+       ("f" find-file-other-tab "Find file in another tab")
+       ("0" tab-close "Close current tab")
+       ("m" tab-move "Move current tab" :column "Management")
+       ("r" tab-rename "Rename Tab")
+       ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
+       ("<right>" tab-next "Next Tab")
+       ("<left>" tab-previous "Previous Tab")
+       ("SPC" tab-bar-mode "Toggle tab-bar-mode" :color blue :column "Misc")
+       ("q" nil "exit" :color blue))
+   #+end_src
+** Startup Configuration
+  #+begin_src emacs-lisp
+    ;; scratch screen
+    (setq inhibit-startup-screen t)
+    (setq initial-scratch-message "")
+
+    ;; turn off the hecking bell
+    (setq ring-bell-function 'ignore)
+
+    ;; shallow tabs
+    (setq-default tab-width 2)
+
+    ;; <tab> inserts spaces by default
+    (setq-default indent-tabs-mode nil)
+
+    ;; turn off things
+    (menu-bar-mode -1)
+    (scroll-bar-mode -1)
+    (tool-bar-mode -1)
+    (blink-cursor-mode -1)
+
+    ;; initial frame maximized
+    (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+  #+end_src
+** Appearance
+  #+begin_src emacs-lisp
+    ;; kind of my personal favorite but a little too blue sometimes
+    (use-package nord-theme)
+
+    ;; restrained themes designed for readability.
+    (use-package modus-themes
+      :init
+      (modus-themes-load-themes)
+      :custom
+      (modus-themes-intense-hl-line t)
+      :config
+      (modus-themes-load-vivendi)
+      :bind
+      ("C-c T" . modus-themes-toggle))
+
+    (use-package powerline)
+
+    ;; much more colorful theme, but also very busy and weird highlighting. Requires too much customization
+    ;; (use-package moe-theme
+    ;;   :after
+    ;;   (powerline)
+    ;;   :config
+    ;;   (moe-dark)
+    ;;   ;; ;; run this, though I change some colors, to set the right variables
+    ;;   (powerline-moe-theme)
+    ;;   ;; ripped from the definition of powerline-moe-theme and modified to be darker
+    ;;   (set-face-attribute 'mode-line nil :background "#5fafd7" :foreground "#1c1c1c")
+    ;;   ;; trying to get the colors not to be weird when focus is in a different application
+    ;;   ;; (set-face-attribute 'mode-line-inactive nil :background "#ff45ab" :foreground "#ffffff")
+
+    ;;   (set-face-attribute 'powerline-active1 nil :background "#afd7ff" :foreground "#005faf")
+    ;;   (set-face-attribute 'powerline-active2 nil :background "#585858" :foreground "#ffffff")
+
+    ;;   (set-face-attribute 'mode-line-inactive nil :background "#585858" :foreground "#ffffff")
+    ;;   (set-face-attribute 'powerline-inactive1 nil :background "#585858" :foreground "#ffffff")
+    ;;   (set-face-attribute 'powerline-inactive2 nil :background "#585858" :foreground "#ffffff")
+
+    ;;   (set-face-attribute 'mode-line-buffer-id nil :background nil :foreground "#1c1c1c")
+
+    ;;   (set-face-attribute 'minibuffer-prompt nil :background "#afd7ff" :foreground "#005faf")
+
+    ;;   (powerline-default-theme)
+    ;;   (powerline-reset))
+
+    ;; turns off all minor modes in modeline
+    (use-package minions
+      :after
+      (powerline)
+      :custom
+      (minions-mode-line-lighter "")
+      (minions-mode-line-delimiters '("" . ""))
+      :config
+      (defpowerline powerline-major-mode "")
+      (defpowerline powerline-process "")
+      (defpowerline powerline-minor-modes minions-mode-line-modes)
+      (minions-mode 1))
+  #+end_src
+** Frame Configuration
+  #+begin_src emacs-lisp
+    ;; more useful frame title, that show either a file or a
+    ;; buffer name (if the buffer isn't visiting a file)
+    (setq frame-title-format '((:eval (projectile-project-name))))
+
+    ;; line numbers, column number, size indication
+    (global-display-line-numbers-mode)
+    (line-number-mode t)
+    (column-number-mode t)
+    (size-indication-mode t)
+
+    ;; winner-mode to undo and redo window configurations
+    (winner-mode)
+  #+end_src
 * Mouse and Keys
   Mouse and keyboard settings which don't belong to any specific package.
   #+begin_src emacs-lisp
@@ -440,20 +454,6 @@ More minimalist, built-in completion tool.
 
     ;; shortcut to view definition of functions
     (global-set-key (kbd "C-h C-f") 'find-function)
-  #+end_src
-* Hydra
-  Hydra provides the ability to create a keybinding menu to reduce redundant keypresses. I also use it for creating restricted, on-demand keymaps.
-  #+begin_src emacs-lisp
-    (use-package hydra
-      :bind
-      (("C-c f" . hydra-formatting/body)
-       ("C-x t" . hydra-tab-bar/body)
-       ("C-c e" . hydra-eglot/body)
-       ("C-c o" . hydra-org/body)
-       ("C-c r" . hydra-org-roam/body)
-       ("C-c b" . hydra-org-brain/body)
-       ("C-c p" . hydra-projectile/body)
-       ("C-x w" . hydra-windmove/body)))
   #+end_src
 * Languages and LSP Support
   Packages and configuration related to language major/minor modes and language servers.
@@ -749,6 +749,8 @@ Currently not doing web development, by my estimation I will need these basic pa
     ;; change tabs from org-mode
     (with-eval-after-load 'org
       (define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
+
+    (add-hook 'org-mode-hook (lambda () (flyspell-mode)))
   #+end_src
 ** hydra-org
    #+begin_src emacs-lisp
@@ -765,7 +767,7 @@ Currently not doing web development, by my estimation I will need these basic pa
    #+end_src
 ** org-capture
    #+begin_src emacs-lisp
-     (global-set-key (kbd "C-c c") 'org-capture)
+     (global-set-key (kbd "C-c C") 'org-capture)
      (setq org-capture-templates '())
      ;; helper function to add a template to org-capture-templates
      (defun mz/add-capture-template (template)
