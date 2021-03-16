@@ -147,6 +147,15 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       (let ((buf (eshell)))
         (switch-to-buffer (other-buffer buf))
         (switch-to-buffer-other-window buf)))
+
+    ;; utility to reverse the result of fill-paragraph
+    (defun mz/unfill-paragraph ()
+      "Turns the multiline paragraph to one line."
+      (interactive)
+      (let ((fill-column (point-max)))
+        (fill-paragraph nil)))
+
+    (global-set-key (kbd "M-Q") 'mz/unfill-paragraph)
   #+end_src
 * User Interaction
   Packages and configuration related to user interaction.
@@ -654,12 +663,6 @@ Currently not doing web development, by my estimation I will need these basic pa
       :config
       (global-hl-line-mode +1))
   #+end_src
-** rainbow-delimiters
-  #+begin_src emacs-lisp
-    (use-package rainbow-delimiters
-      :hook
-      ((prog-mode) . rainbow-delimiters-mode))
-  #+end_src
 ** rainbow-mode
     Displays colors over hex color descriptions
    #+begin_src emacs-lisp
@@ -667,14 +670,32 @@ Currently not doing web development, by my estimation I will need these basic pa
        :hook
        (emacs-lisp-mode . rainbow-mode))
    #+end_src
-** smartparens
-   Dealing with paren (and other delimiter) pairs.
+** Delimiters
+*** electric-pair-mode
+    #+begin_src emacs-lisp
+      (electric-pair-mode)
+      (add-hook 'org-mode-hook
+                (lambda () (setq-local electric-pair-inhibit-predicate
+                                  (lambda (c)
+                                    (if (eq c ?\<)
+                                        t
+                                      (electric-pair-inhibit-predicate c))))))
+    #+end_src
+*** smartparens
+**** TODO figure out if I want to use smart-parens or paredit or something, don't really think I need them though
+    Dealing with paren (and other delimiter) pairs.
+    #+begin_src emacs-lisp
+        (use-package smartparens
+          :config
+          (require 'smartparens-config)
+          ;; (smartparens-global-mode)
+          (show-smartparens-global-mode))
+   #+end_src
+*** rainbow-delimiters
    #+begin_src emacs-lisp
-     (use-package smartparens
-       :config
-       (require 'smartparens-config)
-       (smartparens-global-mode)
-       (show-smartparens-global-mode))
+     (use-package rainbow-delimiters
+       :hook
+       ((prog-mode) . rainbow-delimiters-mode))
    #+end_src
 ** format-all
    #+begin_src emacs-lisp
