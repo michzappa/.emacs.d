@@ -580,6 +580,15 @@ More minimalist, built-in completion tool.
     (use-package cargo
       :hook (rust-mode . cargo-minor-mode))
   #+end_src
+** Ruby
+   #+begin_src emacs-lisp
+     (use-package ruby-mode)
+     (use-package robe
+       :hook
+       (ruby-mode . robe-mode)
+       :config
+       (add-to-list 'company-backends 'company-robe))
+   #+end_src
 ** Web Dev
 Currently not doing web development, by my estimation I will need these basic packages.
    #+begin_src emacs-lisp
