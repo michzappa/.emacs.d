@@ -369,36 +369,36 @@ More minimalist, built-in completion tool.
     (use-package nord-theme)
 
     ;; restrained themes designed for readability.
-    ;; (use-package modus-themes
-    ;;   :init
-    ;;   (modus-themes-load-themes)
-    ;;   :custom
-    ;;   (modus-themes-intense-hl-line t)
-    ;;   :config
-    ;;   (modus-themes-load-vivendi)
-    ;;   :bind
-    ;;   ("C-c T" . modus-themes-toggle))
-
-    (use-package powerline)
-
-    ;; much more colorful theme, but also very busy and weird highlighting. Requires too much customization
-    (use-package moe-theme
-      :after
-      (powerline)
+    (use-package modus-themes
+      :init
+      (modus-themes-load-themes)
+      :custom
+      (modus-themes-intense-hl-line t)
       :config
-      (moe-dark)
-      ;; ripped from the definition of powerline-moe-theme and modified to be darker
-      (set-face-attribute 'mode-line nil :background "#005f87" :foreground "#afd7ff")
-      (set-face-attribute 'mode-line-buffer-id nil :background nil  :foreground nil)
-      (set-face-attribute 'powerline-active1 nil :background "#afd7ff" :foreground "#005faf")
-      (set-face-attribute 'powerline-active2 nil :background "#585858" :foreground "#ffffff")
+      (modus-themes-load-vivendi)
+      :bind
+      ("C-c T" . modus-themes-toggle))
 
-      (set-face-attribute 'mode-line-inactive nil :background "#585858" :foreground "#ffffff")
-      (set-face-attribute 'powerline-inactive1 nil :background "#585858" :foreground "#ffffff")
-      (set-face-attribute 'powerline-inactive2 nil :background "#585858" :foreground "#ffffff")
+    ;; (use-package powerline)
 
-      (powerline-default-theme)
-      (powerline-reset))
+    ;; ;; much more colorful theme, but also very busy and weird highlighting. Requires too much customization
+    ;; (use-package moe-theme
+    ;;   :after
+    ;;   (powerline)
+    ;;   :config
+    ;;   (moe-dark)
+    ;;   ;; ripped from the definition of powerline-moe-theme and modified to be darker
+    ;;   (set-face-attribute 'mode-line nil :background "#005f87" :foreground "#afd7ff")
+    ;;   (set-face-attribute 'mode-line-buffer-id nil :background nil  :foreground nil)
+    ;;   (set-face-attribute 'powerline-active1 nil :background "#afd7ff" :foreground "#005faf")
+    ;;   (set-face-attribute 'powerline-active2 nil :background "#585858" :foreground "#ffffff")
+
+    ;;   (set-face-attribute 'mode-line-inactive nil :background "#585858" :foreground "#ffffff")
+    ;;   (set-face-attribute 'powerline-inactive1 nil :background "#585858" :foreground "#ffffff")
+    ;;   (set-face-attribute 'powerline-inactive2 nil :background "#585858" :foreground "#ffffff")
+
+    ;;   (powerline-default-theme)
+    ;;   (powerline-reset))
 
     ;; turns off all minor modes in modeline
     (use-package minions
@@ -634,8 +634,7 @@ Currently not doing web development, by my estimation I will need these basic pa
     (defhydra hydra-projectile (:color red)
       "PROJECTILE: %(projectile-project-root)"
 
-      ("ff"  projectile-find-file "file" :column "Find File")
-      ("fd"  projectile-find-file-in-directory "file curr dir")
+      ("f"  projectile-find-file "file" :column "Find File")
       ("r"   projectile-recentf "recent file")
       ("d"   projectile-find-dir "dir")
 
