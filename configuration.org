@@ -364,10 +364,8 @@ More minimalist, built-in completion tool.
     (add-to-list 'initial-frame-alist '(fullscreen . maximized))
   #+end_src
 ** Appearance
+*** Themes
   #+begin_src emacs-lisp
-    ;; kind of my personal favorite but a little too blue sometimes
-    (use-package nord-theme)
-
     ;; restrained themes designed for readability.
     (use-package modus-themes
       :init
@@ -375,12 +373,17 @@ More minimalist, built-in completion tool.
       :custom
       (modus-themes-intense-hl-line t)
       :config
-      (modus-themes-load-vivendi)
+      ;; (modus-themes-load-vivendi)
       :bind
       ("C-c T" . modus-themes-toggle))
 
-    ;; (use-package powerline)
+    ;; (use-package vscode-dark-plus-theme
+      ;; :custom
+      ;; (vscode-dark-plus-box-org-todo nil)
+      ;; :config
+      ;; (load-theme 'vscode-dark-plus t))
 
+    ;; (use-package powerline)
     ;; ;; much more colorful theme, but also very busy and weird highlighting. Requires too much customization
     ;; (use-package moe-theme
     ;;   :after
@@ -399,19 +402,21 @@ More minimalist, built-in completion tool.
 
     ;;   (powerline-default-theme)
     ;;   (powerline-reset))
-
-    ;; turns off all minor modes in modeline
-    (use-package minions
-      :after
-      (powerline)
-      :custom
-      (minions-mode-line-lighter "")
-      (minions-mode-line-delimiters '("" . ""))
-      :config
-      (defpowerline powerline-major-mode "")
-      (defpowerline powerline-process "")
-      (defpowerline powerline-minor-modes minions-mode-line-modes)
-      (minions-mode 1))
+  #+end_src
+*** minions
+    #+begin_src emacs-lisp
+      ;; turns off all minor modes in modeline
+      (use-package minions
+        :after
+        (powerline)
+        :custom
+        (minions-mode-line-lighter "")
+        (minions-mode-line-delimiters '("" . ""))
+        :config
+        (defpowerline powerline-major-mode "")
+        (defpowerline powerline-process "")
+        (defpowerline powerline-minor-modes minions-mode-line-modes)
+        (minions-mode 1))
   #+end_src
 ** Frame Configuration
   #+begin_src emacs-lisp
@@ -465,6 +470,8 @@ More minimalist, built-in completion tool.
      (defhydra hydra-eglot (:color red)
        ("r" eglot-rename "rename")
        ("e" eglot "connect")
+       ("d" eglot-find-declaration "declaration")
+       ("i" eglot-find-implementation "implementation")
        ("X" eglot-shutdown "shutdown")
        ("R" eglot-reconnect "reconnect")
        ("f" eglot-format "format")
@@ -557,7 +564,7 @@ More minimalist, built-in completion tool.
 ** Python
   #+begin_src emacs-lisp
     ;; currenty switching between pyright and the palantir pyls.
-    ;; (add-to-list 'eglot-server-programs '(python-mode "pyright-langserver" "--stdio"))
+    (add-to-list 'eglot-server-programs '(python-mode "pyright-langserver" "--stdio"))
 
     (use-package python
       :hook
