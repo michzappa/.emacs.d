@@ -1,4 +1,4 @@
-#+TITLE: Emacs Configuratiopn
+#+TITLE: Emacs Configuration
 #+DESCRIPTION: My literate emacs configuration using org-mode.
 #+AUTHOR: Michael Zappa
 
@@ -373,7 +373,7 @@ More minimalist, built-in completion tool.
       :custom
       (modus-themes-intense-hl-line t)
       :config
-      ;; (modus-themes-load-vivendi)
+      (modus-themes-load-vivendi)
       :bind
       ("C-c T" . modus-themes-toggle))
 
