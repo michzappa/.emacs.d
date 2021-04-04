@@ -25,7 +25,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - OCaml Language Server:  https://github.com/ocaml/ocaml-lsp (opam)
 - LaTeX Language Server: https://github.com/astoff/digestif (luarocks)
 - Java Language Server: https://github.com/eclipse/eclipse.jdt.ls
-- Pyright Language Server:  https://github.com/palantir/python-language-server (npm)
+- Pyright Language Server:  https://github.com/microsoft/pyright (npm)
 - Palantir Language Server: https://github.com/palantir/python-language-server (pip)
 - rust-analyzer:  https://rust-analyzer.github.io/manual.html#installation
 * Packages Setup
@@ -40,7 +40,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     (add-to-list 'package-archives '("melpa" . "https://stable.melpa.org/packages/") t)
     (add-to-list 'package-archives '("melpa-unstable" . "https://melpa.org/packages/") t)
     (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-
 
     (setq package-archive-priorities
           '(("melpa" . 50)
@@ -218,27 +217,27 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 ** ido
 More minimalist, built-in completion tool.
    #+begin_src emacs-lisp
-     ;; (use-package ido
-     ;;   :bind
-     ;;   ("M-x" . smex)
-     ;;   :custom
-     ;;   (ido-enable-flex-matching t)
-     ;;   (ido-everywhere t)
-     ;;   (ido-use-filename-at-point 'guess)
-     ;;   (ido-create-new-buffer 'always)
-     ;;   :config
-     ;;   (smex-initialize)
-     ;;   (ido-mode 1))
+     (use-package ido
+       :bind
+       ("M-x" . smex)
+       :custom
+       (ido-enable-flex-matching t)
+       (ido-everywhere t)
+       (ido-use-filename-at-point 'guess)
+       (ido-create-new-buffer 'always)
+       :config
+       (smex-initialize)
+       (ido-mode 0))
 
-     ;; ;; display the results of ido vertically, more intuitive and readable for me
-     ;; (use-package ido-vertical-mode
-     ;;   :config
-     ;;   (ido-vertical-mode 1)
-     ;;   (setq ido-vertical-define-keys 'C-n-and-C-p-only))
+     ;; display the results of ido vertically, more intuitive and readable for me
+     (use-package ido-vertical-mode
+       :config
+       (ido-vertical-mode 1)
+       (setq ido-vertical-define-keys 'C-n-and-C-p-only))
 
-     ;; (use-package ido-completing-read+
-     ;;   :config
-     ;;   (ido-ubiquitous-mode 1))
+     (use-package ido-completing-read+
+       :config
+       (ido-ubiquitous-mode 1))
    #+end_src
 ** exec-path-from-shell
    Package to feed emacs by shell path on startup.
@@ -376,46 +375,15 @@ More minimalist, built-in completion tool.
       (modus-themes-load-vivendi)
       :bind
       ("C-c T" . modus-themes-toggle))
-
-    ;; (use-package vscode-dark-plus-theme
-      ;; :custom
-      ;; (vscode-dark-plus-box-org-todo nil)
-      ;; :config
-      ;; (load-theme 'vscode-dark-plus t))
-
-    ;; (use-package powerline)
-    ;; ;; much more colorful theme, but also very busy and weird highlighting. Requires too much customization
-    ;; (use-package moe-theme
-    ;;   :after
-    ;;   (powerline)
-    ;;   :config
-    ;;   (moe-dark)
-    ;;   ;; ripped from the definition of powerline-moe-theme and modified to be darker
-    ;;   (set-face-attribute 'mode-line nil :background "#005f87" :foreground "#afd7ff")
-    ;;   (set-face-attribute 'mode-line-buffer-id nil :background nil  :foreground nil)
-    ;;   (set-face-attribute 'powerline-active1 nil :background "#afd7ff" :foreground "#005faf")
-    ;;   (set-face-attribute 'powerline-active2 nil :background "#585858" :foreground "#ffffff")
-
-    ;;   (set-face-attribute 'mode-line-inactive nil :background "#585858" :foreground "#ffffff")
-    ;;   (set-face-attribute 'powerline-inactive1 nil :background "#585858" :foreground "#ffffff")
-    ;;   (set-face-attribute 'powerline-inactive2 nil :background "#585858" :foreground "#ffffff")
-
-    ;;   (powerline-default-theme)
-    ;;   (powerline-reset))
   #+end_src
 *** minions
     #+begin_src emacs-lisp
       ;; turns off all minor modes in modeline
       (use-package minions
-        :after
-        (powerline)
         :custom
         (minions-mode-line-lighter "")
         (minions-mode-line-delimiters '("" . ""))
         :config
-        (defpowerline powerline-major-mode "")
-        (defpowerline powerline-process "")
-        (defpowerline powerline-minor-modes minions-mode-line-modes)
         (minions-mode 1))
   #+end_src
 ** Frame Configuration
@@ -563,7 +531,6 @@ More minimalist, built-in completion tool.
    #+end_src
 ** Python
   #+begin_src emacs-lisp
-    ;; currenty switching between pyright and the palantir pyls.
     (add-to-list 'eglot-server-programs '(python-mode "pyright-langserver" "--stdio"))
 
     (use-package python
@@ -809,32 +776,6 @@ Currently not doing web development, by my estimation I will need these basic pa
      (defun mz/todo-on-day-template ()
        "* TODO %? %^t")
    #+end_src
-** org-drill
-SRS system in org-mode.
-   #+begin_src emacs-lisp
-     (use-package org-drill)
-   #+end_src
-** org-present
-Make presentations from org-mode.
-   #+begin_src emacs-lisp
-     (use-package org-present
-       :config
-       ;; from the github page. "C-c C-q" to quit.
-       (eval-after-load "org-present"
-       '(progn
-          (add-hook 'org-present-mode-hook
-                    (lambda ()
-                      (org-present-big)
-                      (org-display-inline-images)
-                      (org-present-hide-cursor)
-                      (org-present-read-only)))
-          (add-hook 'org-present-mode-quit-hook
-                    (lambda ()
-                      (org-present-small)
-                      (org-remove-inline-images)
-                      (org-present-show-cursor)
-                      (org-present-read-write))))))
-   #+end_src
 ** org-projectile
    #+begin_src emacs-lisp
      ;; put a todo file in the directory of each projectile project and link them to org-agenda
@@ -845,95 +786,6 @@ Make presentations from org-mode.
        :config
        (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
        (org-projectile-per-project))
-   #+end_src
-** org-roam
-   #+begin_src emacs-lisp
-     (defhydra hydra-org-roam (:color blue)
-       "org-roam operations"
-       ("r" org-roam "org-roam" :column " ")
-       ("g" org-roam-graph "graph")
-       ("d" org-roam-db-build-cache "build cache")
-       ("q" nil "exit")
-       ("f" org-roam-find-file "find file" :column "Navigation")
-       ("d" org-roam-find-directory "find directory")
-       ("b" org-roam-switch-to-buffer "switch buffer")
-       ("i" org-roam-insert "insert" :column "Insert"))
-
-     (use-package org-roam
-       :hook
-       (after-init . org-roam-mode)
-       (before-save . zp/org-set-last-modified)
-       :custom
-       (org-roam-directory "~/org/roam")
-       :config
-       (setq org-roam-capture-templates
-             '(("d" "default" plain
-                (function org-roam-capture--get-point)
-                "%?"
-                :file-name "%<%Y%m%d%H%M%S>-${slug}"
-                :head "#+TITLE: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
-                :unnarrowed t))
-             org-roam-capture-ref-templates
-             '(("r" "ref" plain
-                (function org-roam-capture--get-point)
-                ""
-                :file-name "caps/${slug}"
-                :head "#+TITLE: ${title}\n#+ROAM_KEY: ${ref}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
-                :unnarrowed t))))
-
-
-     ;;--------------------------
-     ;; Handling file properties for ‘CREATED’ & ‘LAST_MODIFIED’
-     ;; from zaeph (Leo Vivier)'s config
-     ;;--------------------------
-
-
-     (defun zp/org-find-time-file-property (property &optional anywhere)
-       "Return the position of the time file PROPERTY if it exists.
-     When ANYWHERE is non-nil, search beyond the preamble."
-       (save-excursion
-         (goto-char (point-min))
-         (let ((first-heading
-                (save-excursion
-                  (re-search-forward org-outline-regexp-bol nil t))))
-           (when (re-search-forward (format "^#\\+%s:" property)
-                                    (if anywhere nil first-heading)
-                                    t)
-             (point)))))
-
-     (defun zp/org-has-time-file-property-p (property &optional anywhere)
-       "Return the position of time file PROPERTY if it is defined.
-     As a special case, return -1 if the time file PROPERTY exists but
-     is not defined."
-       (when-let ((pos (zp/org-find-time-file-property property anywhere)))
-         (save-excursion
-           (goto-char pos)
-           (if (and (looking-at-p " ")
-                    (progn (forward-char)
-                           (org-at-timestamp-p 'lax)))
-               pos
-             -1))))
-
-     (defun zp/org-set-time-file-property (property &optional anywhere pos)
-       "Set the time file PROPERTY in the preamble.
-     When ANYWHERE is non-nil, search beyond the preamble.
-     If the position of the file PROPERTY has already been computed,
-     it can be passed in POS."
-       (when-let ((pos (or pos
-                           (zp/org-find-time-file-property property))))
-         (save-excursion
-           (goto-char pos)
-           (if (looking-at-p " ")
-               (forward-char)
-             (insert " "))
-           (delete-region (point) (line-end-position))
-           (let* ((now (format-time-string "[%Y-%m-%d %a %H:%M]")))
-             (insert now)))))
-
-     (defun zp/org-set-last-modified ()
-       "Update the LAST_MODIFIED file property in the preamble."
-       (when (derived-mode-p 'org-mode)
-         (zp/org-set-time-file-property "LAST_MODIFIED")))
    #+end_src
 * TRAMP
   Config for Emac's built-in remote file-editing client.
@@ -1156,51 +1008,4 @@ A different wrapper for package.el that can also take packages from source.
       (exwm-init))
 
     (if exwm-enabled (mz/enable-exwm) ())
-  #+end_src
-* Chinese
-  Cool stuff with org-capture and org-drill to learn Chinese vocabulary. From Josh Moller-Mara.
-  #+begin_src emacs-lisp
-    ;; load the directory where the additional elisp resides
-    (add-to-list 'load-path "~/.emacs.d/elisp")
-
-    ;; from Josh Moller-Mara's config
-    (require 'josh-chinese)
-
-    ;; added to over come some function undefined errors which cropped up out of nowhere.
-    (require 'cl-lib)
-    (require 'subr-x)
-
-    ;; adding the custom cangjie input method
-    (register-input-method
-     "Cangjie5" "Chinese-BIG5" 'quail-use-package
-     "C5" "Cangjie version 5"
-     "cangjie5.el")
-
-    (mz/add-capture-template '("c" "Chinese" entry
-                               (file+headline "chinese.org" "Words")
-                               "* <%(josh/chinese-prompt)> :drill: \n
-            Added: %U\n
-            ,** Definition:\n
-            %(josh/chinese-get-definition (josh/chinese-dict-find josh/chinese-word))\n
-            ,** Pronunciation\n
-            %(josh/chinese-get-pronunciation josh/chinese-word-dict)\n
-            ,** Characters\n
-            %(josh/chinese-get-word josh/chinese-word-dict)\n
-            ,** Cangjie\n
-            %(josh/chinese-cangjie-codes josh/chinese-words)\n"))
-  #+end_src
-* French
-Org-capture/org-drill for French.
-  #+begin_src emacs-lisp
-    (add-to-list 'load-path "~/.emacs.d/french")
-    (require 'mz-french)
-
-    (mz/add-capture-template '("f" "French" entry
-                               (file+headline "french.org" "Words")
-                               "* <%(mz/french-prompt)> :drill: \n
-    Added: %U\n
-    ,** Definition:\n
-    %(mz/french-definition (mz/french-dict-find mz/french-word))\n
-    ,** Part Of Speech\n
-    %(mz/french-part-of-speech mz/french-word-dict)\n"))
   #+end_src
