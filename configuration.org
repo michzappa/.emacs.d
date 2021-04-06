@@ -407,6 +407,9 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 
     ;; shortcut to view definition of functions
     (global-set-key (kbd "C-h C-f") 'find-function)
+
+    ;; imenu shortcut
+    (global-set-key (kbd "M-i") 'imenu)
   #+end_src
 * Languages and LSP Support
   Packages and configuration related to language major/minor modes and language servers.
@@ -634,13 +637,11 @@ Currently not doing web development, by my estimation I will need these basic pa
                                       (electric-pair-inhibit-predicate c))))))
     #+end_src
 *** smartparens
-**** TODO figure out if I want to use smart-parens or paredit or something, don't really think I need them though
     Dealing with paren (and other delimiter) pairs.
     #+begin_src emacs-lisp
         (use-package smartparens
           :config
           (require 'smartparens-config)
-          ;; (smartparens-global-mode)
           (show-smartparens-global-mode))
    #+end_src
 *** rainbow-delimiters
@@ -725,6 +726,36 @@ Currently not doing web development, by my estimation I will need these basic pa
       (define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
 
     (add-hook 'org-mode-hook (lambda () (flyspell-mode)))
+
+    ;; select the current cell of an org mode table
+    (defun mz/org-table-select-cell ()
+      "select the current table cell"
+      ;; do not try to jump to the beginning of field if the point is already there
+      (when (not (looking-back "|[[:blank:]]?"))
+        (org-table-beginning-of-field 1))
+      (set-mark-command nil)
+      (org-table-end-of-field 1))
+
+    ;; copy the current cell of an org mode table
+    (defun mz/org-table-copy-cell ()
+      "Copy the current table field."
+      (interactive)
+      (mz/org-table-select-cell)
+      ;; non-nil third argument copies the current region
+      (kill-ring-save 0 0 t)
+      (org-table-align))
+
+    ;; kill the current cell of an org mode table
+    (defun mz/org-table-kill-cell ()
+      "Kill the current table field."
+      (interactive)
+      (mz/org-table-select-cell)
+      ;; non-nil third argument copies the current region
+      (kill-region 0 0 t)
+      (org-table-align))
+
+    (define-key org-mode-map (kbd "S-SPC") 'mz/org-table-copy-cell)
+    (define-key org-mode-map (kbd "M-S-SPC") 'mz/org-table-kill-cell)
   #+end_src
 ** hydra-org
    #+begin_src emacs-lisp
@@ -766,6 +797,7 @@ Currently not doing web development, by my estimation I will need these basic pa
        (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
        (org-projectile-per-project))
    #+end_src
+
 * TRAMP
   Config for Emac's built-in remote file-editing client.
   #+begin_src emacs-lisp
