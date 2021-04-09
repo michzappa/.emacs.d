@@ -728,8 +728,6 @@ Currently not doing web development, by my estimation I will need these basic pa
     (with-eval-after-load 'org
       (define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
 
-    (add-hook 'org-mode-hook (lambda () (flyspell-mode)))
-
     ;; select the current cell of an org mode table
     (defun mz/org-table-select-cell ()
       "select the current table cell"

@@ -7,3 +7,5 @@
 *** https://xkcd.com/rss.xml
 ** Le Monde :lemonde:
 *** https://www.lemonde.fr/rss/une.xml
+** BBC World
+*** http://feeds.bbci.co.uk/news/world/rss.xml
