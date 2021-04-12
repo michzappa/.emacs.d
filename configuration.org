@@ -617,9 +617,7 @@ Currently not doing web development, by my estimation I will need these basic pa
 ** hl-line
   #+begin_src emacs-lisp
     ;; highlight the current line
-    (use-package hl-line
-      :config
-      (global-hl-line-mode +1))
+    (global-hl-line-mode +1)
   #+end_src
 ** rainbow-mode
     Displays colors over hex color descriptions
