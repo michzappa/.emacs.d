@@ -377,14 +377,11 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * Mouse and Keys
   Mouse and keyboard settings which don't belong to any specific package.
   #+begin_src emacs-lisp
-    ;; scrolling. this package adds better pixel-based scrolling, but isn't perfect so i don't have it
-    ;; on by default
-    (use-package good-scroll
-      :custom
-      (scroll-margin 0)
-      (mouse-wheel-progressive-speed nil)
-      (scroll-conservatively 100000)
-      (scroll-preserve-screen-position 1))
+    (setq-default  scroll-margin 0
+                   scroll-step 1
+                   mouse-wheel-progressive-speed nil
+                   scroll-conservatively 100000
+                   scroll-preserve-screen-position 1)
 
     ;; change font size binding
     (global-set-key (kbd "C-+") 'text-scale-increase)
