@@ -17,7 +17,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - slock (exwm)
 - compton or equivalent compositor (exwm)
 - lua5.3, liblua5.3, liblua5.3-dev, luarocks (latex lsp for eglot)
-- graphviz, sqlite3, sqlitebrowser (optional) (org-roam)
 ** Other Sources
 - Bash Language Server: https://github.com/bash-lsp/bash-language-server (npm)
 - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls
@@ -55,16 +54,16 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     (unless package-archive-contents
       (package-refresh-contents))
 
-    ;; ensure use-package by default
     (require 'use-package-ensure)
-    (setq use-package-always-ensure t)
+    (setq
+     ;; ensure use-package by default
+     use-package-always-ensure t
+     ;; use newest version of packages
+     load-prefer-newer t)
 
     ;; compile packages
     (use-package auto-compile
       :config (auto-compile-on-load-mode))
-
-    ;; use newest version of packages
-    (setq load-prefer-newer t)
   #+end_src
 * Personal
   Giving emacs my information.
@@ -83,21 +82,35 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     ;; add elisp directory to load path for additional elisp
     (add-to-list 'load-path "~/.emacs.d/elisp")
 
-    ;; scroll compilation output in the window
-    (setq compilation-scroll-output t)
+    (setq
+     ;; scroll compilation output in the window
+     compilation-scroll-output t
+     ;; reduce the frequency of garbage collection by making it happen on
+     ;; each 50MB of allocated data (the default is on every 0.76MB)
+     gc-cons-threshold 50000000
+     ;; warn when opening files bigger than 100MB
+     large-file-warning-threshold 100000000
+     ;; quit Emacs directly even if there are running processes
+     confirm-kill-processes nil
+     ;; quit Emacs directly even if there are running processes
+     confirm-kill-processes nil
+     ;; don't overwrite outside program item on clipboard when switching to emacs
+     save-interprogram-paste-before-kill t
+     ;; don't overwrite outside program item on clipboard when switching to emacs
+     save-interprogram-paste-before-kill t
+     ;; add newline at end of files by default, required by some modes
+     mode-require-final-newline 'visit-save
+     ;; limit number of items recentf stores
+     recentf-max-menu-items 25
+     recentf-max-saved-items 25
+     ;; store all backup and autosave files in the tmp dir
+     backup-directory-alist
+     `((".*" . ,temporary-file-directory))
+     auto-save-file-name-transforms
+     `((".*" ,temporary-file-directory t)))
 
     ;; pretty symbols like lambda, and, and or in certain modes
     (global-prettify-symbols-mode t)
-
-    ;; reduce the frequency of garbage collection by making it happen on
-    ;; each 50MB of allocated data (the default is on every 0.76MB)
-    (setq gc-cons-threshold 50000000)
-
-    ;; warn when opening files bigger than 100MB
-    (setq large-file-warning-threshold 100000000)
-
-    ;; quit Emacs directly even if there are running processes
-    (setq confirm-kill-processes nil)
 
     ;; enable y/n answers
     (fset 'yes-or-no-p 'y-or-n-p)
@@ -105,22 +118,8 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     ;; reload files from disk
     (global-auto-revert-mode)
 
-    ;; don't overwrite outside program item on clipboard when switching to emacs
-    (setq save-interprogram-paste-before-kill t)
-
-    ;; add newline at end of files by default, required by some modes
-    (setq mode-require-final-newline 'visit-save)
-
     ;; recent file store
     (recentf-mode 1)
-    (setq recentf-max-menu-items 25)
-    (setq recentf-max-saved-items 25)
-
-    ;; store all backup and autosave files in the tmp dir
-    (setq backup-directory-alist
-          `((".*" . ,temporary-file-directory)))
-    (setq auto-save-file-name-transforms
-          `((".*" ,temporary-file-directory t)))
 
     ;; Add color formatting to *compilation* buffer
     (add-hook 'compilation-filter-hook
@@ -162,15 +161,15 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * User Interaction
   Packages and configuration related to user interaction.
 ** avy
-   Enables navigation around the screen by jumpting to characters.
   #+begin_src emacs-lisp
+    ;; jump around the screen by specifying 2 characters
     (use-package avy
       :config
       (global-set-key (kbd "C-;") 'avy-goto-char-2))
   #+end_src
 ** counsel
-   Completion interface for files, M-x, etc.
   #+begin_src emacs-lisp
+    ;; as-you-type completion interface
     (use-package counsel
       ;; for some reason turning on the modes doesn't properly set these keybindings
       :bind
@@ -203,34 +202,33 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
      (add-to-list 'company-backends 'company-tabline))
   #+end_src
 ** hydra
-  Hydra provides the ability to create a keybinding menu to reduce redundant keypresses. I also use it for creating restricted, on-demand keymaps.
   #+begin_src emacs-lisp
+    ;; hydra provides the ability to create a keybinding menu to reduce redundant keypresses.
+    ;; I also use it for creating restricted, on-demand keymaps.
     (use-package hydra
       :bind
       (("C-c f" . hydra-formatting/body)
        ("C-x t" . hydra-tab-bar/body)
        ("C-c e" . hydra-eglot/body)
        ("C-c o" . hydra-org/body)
-       ("C-c r" . hydra-org-roam/body)
-       ("C-c b" . hydra-org-brain/body)
        ("C-c p" . hydra-projectile/body)
        ("C-x w" . hydra-windmove/body)))
   #+end_src
 ** exec-path-from-shell
-   Package to feed emacs by shell path on startup.
   #+begin_src emacs-lisp
+    ;; gives emacs info about your shell PATH
     (use-package exec-path-from-shell
       :config
       (exec-path-from-shell-initialize))
   #+end_src
 ** smex
-   An M-x enhancer which ties in with counsel.
   #+begin_src emacs-lisp
+    ;; M-x enhancer which ties in with counsel
     (use-package smex)
   #+end_src
 ** scratch
-   Opens up a new scratch buffer in the mode of the current buffer.
    #+begin_src emacs-lisp
+     ;; opens a new scratch buffer with the same mode as the current one
      (use-package scratch
        :bind ("C-c s" . scratch))
    #+end_src
@@ -242,15 +240,15 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
        (global-undo-tree-mode))
    #+end_src
 ** which-key
-   Shows possible key combinations for multi-chord bindings.
   #+begin_src emacs-lisp
+    ;; shows possible key combinations for multi-chord bindings.
     (use-package which-key
       :config
       (which-key-mode))
   #+end_src
 ** windmove
-   Navigate between windows using keyboard.
   #+begin_src emacs-lisp
+    ;; navigate between windows using keyboard
     (use-package windmove
       ;; default keybindings are S-s-<direction>, but super doesn't get past GNOME shell
       :bind
@@ -279,15 +277,16 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * User Interface
   Packages and configuration related to modifying the user-interface.
 ** all-the-icons
-   Font package for more emacs icons which are used in some packages
   #+begin_src emacs-lisp
+    ;; more icons
     (use-package all-the-icons)
   #+end_src
 ** default-text-scale
-   Package for modifying the text scale, as well as setting my preferred startup value.
    #+begin_src emacs-lisp
+     ;; set my preferred zoom which keeps vterm opening vertically
      (set-face-attribute 'default nil :height 141)
 
+     ;; change default text scale, not just per-buffer
      (use-package default-text-scale
        :config
        (default-text-scale-mode))
@@ -296,11 +295,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
    #+begin_src emacs-lisp
      ;; no GUI element unless turned on
      (setq tab-bar-show nil)
-
-     ;; these affect some terminal escape sequences, inserting
-     ;; unwanted characters when focus changes.
-     ;; (global-set-key (kbd "M-[") 'tab-bar-history-back)
-     ;; (global-set-key (kbd "M-]") 'tab-bar-history-forward)
 
      ;; hydra bindings for tab-bar-mode
      (defhydra hydra-tab-bar (:color red)
@@ -319,18 +313,18 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
    #+end_src
 ** Startup Configuration
   #+begin_src emacs-lisp
-    ;; scratch screen
-    (setq inhibit-startup-screen t)
-    (setq initial-scratch-message "")
+    (setq
+     ;; scratch screen
+     inhibit-startup-screen t
+     initial-scratch-message ""
+     ;; turn off the hecking bell
+     ring-bell-function 'ignore)
 
-    ;; turn off the hecking bell
-    (setq ring-bell-function 'ignore)
-
-    ;; shallow tabs
-    (setq-default tab-width 2)
-
-    ;; <tab> inserts spaces by default
-    (setq-default indent-tabs-mode nil)
+    (setq-default
+     ;; shallow tabs
+     tab-width 2
+     ;; <tab> inserts spaces by default
+     indent-tabs-mode nil)
 
     ;; turn off things
     (menu-bar-mode -1)
@@ -558,7 +552,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
        (add-to-list 'company-backends 'company-robe))
    #+end_src
 ** Web Dev
-Currently not doing web development, by my estimation I will need these basic packages.
    #+begin_src emacs-lisp
      ;; (use-package web-mode)
      ;; (use-package typescript-mode)
@@ -567,8 +560,8 @@ Currently not doing web development, by my estimation I will need these basic pa
 * Project Management
   Packages and configuration related to managing projects.
 ** magit
-   Excellent interface for Git.
   #+begin_src emacs-lisp
+    ;; keyboard-driven git interface
     (use-package magit
       :custom
       (magit-completing-read-function 'ivy-completing-read)
@@ -576,7 +569,6 @@ Currently not doing web development, by my estimation I will need these basic pa
       ("C-x g" . magit))
   #+end_src
 ** projectile
-   Manages projects, configure common keybindings into a hydra.
   #+begin_src emacs-lisp
     ;; project manager
     (use-package projectile
@@ -620,8 +612,8 @@ Currently not doing web development, by my estimation I will need these basic pa
     (global-hl-line-mode +1)
   #+end_src
 ** rainbow-mode
-    Displays colors over hex color descriptions
    #+begin_src emacs-lisp
+     ;; "colors" hex codes or color words
      (use-package rainbow-mode
        :hook
        (emacs-lisp-mode . rainbow-mode))
@@ -629,7 +621,9 @@ Currently not doing web development, by my estimation I will need these basic pa
 ** Delimiters
 *** electric-pair-mode
     #+begin_src emacs-lisp
+      ;; insert pairs of delimiters
       (electric-pair-mode)
+      ;; prevent <> when trying to make a src block in org mode
       (add-hook 'org-mode-hook
                 (lambda () (setq-local electric-pair-inhibit-predicate
                                   (lambda (c)
@@ -638,21 +632,23 @@ Currently not doing web development, by my estimation I will need these basic pa
                                       (electric-pair-inhibit-predicate c))))))
     #+end_src
 *** smartparens
-    Dealing with paren (and other delimiter) pairs.
     #+begin_src emacs-lisp
-        (use-package smartparens
-          :config
-          (require 'smartparens-config)
-          (show-smartparens-global-mode))
+      ;; enhanced paren management, currently just using to highlight the match of the paren under the point
+      (use-package smartparens
+        :config
+        (require 'smartparens-config)
+        (show-smartparens-global-mode))
    #+end_src
 *** rainbow-delimiters
    #+begin_src emacs-lisp
+     ;; colors matching delimiters
      (use-package rainbow-delimiters
        :hook
        ((prog-mode) . rainbow-delimiters-mode))
    #+end_src
 ** format-all
    #+begin_src emacs-lisp
+     ;; assumes default format tool based off major mode
      (use-package format-all)
    #+end_src
 ** markdown-mode
@@ -664,11 +660,11 @@ Currently not doing web development, by my estimation I will need these basic pa
      ;; wraps visual lines
      (global-visual-line-mode)
 
-     ;; newline at end of file
-     (setq require-final-newline t)
-
-     ;; wrap lines at 80 characters
-     (setq-default fill-column 100)
+     (setq-default
+      ;; newline at end of file
+      require-final-newline t
+      ;; wrap lines at 80 characters
+      fill-column 100)
 
      ;; delete trailing whitespace when saving.
      (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -699,7 +695,6 @@ Currently not doing web development, by my estimation I will need these basic pa
        ("u" mz/untabify-buffer "untabify"))
    #+end_src
 * Org Mode
-  Configuration for the majestic org-mode.
 ** General
   #+begin_src emacs-lisp
     (setq org-directory "~/org")
@@ -708,15 +703,16 @@ Currently not doing web development, by my estimation I will need these basic pa
     (use-package org-bullets
       :hook (org-mode . org-bullets-mode))
 
-    ;; org src blocks act more like the major mode
-    (setq org-src-fontify-natively t
-          org-src-tab-acts-natively t
+    (setq
+     ;; org src blocks act more like the major mode
+     org-src-fontify-natively t
+     org-src-tab-acts-natively t
 
-          ;; editing source block in same window
-          org-src-window-setup 'current-window
+     ;; editing source block in same window
+     org-src-window-setup 'current-window
 
-          org-support-shift-select t
-          org-replace-disputed-keys t)
+     org-support-shift-select t
+     org-replace-disputed-keys t)
 
     ;; for the "old-school" <s-<tab> to make src blocks
     (require 'org-tempo)
@@ -758,6 +754,7 @@ Currently not doing web development, by my estimation I will need these basic pa
   #+end_src
 ** hydra-org
    #+begin_src emacs-lisp
+     ;; general keybindings for org mode
      (defhydra hydra-org (:color red)
        "orgmode"
        ("c" org-capture "capture")
@@ -826,7 +823,6 @@ Currently not doing web development, by my estimation I will need these basic pa
     (add-to-list 'tramp-remote-path "~/.local/bin")
   #+end_src
 * VTerm
-  Preferred emacs terminal emulator.
   #+begin_src emacs-lisp
     (setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=no")
 
@@ -835,6 +831,7 @@ Currently not doing web development, by my estimation I will need these basic pa
       (interactive)
       (vterm-other-window (concat "vterm: "default-directory)))
 
+    ;; preferred emacs terminal emulator
     (use-package vterm
       :bind
       ("M-RET" . 'mz/vterm-other-window)
@@ -846,8 +843,8 @@ Currently not doing web development, by my estimation I will need these basic pa
         (setq vterm-shell (executable-find "fish"))))
   #+end_src
 * Elfeed RSS Reader
-  RSS reader using an org-mode file for configuration.
   #+begin_src emacs-lisp
+    ;; RSS reader using an org-mode file for configuration
     (use-package elfeed
       :bind ("C-c w" . elfeed)
       :init
@@ -856,8 +853,8 @@ Currently not doing web development, by my estimation I will need these basic pa
       (elfeed-org))
   #+end_src
 * Nov EPub Reader
-  EPub reader mode.
   #+begin_src emacs-lisp
+    ;; EPub reader mode
     (use-package nov
       :config
       (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
@@ -867,6 +864,7 @@ Currently not doing web development, by my estimation I will need these basic pa
 * LaTeX
   Packages and configuration related to editing tex files and compiling them using LaTeX.
   #+begin_src emacs-lisp
+    ;; enhancement for editing TeX files
     (use-package auctex
       :defer t
       :hook ((LaTeX-mode . eglot-ensure)
@@ -904,8 +902,8 @@ Currently not doing web development, by my estimation I will need these basic pa
         (setq fill-column 120)))
   #+end_src
 * Quelpa
-A different wrapper for package.el that can also take packages from source.
 #+begin_src emacs-lisp
+  ;; a different wrapper for package.el that can also take packages from source
   (use-package quelpa)
 
   (quelpa
@@ -915,14 +913,14 @@ A different wrapper for package.el that can also take packages from source.
   (require 'quelpa-use-package)
 #+end_src
 * PDF-Tools
-  Prefered PDF viewer.
   #+begin_src emacs-lisp
+    ;; pdf enhancements
     (use-package pdf-tools
       :init
       (pdf-tools-install)
       :hook (pdf-view-mode . pdf-view-midnight-minor-mode))
 
-    ;; bit of a bodge to smoothly scroll through pdfs using multiple buffers
+    ;; "smoothly" scroll through pdfs using multiple buffers
     (use-package pdf-continuous-scroll-mode
       :defer t
       :quelpa (pdf-continuous-scroll-mode
@@ -940,6 +938,7 @@ A different wrapper for package.el that can also take packages from source.
     (setq exwm-enabled (and (eq window-system 'x)
                             (seq-contains command-line-args "--use-exwm")))
 
+    ;; package which allows emacs to be a full X11 window manager
     (use-package exwm
       :if exwm-enabled
       :init
