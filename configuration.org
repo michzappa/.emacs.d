@@ -40,6 +40,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     (add-to-list 'package-archives '("melpa-unstable" . "https://melpa.org/packages/") t)
     (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
+    ;; set repository priority, favoring stable
     (setq package-archive-priorities
           '(("melpa" . 50)
             ("gnu" . 10)
@@ -68,6 +69,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 * Personal
   Giving emacs my information.
   #+begin_src emacs-lisp
+    ;; telling emacs where to put stuff
     (setq user-emacs-directory "~/.emacs.d/user-dir"
           custom-file          "~/.emacs.d/custom.el"
           bookmark-default-file "~/.emacs.d/bookmarks.el"
@@ -157,6 +159,26 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
         (fill-paragraph nil)))
 
     (global-set-key (kbd "M-Q") 'mz/unfill-paragraph)
+
+    ;; helper functions to move the current line
+    (defun mz/move-line-up ()
+      "move the current line up 1"
+      (interactive)
+      (transpose-lines 1)
+      (forward-line -2))
+
+    (defun mz/move-line-down ()
+      "move the current line down 1"
+      (interactive)
+      (forward-line 1)
+      (transpose-lines 1)
+      (forward-line -1))
+
+    (global-set-key (kbd "M-<down>") 'mz/move-line-down)
+    (global-set-key (kbd "M-<up>") 'mz/move-line-up)
+
+
+
   #+end_src
 * User Interaction
   Packages and configuration related to user interaction.
@@ -784,7 +806,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
      ;; put a todo file in the directory of each projectile project and link them to org-agenda
      (use-package org-projectile
        :custom
-       (require 'org-projectile)
        (org-projectile-per-filepath "todo.org")
        :config
        (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
@@ -927,6 +948,14 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       (pdf-view-mode . pdf-continuous-scroll-mode)
       :custom
       (pdf-view-have-image-mode-pixel-vscroll t))
+  #+end_src
+* ERC
+  Emacs IRC client
+  #+begin_src emacs-lisp
+    (setq
+     erc-server "irc.freenode.net"
+     erc-port 6667
+     erc-nick "michzappa")
   #+end_src
 * EXWM
   Configuration for using emacs as an X window manager.
