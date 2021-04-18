@@ -604,7 +604,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
    #+end_src
 * Project Management
   Packages and configuration related to managing projects.
-** magit
+** Git Enhancements
   #+begin_src emacs-lisp
     ;; keyboard-driven git interface
     (use-package magit
@@ -612,6 +612,11 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       (magit-completing-read-function 'ivy-completing-read)
       :bind
       ("C-x g" . magit))
+
+    ;; git gutter
+    (use-package git-gutter
+      :config
+      (global-git-gutter-mode))
   #+end_src
 ** projectile
   #+begin_src emacs-lisp
