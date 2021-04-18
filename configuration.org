@@ -189,23 +189,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       :config
       (global-set-key (kbd "C-;") 'avy-goto-char-2))
   #+end_src
-** counsel
-  #+begin_src emacs-lisp
-    ;; as-you-type completion interface
-    ;; (use-package counsel
-    ;;   ;; for some reason turning on the modes doesn't properly set these keybindings
-    ;;   :bind
-    ;;   (("C-s" . swiper)
-    ;;    ("C-x C-r" . counsel-recentf)
-    ;;    ("M-x" . counsel-M-x)
-    ;;    ("C-x C-f" . counsel-find-file)
-    ;;    ("C-x b" . ivy-switch-buffer))
-    ;;   :config
-    ;;   (setcdr (assoc 'counsel-M-x ivy-initial-inputs-alist) "") ;; not only prefixes
-    ;;   (counsel-mode)
-    ;;   (ivy-mode)
-    ;;   (use-package ivy-hydra))
-  #+end_src
 ** company
  #+begin_src emacs-lisp
    ;; company for text-completion
@@ -236,32 +219,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
        ("C-c p" . hydra-projectile/body)
        ("C-x w" . hydra-windmove/body)))
   #+end_src
-** ido
-   Built-in completion tool.
-   #+begin_src emacs-lisp
-     (use-package ido
-       :bind
-       ("M-x" . smex)
-       :custom
-       (ido-enable-flex-matching t)
-       (ido-everywhere t)
-       (ido-use-filename-at-point 'guess)
-       (ido-create-new-buffer 'always)
-       :config
-       (smex-initialize)
-       (ido-mode 1))
-
-     ;; display the results of ido vertically, more intuitive and readable for me
-     (use-package ido-vertical-mode
-       :config
-       (ido-vertical-mode 1)
-       (setq ido-vertical-define-keys 'C-n-and-C-p-only))
-
-     ;; adds ido completion wherever possible without breaking
-     (use-package ido-completing-read+
-       :config
-       (ido-ubiquitous-mode 1))
-   #+end_src
 ** exec-path-from-shell
   #+begin_src emacs-lisp
     ;; gives emacs info about your shell PATH
@@ -269,16 +226,24 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       :config
       (exec-path-from-shell-initialize))
   #+end_src
-** smex
-  #+begin_src emacs-lisp
-    ;; M-x enhancer which ties in with counsel
-    (use-package smex)
-  #+end_src
 ** scratch
    #+begin_src emacs-lisp
      ;; opens a new scratch buffer with the same mode as the current one
      (use-package scratch
        :bind ("C-c s" . scratch))
+   #+end_src
+** selectrum
+   #+begin_src emacs-lisp
+     ;; lightweight, everywhere as-you-type completion
+     (use-package selectrum
+       :config
+       (selectrum-mode +1))
+
+     ;; sorts selectrum's completions by recency
+     (use-package selectrum-prescient
+       :config
+       (selectrum-prescient-mode +1)
+       (prescient-persist-mode +1))
    #+end_src
 ** undo-tree
    Dealing with undo/redo in a tree structure, enables visualization of said tree.
@@ -989,7 +954,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
      erc-port 6667
      erc-nick "michzappa")
 
-    ;; maybe get some setup to do everything but password
+    ;; maybe get some setup to do everything but password automatically
   #+end_src
 * EXWM
   Configuration for using emacs as an X window manager.
