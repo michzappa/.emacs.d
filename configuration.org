@@ -198,13 +198,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
      (company-show-numbers t)
      :config
      (global-company-mode))
-
-   ;; tabnine is an AI completion engine
-   (use-package company-tabnine
-     :after
-     (company)
-     :config
-     (add-to-list 'company-backends 'company-tabline))
   #+end_src
 ** hydra
   #+begin_src emacs-lisp
@@ -239,7 +232,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
        :config
        (selectrum-mode +1))
 
-     ;; sorts selectrum's completions by recency
+     ;; sorts selectrum's completions by recency, and then frequency
      (use-package selectrum-prescient
        :config
        (selectrum-prescient-mode +1)
