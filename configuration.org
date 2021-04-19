@@ -192,6 +192,21 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
      :config
      (global-company-mode))
   #+end_src
+** helm
+   Completion and narrowing interface using popup windows.
+   #+begin_src emacs-lisp
+     (use-package helm
+       :init (helm-mode t)
+       :bind
+       (("M-x"     . helm-M-x)
+        ("C-x C-f" . helm-find-files)
+        ("C-x b"   . helm-mini) ;; combines open buffers and recent files
+        ("C-x r b" . helm-filtered-bookmarks)
+        ("C-x C-r" . helm-recentf)
+        ("M-i"   . helm-imenu)
+        ("C-h a"   . helm-apropos)
+        ("M-y" . helm-show-kill-ring)))
+   #+end_src
 ** hydra
   #+begin_src emacs-lisp
     ;; hydra provides the ability to create a keybinding menu to reduce redundant keypresses.
@@ -216,19 +231,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
      ;; opens a new scratch buffer with the same mode as the current one
      (use-package scratch
        :bind ("C-c s" . scratch))
-   #+end_src
-** selectrum
-   #+begin_src emacs-lisp
-     ;; lightweight, everywhere as-you-type completion
-     (use-package selectrum
-       :config
-       (selectrum-mode +1))
-
-     ;; sorts selectrum's completions by recency, and then frequency
-     (use-package selectrum-prescient
-       :config
-       (selectrum-prescient-mode +1)
-       (prescient-persist-mode +1))
    #+end_src
 ** undo-tree
    Dealing with undo/redo in a tree structure, enables visualization of said tree.
@@ -360,12 +362,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 
     ;; shortcut to open eshell in another window. mimics that to open vterm in another window
     (global-set-key (kbd "C-M-<return>") 'mz/eshell-other-window)
-
-    ;; shortcut to view definition of functions
-    (global-set-key (kbd "C-h C-f") 'find-function)
-
-    ;; imenu shortcut
-    (global-set-key (kbd "M-i") 'imenu)
   #+end_src
 * Languages and LSP Support
   Packages and configuration related to language major/minor modes and language servers.
@@ -537,7 +533,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       (use-package ag)
       (use-package ibuffer-projectile)
       :custom
-      (projectile-completion-system 'ivy)
+      (projectile-completion-system 'helm)
       (projectile-mode-line "Projectile")
       :config
       (projectile-mode +1))
