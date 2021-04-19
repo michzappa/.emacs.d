@@ -7,3 +7,5 @@
 *** https://xkcd.com/rss.xml
 ** Protesilaos :prot:
 *** https://protesilaos.com/master.xml
+** Emacs Redux :emacsredux:
+*** https://emacsredux.com/atom.xml
