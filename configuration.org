@@ -15,17 +15,13 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 - playerctl, brightnessctl (exwm)
 - cmake, libtool-bin (vterm)
 - slock (exwm)
-- compton or equivalent compositor (exwm)
-- lua5.3, liblua5.3, liblua5.3-dev, luarocks (latex lsp for eglot)
+- compton (exwm)
 ** Other Sources
 - Bash Language Server: https://github.com/bash-lsp/bash-language-server (npm)
 - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls
 - Haskell Language Server: https://github.com/haskell/haskell-language-server (ghcup)
 - OCaml Language Server:  https://github.com/ocaml/ocaml-lsp (opam)
-- LaTeX Language Server: https://github.com/astoff/digestif (luarocks)
-- Java Language Server: https://github.com/eclipse/eclipse.jdt.ls
 - Pyright Language Server:  https://github.com/microsoft/pyright (npm)
-- Palantir Language Server: https://github.com/palantir/python-language-server (pip)
 - rust-analyzer:  https://rust-analyzer.github.io/manual.html#installation
 * Packages Setup
   Setting up the package archives and the lisp to automatically load all my packages.
@@ -176,9 +172,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
 
     (global-set-key (kbd "M-<down>") 'mz/move-line-down)
     (global-set-key (kbd "M-<up>") 'mz/move-line-up)
-
-
-
   #+end_src
 * User Interaction
   Packages and configuration related to user interaction.
@@ -479,9 +472,8 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     (use-package dune)
   #+end_src
 ** Java
+   Maven integration with Java files, would not recommend over a proper IDE.
   #+begin_src emacs-lisp
-    (add-hook 'java-mode-hook 'eglot-ensure)
-
     ;; function to build jar from maven project
     (defun mz/mvn-jar ()
       "Packages the maven project into a jar."
@@ -869,13 +861,12 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       (nov-mode . visual-line-mode))
   #+end_src
 * LaTeX
-  Packages and configuration related to editing tex files and compiling them using LaTeX.
+  Configuration related to editing TeX files and compiling them using LaTeX.
   #+begin_src emacs-lisp
-    ;; enhancement for editing TeX files
+    ;; package for editing TeX files
     (use-package auctex
       :defer t
-      :hook ((LaTeX-mode . eglot-ensure)
-             (LaTeX-mode . visual-line-mode)
+      :hook ((LaTeX-mode . visual-line-mode)
              (LaTeX-mode . flyspell-mode)
              (LaTeX-mode . LaTeX-math-mode))
       :custom
@@ -898,21 +889,13 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       ;; to have the buffer refresh after compilation. can't be in :hook since it's not a mode hook
       (add-hook 'TeX-after-compilation-finished-functions
                 #'TeX-revert-document-buffer))
-
-    ;; reference management, not terribly sure how to use.
-    (use-package bibtex
-      :after auctex
-      :hook (bibtex-mode . my/bibtex-fill-column)
-      :preface
-      (defun mz/bibtex-fill-column ()
-        "Ensures that each entry does not exceed 120 characters."
-        (setq fill-column 120)))
   #+end_src
 * Quelpa
 #+begin_src emacs-lisp
   ;; a different wrapper for package.el that can also take packages from source
   (use-package quelpa)
 
+  ;; helper for using quelpa in the use-package macro
   (quelpa
    '(quelpa-use-package
      :fetcher git
@@ -925,7 +908,8 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     (use-package pdf-tools
       :init
       (pdf-tools-install)
-      :hook (pdf-view-mode . pdf-view-midnight-minor-mode))
+      :hook
+      (pdf-view-mode . pdf-view-midnight-minor-mode))
 
     ;; "smoothly" scroll through pdfs using multiple buffers
     (use-package pdf-continuous-scroll-mode
@@ -946,8 +930,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
      erc-server "irc.freenode.net"
      erc-port 6667
      erc-nick "michzappa")
-
-    ;; maybe get some setup to do everything but password automatically
   #+end_src
 * EXWM
   Configuration for using emacs as an X window manager.
