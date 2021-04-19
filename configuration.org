@@ -202,8 +202,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
        ("C-x t" . hydra-tab-bar/body)
        ("C-c e" . hydra-eglot/body)
        ("C-c o" . hydra-org/body)
-       ("C-c p" . hydra-projectile/body)
-       ("C-x w" . hydra-windmove/body)))
+       ("C-c p" . hydra-projectile/body)))
   #+end_src
 ** exec-path-from-shell
   #+begin_src emacs-lisp
@@ -249,29 +248,16 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+begin_src emacs-lisp
     ;; navigate between windows using keyboard
     (use-package windmove
-      ;; default keybindings are S-s-<direction>, but super doesn't get past GNOME shell
       :bind
-      (("C-S-<left>" . windmove-swap-states-left)
-       ("C-S-<right>" . windmove-swap-states-right)
-       ("C-S-<up>" . windmove-swap-states-up)
-       ("C-S-<down>" . windmove-swap-states-down))
-      :config
-      ;; use shift + arrow keys to switch between visible buffers
-      (windmove-default-keybindings))
+      (("M-S-<left>" . windmove-left)
+       ("M-S-<right>" . windmove-right)
+       ("M-S-<up>" . windmove-up)
+       ("M-S-<down>" . windmove-down)
 
-    (defhydra hydra-windmove (:color red)
-      "Windmove Operations"
-      ("<left>" windmove-left "left" :column "Change window")
-      ("<right>" windmove-right "right")
-      ("<up>" windmove-up "up")
-      ("<down>" windmove-down "down")
-
-      ("C-<left>" windmove-swap-states-left "move left" :column "Move window")
-      ("C-<right>" windmove-swap-states-right "move right")
-      ("C-<up>" windmove-swap-states-up "move up")
-      ("C-<down>" windmove-swap-states-down "move down")
-
-      ("q" nil "exit" :color blue))
+       ("C-M-<left>" . windmove-swap-states-left)
+       ("C-M-<right>" . windmove-swap-states-right)
+       ("C-M-<up>" . windmove-swap-states-up)
+       ("C-M-<down>" . windmove-swap-states-down)))
   #+end_src
 * User Interface
   Packages and configuration related to modifying the user-interface.
@@ -289,26 +275,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
      (use-package default-text-scale
        :config
        (default-text-scale-mode))
-   #+end_src
-** tab-bar-mode
-   #+begin_src emacs-lisp
-     ;; no GUI element unless turned on
-     (setq tab-bar-show nil)
-
-     ;; hydra bindings for tab-bar-mode
-     (defhydra hydra-tab-bar (:color red)
-       "Tab Bar Operations"
-       ("t" tab-new "Create a new tab" :column "Creation")
-       ("d" dired-other-tab "Open Dired in another tab")
-       ("f" find-file-other-tab "Find file in another tab")
-       ("0" tab-close "Close current tab")
-       ("m" tab-move "Move current tab" :column "Management")
-       ("r" tab-rename "Rename Tab")
-       ("<return>" tab-bar-select-tab-by-name "Select tab by name" :column "Navigation")
-       ("<right>" tab-next "Next Tab")
-       ("<left>" tab-previous "Previous Tab")
-       ("SPC" tab-bar-mode "Toggle tab-bar-mode" :color blue :column "Misc")
-       ("q" nil "exit" :color blue))
    #+end_src
 ** Startup Configuration
   #+begin_src emacs-lisp
@@ -335,7 +301,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     (add-to-list 'initial-frame-alist '(fullscreen . maximized))
   #+end_src
 ** Appearance
-*** Themes
   #+begin_src emacs-lisp
     ;; restrained themes designed for readability.
     (use-package modus-themes
@@ -347,9 +312,7 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
       (modus-themes-load-vivendi)
       :bind
       ("C-c T" . modus-themes-toggle))
-  #+end_src
-*** minions
-    #+begin_src emacs-lisp
+
       ;; turns off all minor modes in modeline
       (use-package minions
         :custom
