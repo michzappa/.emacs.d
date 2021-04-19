@@ -880,7 +880,6 @@
 
 (if exwm-enabled (mz/enable-exwm) ())
 
-
-(provide 'init)
 ;;; _
+(provide 'init)
 ;;; init.el ends here
