@@ -980,9 +980,10 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
          ([?\s-r] . exwm-reset)
 
          ;; general app launcher
-         ([?\s-/] . (lambda ()
-                      (interactive)
-                      (counsel-linux-app)))
+         ;; got rid of counsel
+         ;; ([?\s-/] . (lambda ()
+         ;; (interactive)
+         ;; (counsel-linux-app)))
 
          ;; shortcut for firefox
          ([?\s-x] . (lambda ()
