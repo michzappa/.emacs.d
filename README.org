@@ -1,0 +1,24 @@
+#+TITLE: Emacs Configuration
+#+DESCRIPTION: My literate emacs configuration using org-mode.
+#+AUTHOR: Michael Zappa
+
+Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and might not even be).
+
+* Things to Install
+** Apt Packages (or equivalent)
+- silversearcher-ag (projectile-ag)
+- clangd (C lsp)
+- texlive-latex-extra, texlive-extra-utils, texlive-fonts-extra, texlive-xetex (latex)
+- libpng-dev zlib1g-dev libpoppler-glib-dev libpoppler-private-dev imagemagick (pdf-tools)
+- nodejs, npm (tide-mode)
+- playerctl, brightnessctl (exwm)
+- cmake, libtool-bin (vterm)
+- slock (exwm)
+- compton (exwm)
+** Other Sources
+- Bash Language Server: https://github.com/bash-lsp/bash-language-server (npm)
+- Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls
+- Haskell Language Server: https://github.com/haskell/haskell-language-server (ghcup)
+- OCaml Language Server:  https://github.com/ocaml/ocaml-lsp (opam)
+- Pyright Language Server:  https://github.com/microsoft/pyright (npm)
+- rust-analyzer:  https://rust-analyzer.github.io/manual.html#installation

@@ -1,21 +1,7 @@
-;;; Things To Install
-;; Apt Packages (or equivalent)
-;; - silversearcher-ag (projectile-ag)
-;; - clangd (C lsp)
-;; - texlive-latex-extra, texlive-extra-utils, texlive-fonts-extra, texlive-xetex (latex)
-;; - libpng-dev zlib1g-dev libpoppler-glib-dev libpoppler-private-dev imagemagick (pdf-tools)
-;; - nodejs, npm (tide-mode)
-;; - playerctl, brightnessctl (exwm)
-;; - cmake, libtool-bin (vterm)
-;; - slock (exwm)
-;; - compton (exwm)
-;; Other Sources
-;; - Bash Language Server: https://github.com/bash-lsp/bash-language-server (npm)
-;; - Elixir Language Server:  https://github.com/elixir-lsp/elixir-ls
-;; - Haskell Language Server: https://github.com/haskell/haskell-language-server (ghcup)
-;; - OCaml Language Server:  https://github.com/ocaml/ocaml-lsp (opam)
-;; - Pyright Language Server:  https://github.com/microsoft/pyright (npm)
-;; - rust-analyzer:  https://rust-analyzer.github.io/manual.html#installation
+;;; init --- Summary
+
+;;; Commentary:
+;; see README.org
 
 ;;; Packages Setup
 ;; errors getting archives in Debian 10 for some emacs 26.x errors.
@@ -327,7 +313,7 @@
 (global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
 
 ;; keybinding to open configuration file (this file)
-(global-set-key (kbd "C-c n") (lambda ()  (interactive) (find-file "~/.emacs.d/configuration.org")))
+(global-set-key (kbd "C-c n") (lambda ()  (interactive) (find-file "~/.emacs.d/init.el")))
 
 ;; assume I want to close current buffer with ""C-x k""
 (global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
@@ -336,6 +322,7 @@
 (global-set-key (kbd "C-M-<return>") 'mz/eshell-other-window)
 
 ;;; Languages and LSP Support
+;; eglot is a more minimal lsp client
 (use-package eglot)
 
 (defhydra hydra-eglot (:color red)
@@ -347,24 +334,23 @@
   ("R" eglot-reconnect "reconnect")
   ("f" eglot-format "format")
   ("c" eglot-code-actions "code actions")
-  ("l" eldoc--doc-buffer "eldoc")
+  ("l" eldoc-doc-buffer "eldoc")
 
   ("q" nil "exit" :color blue))
 
-(add-hook 'sh-mode-hook 'eglot-ensure)
-
+;; LSP for C
 (add-hook 'c-mode-hook 'eglot-ensure)
+(add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
 ;; use '//' comments instead of '/* */' comments in C-mode
 (add-hook 'c-mode-hook (lambda () (c-toggle-comment-style -1)))
-(add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
 
+;; common-lisp environemnt
 (use-package slime
   :custom
   (inferior-lisp-program "sbcl"))
 
 ;; Help for emacs-lisp functions
 (use-package eldoc
-  :defer t
   :hook
   ((emacs-lisp-mode lisp-interaction-mode ielm-mode) . eldoc-mode))
 
@@ -379,7 +365,7 @@
 (use-package haskell-mode
   :hook (haskell-mode . eglot-ensure))
 
-;; OCaml major mode
+;; ocaml major mode
 (use-package tuareg
   :hook (tuareg-mode . eglot-ensure))
 
@@ -443,6 +429,7 @@
 (use-package cargo
   :hook (rust-mode . cargo-minor-mode))
 
+;; ruby
 (use-package ruby-mode)
 (use-package robe
   :hook
@@ -450,6 +437,7 @@
   :config
   (add-to-list 'company-backends 'company-robe))
 
+;; unused web development packages
 ;; (use-package web-mode)
 ;; (use-package typescript-mode)
 ;; (use-package tide)
@@ -891,3 +879,8 @@
   (exwm-init))
 
 (if exwm-enabled (mz/enable-exwm) ())
+
+
+(provide 'init)
+;;; _
+;;; init.el ends here
