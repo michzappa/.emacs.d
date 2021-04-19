@@ -62,6 +62,22 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
     (use-package auto-compile
       :config (auto-compile-on-load-mode))
   #+end_src
+* Outline Setup
+  #+begin_src emacs-lisp
+    (use-package bicycle
+      :after outline
+      :bind (:map outline-minor-mode-map
+                  ("<tab>" . bicycle-cycle)
+                  ("<backtab>" . bicycle-cycle-global))
+      :hook
+      (prog-mode . outline-minor-mode)
+      (prog-mode . hs-minor-mode))
+
+    (use-package outline-minor-faces
+      :after outline
+      :hook
+      (outline-minor-mode-hook . outline-minor-faces-add-font-lock-keywords))
+  #+end_src
 * Personal
   Giving emacs my information.
   #+begin_src emacs-lisp
