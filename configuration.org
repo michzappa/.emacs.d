@@ -558,8 +558,6 @@ blocks. Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM 
   #+begin_src emacs-lisp
     ;; keyboard-driven git interface
     (use-package magit
-      :custom
-      (magit-completing-read-function 'ivy-completing-read)
       :bind
       ("C-x g" . magit))
 
