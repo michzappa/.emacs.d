@@ -43,23 +43,13 @@
 (add-hook 'compilation-filter-hook
           (lambda () (ansi-color-apply-on-region (point-min) (point-max))))
 
-
-
+;; mouse config
 (setq-default  scroll-margin 0
                scroll-step 1
                mouse-wheel-progressive-speed nil
                scroll-conservatively 100000
                scroll-preserve-screen-position 1)
 
-
-
-
-
-(require 'init-lang-lsp)
-
-(require 'init-projects)
-
-;;; Text Files
 ;; highlight the current line
 (global-hl-line-mode +1)
 
@@ -92,11 +82,13 @@
 ;; assumes default format tool based off major mode
 (use-package format-all)
 
+;; major mode for markdown files
 (use-package markdown-mode)
 
 ;; wraps visual lines
 (global-visual-line-mode)
 
+;; basic file settings
 (setq-default
  ;; newline at end of file
  require-final-newline t
@@ -105,8 +97,6 @@
 
 ;; delete trailing whitespace when saving.
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-
 
 (provide 'init-general)
 ;; init-general.el ends here

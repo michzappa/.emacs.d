@@ -9,7 +9,5 @@
       user-full-name       "Michael Zappa"
       user-mail-address    "zapprich@gmail.com")
 
-
-
 (provide 'init-personal)
 ;; init-personal.el ends here

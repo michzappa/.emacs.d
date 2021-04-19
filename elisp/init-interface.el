@@ -11,6 +11,7 @@
   :config
   (default-text-scale-mode))
 
+;; startup config
 (setq
  ;; scratch screen
  inhibit-startup-screen t
@@ -18,6 +19,7 @@
  ;; turn off the hecking bell
  ring-bell-function 'ignore)
 
+;; tab config
 (setq-default
  ;; shallow tabs
  tab-width 2

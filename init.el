@@ -8,11 +8,16 @@
 
 (require 'init-personal)
 (require 'init-packages)
+;; additional functions
 (require 'init-functions)
+;; general settings
 (require 'init-general)
+;; keybindings not attached to a specific package
 (require 'init-keys)
+;; packages which add features to the way users interact with emacs
 (require 'init-interaction)
 (require 'init-hydra)
+;; themes, other appearance configuration
 (require 'init-interface)
 (require 'init-org)
 (require 'init-tramp)

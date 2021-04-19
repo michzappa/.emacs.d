@@ -8,7 +8,6 @@
   :config
   (elfeed-org))
 
-;;; Nov EPub Reader
 ;; EPub reader mode
 (use-package nov
   :config
@@ -18,7 +17,6 @@
 
 (require 'init-tex)
 
-;;; Quelpa
 ;; a different wrapper for package.el that can also take packages from source
 (use-package quelpa)
 
@@ -29,7 +27,6 @@
    :url "https://github.com/quelpa/quelpa-use-package.git"))
 (require 'quelpa-use-package)
 
-;;; PDF-Tools
 ;; pdf enhancements
 (use-package pdf-tools
   :init
@@ -48,11 +45,11 @@
   :custom
   (pdf-view-have-image-mode-pixel-vscroll t))
 
-;;; ERC
 ;; basic configuration for ERC
 (setq
  erc-server "irc.freenode.net"
  erc-port 6667
  erc-nick "michzappa")
+
 (provide 'init-utilities)
 ;; init-utilities.el ends here

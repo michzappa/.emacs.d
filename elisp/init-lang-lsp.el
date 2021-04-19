@@ -66,8 +66,10 @@
          ("C-c m t" . mz/mvn-test-all)
          ("C-c m j" . mz/mvn-jar))))
 
+;; i use pyright as python lsp
 (add-to-list 'eglot-server-programs '(python-mode "pyright-langserver" "--stdio"))
 
+;; options for python-mode
 (use-package python
   :hook
   (python-mode . eglot-ensure)
@@ -79,6 +81,7 @@
    ((executable-find "python3")
     (setq python-shell-interpreter "python3"))))
 
+;; environment for racket, with REPL
 (use-package racket-mode)
 
 ;; tell eglot to use the rust-analyzer binary as the language server
@@ -93,21 +96,6 @@
 ;; cargo minor mode for cargo keybindings
 (use-package cargo
   :hook (rust-mode . cargo-minor-mode))
-
-;; ruby
-(use-package ruby-mode
-  :ensure nil)
-
-(use-package robe
-  :hook
-  (ruby-mode . robe-mode)
-  :config
-  (add-to-list 'company-backends 'company-robe))
-
-;; unused web development packages
-;; (use-package web-mode)
-;; (use-package typescript-mode)
-;; (use-package tide)
 
 (provide 'init-lang-lsp)
 ;; init-lang-lsp.el ends here
