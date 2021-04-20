@@ -13,6 +13,11 @@
   :config
   (global-company-mode))
 
+;; gives emacs info about your shell PATH
+(use-package exec-path-from-shell
+  :config
+  (exec-path-from-shell-initialize))
+
 ;; window-based completion and narrowing framework
 (use-package helm
   :init (helm-mode t)
@@ -31,10 +36,8 @@
   :bind
   ("C-s" . helm-swoop))
 
-;; gives emacs info about your shell PATH
-(use-package exec-path-from-shell
-  :config
-  (exec-path-from-shell-initialize))
+;; self-explanatory
+(use-package multiple-cursors)
 
 ;; opens a new scratch buffer with the same mode as the current one
 (use-package scratch

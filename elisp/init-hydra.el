@@ -11,7 +11,7 @@
    ("C-c p" . hydra-projectile/body)))
 
 ;; hydra bindings for projectile
-(defhydra hydra-projectile (:color red)
+(defhydra hydra-projectile (:color blue)
   "PROJECTILE: %(projectile-project-root)"
 
   ("f"  projectile-find-file "file" :column "Find File")
@@ -21,7 +21,7 @@
   ("b"   projectile-switch-to-buffer "switch to buffer" :column "Buffers")
   ("i"   projectile-ibuffer "ibuffer")
   ("K"   projectile-kill-buffers "kill all buffers")
-  ("e"   projectile-run-eshell "eshell" :color blue)
+  ("e"   projectile-run-eshell "eshell")
 
   ("c"   projectile-invalidate-cache "clear cache" :column "Cache (danger)")
   ("x"   projectile-remove-known-project "remove known project")
@@ -29,9 +29,9 @@
   ("z"   projectile-cache-current-file "cache current project")
 
   ("a"   projectile-ag "ag" :column "Project")
-  ("p"   projectile-switch-project "switch project" :column "Project" :color blue)
+  ("p"   projectile-switch-project "switch project" :column "Project")
 
-  ("q"   nil "exit" :color blue))
+  ("q"   nil "exit"))
 
 ;; hydra for formatting files
 (defhydra hydra-formatting (:color blue)
