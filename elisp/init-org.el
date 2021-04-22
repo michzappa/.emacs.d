@@ -52,8 +52,17 @@
   (kill-region 0 0 t)
   (org-table-align))
 
-(define-key org-mode-map (kbd "S-SPC") 'mz/org-table-copy-cell)
-(define-key org-mode-map (kbd "M-S-SPC") 'mz/org-table-kill-cell)
+;; minor mode for working with org mode tables, to separate the keybindings
+;; because they are often annoying when just using org mode for word processing
+(define-minor-mode mz/org-table
+  "Toggle helpful keybindings for working with org mode tables"
+  :init-value
+  nil
+  :lighter
+  "mz/org-table"
+  :keymap
+  '(([S-SPC] . mz/org-table-copy-cell)
+    ([M-S-SPC] . mz/org-table-kill-cell)))
 
 (setq org-agenda-files (append org-agenda-files '("~/org")))
 

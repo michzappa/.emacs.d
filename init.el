@@ -19,6 +19,11 @@
 (require 'init-hydra)
 ;; themes, other appearance configuration
 (require 'init-interface)
+;; config for packages dealing with project management
+(require 'init-projects)
+;; configuration for programming languages and the language server protocl
+(require 'init-lang-lsp)
+(require 'init-tex)
 (require 'init-org)
 (require 'init-tramp)
 (require 'init-vterm)
