@@ -10,6 +10,13 @@
 ;; use '//' comments instead of '/* */' comments in C-mode
 (add-hook 'c-mode-hook (lambda () (c-toggle-comment-style -1)))
 
+;; treesitter parser - yet to properly use
+(use-package tree-sitter)
+
+(use-package tree-sitter-langs
+  :after
+  tree-sitter)
+
 ;; common-lisp environemnt
 (use-package slime
   :custom

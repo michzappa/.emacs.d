@@ -26,5 +26,7 @@
 ;; toggle comment of current line
 (global-set-key (kbd "C-.") 'mz/comment-or-uncomment-region-or-line)
 
+(global-set-key (kbd "M-F") 'find-file-at-point)
+
 (provide 'init-keys)
 ;; init-keys.el ends here

@@ -61,8 +61,7 @@
   :lighter
   "mz/org-table"
   :keymap
-  '(([S-SPC] . mz/org-table-copy-cell)
-    ([M-S-SPC] . mz/org-table-kill-cell)))
+  '())
 
 (define-key mz/org-table-map (kbd "S-SPC") 'mz/org-table-copy-cell)
 (define-key mz/org-table-map (kbd "M-S-SPC") 'mz/org-table-kill-cell)

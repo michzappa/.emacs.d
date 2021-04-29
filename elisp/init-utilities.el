@@ -36,7 +36,6 @@
 
 ;; "smoothly" scroll through pdfs using multiple buffers
 (use-package pdf-continuous-scroll-mode
-  :defer t
   :quelpa (pdf-continuous-scroll-mode
            :fetcher git
            :url "https://github.com/dalanicolai/pdf-continuous-scroll-mode.el.git")

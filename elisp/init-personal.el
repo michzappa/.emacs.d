@@ -7,7 +7,7 @@
       abbrev-file-name     "~/.emacs.d/abbrev_defs"
 
       user-full-name       "Michael Zappa"
-      user-mail-address    "zapprich@gmail.com")
+      user-mail-address    "michzappa@protonmail.com")
 
 (provide 'init-personal)
 ;; init-personal.el ends here
