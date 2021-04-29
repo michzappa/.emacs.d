@@ -9,3 +9,5 @@
 *** https://protesilaos.com/master.xml
 ** Emacs Redux :emacsredux:
 *** https://emacsredux.com/atom.xml
+** This Month in Org :org:
+*** https://blog.tecosaur.com/tmio/rss.xml

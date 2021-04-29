@@ -64,6 +64,9 @@
   '(([S-SPC] . mz/org-table-copy-cell)
     ([M-S-SPC] . mz/org-table-kill-cell)))
 
+(define-key mz/org-table-map (kbd "S-SPC") 'mz/org-table-copy-cell)
+(define-key mz/org-table-map (kbd "M-S-SPC") 'mz/org-table-kill-cell)
+
 (setq org-agenda-files (append org-agenda-files '("~/org")))
 
 (global-set-key (kbd "C-c C") 'org-capture)

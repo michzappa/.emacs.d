@@ -2,7 +2,8 @@
 
 ;; eglot is a more minimal lsp client
 (use-package eglot)
-
+;; (defun project-root (project)
+  ;; (car (project-roots project)))
 ;; LSP for C
 (add-hook 'c-mode-hook 'eglot-ensure)
 (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
@@ -89,8 +90,6 @@
 
 ;; hook up rust-mode with the language server
 (use-package rust-mode
-  :custom
-  (rust-format-on-save t)
   :hook (rust-mode . eglot-ensure))
 
 ;; cargo minor mode for cargo keybindings

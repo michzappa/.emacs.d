@@ -21,6 +21,7 @@
 (when (not (package-installed-p 'use-package))
   (package-refresh-contents)
   (package-install 'use-package))
+(package-initialize)
 
 (unless package-archive-contents
   (package-refresh-contents))
