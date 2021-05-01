@@ -21,7 +21,7 @@
 (require 'init-interface)
 ;; config for packages dealing with project management
 (require 'init-projects)
-;; configuration for programming languages and the language server protocl
+;; configuration for programming languages and the language server protocol
 (require 'init-lang-lsp)
 (require 'init-tex)
 (require 'init-org)
