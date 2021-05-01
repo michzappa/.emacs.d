@@ -15,9 +15,11 @@
   :custom
   (vterm-buffer-name-string "vterm %s")
   :config
-  ;; if the fish shell is installed, use that for VTerm's shell
-  (when (executable-find "fish")
-    (setq vterm-shell (executable-find "fish"))))
+  ;; if the fish shell or zsh are installed use them for vterm's shell
+  (if (executable-find "fish")
+      (setq vterm-shell (executable-find "fish"))
+    (when (executable-find "zsh")
+      (setq vterm-shell (executable-find "zsh")))))
 
 (provide 'init-vterm)
 ;; init-vterm.el ends here

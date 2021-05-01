@@ -2,8 +2,11 @@
 
 ;; eglot is a more minimal lsp client
 (use-package eglot)
+
+;; this is sometimes needed for a strange bug where 'project-root' is not defined
 ;; (defun project-root (project)
-  ;; (car (project-roots project)))
+;; (car (project-roots project)))
+
 ;; LSP for C
 (add-hook 'c-mode-hook 'eglot-ensure)
 (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
@@ -22,12 +25,12 @@
   :custom
   (inferior-lisp-program "sbcl"))
 
-;; Help for emacs-lisp functions
+;; help for emacs-lisp functions
 (use-package eldoc
   :hook
   ((emacs-lisp-mode lisp-interaction-mode ielm-mode) . eldoc-mode))
 
-;; Elixir major mode hooked up to lsp
+;; elixir major mode hooked up to lsp
 (use-package elixir-mode
   :hook (elixir-mode . eglot-ensure))
 
@@ -35,6 +38,7 @@
 (use-package mix
   :hook (elixir-mode mix-minor-mode))
 
+;; haskell major mode
 (use-package haskell-mode
   :hook (haskell-mode . eglot-ensure))
 
@@ -74,9 +78,6 @@
          ("C-c m t" . mz/mvn-test-all)
          ("C-c m j" . mz/mvn-jar))))
 
-;; i use pyright as python lsp
-(add-to-list 'eglot-server-programs '(python-mode "pyright-langserver" "--stdio"))
-
 ;; options for python-mode
 (use-package python
   :hook
@@ -84,6 +85,8 @@
   :custom
   (python-indent-offset 4)
   :config
+  ;; i use pyright as python lsp
+  (add-to-list 'eglot-server-programs '(python-mode "pyright-langserver" "--stdio"))
   (cond
    ;; i use python3
    ((executable-find "python3")
@@ -92,12 +95,12 @@
 ;; environment for racket, with REPL
 (use-package racket-mode)
 
-;; tell eglot to use the rust-analyzer binary as the language server
-(add-to-list 'eglot-server-programs '(rust-mode "rust-analyzer"))
-
 ;; hook up rust-mode with the language server
 (use-package rust-mode
-  :hook (rust-mode . eglot-ensure))
+  :hook (rust-mode . eglot-ensure)
+  :config
+  ;; tell eglot to use the rust-analyzer binary as the language server
+  (add-to-list 'eglot-server-programs '(rust-mode "rust-analyzer")))
 
 ;; cargo minor mode for cargo keybindings
 (use-package cargo

@@ -15,8 +15,6 @@
   :hook
   (nov-mode . visual-line-mode))
 
-(require 'init-tex)
-
 ;; a different wrapper for package.el that can also take packages from source
 (use-package quelpa)
 
