@@ -50,6 +50,9 @@
                scroll-conservatively 100000
                scroll-preserve-screen-position 1)
 
+;; when region is selected, typing replaces the region
+(delete-selection-mode +1)
+
 ;; highlight the current line
 (global-hl-line-mode +1)
 
