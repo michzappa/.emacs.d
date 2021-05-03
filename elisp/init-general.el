@@ -56,11 +56,20 @@
 ;; highlight the current line
 (global-hl-line-mode +1)
 
+;; highlight "TODO", "FIXME, and others in programming modes
+(use-package hl-todo
+  :ensure t
+  :custom-face
+  (hl-toto ((t (:inherit hl-todo :italic t))))
+  :hook
+  (prog-mode . hl-todo-mode))
+
 ;; "colors" hex codes or color words
 (use-package rainbow-mode
   :hook
   (emacs-lisp-mode . rainbow-mode))
 
+;; TODO possible re-evaluate how I deal with inserting double delimiters
 ;; insert pairs of delimiters
 (electric-pair-mode)
 ;; prevent <> when trying to make a src block in org mode

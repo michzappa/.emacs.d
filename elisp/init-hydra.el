@@ -28,7 +28,6 @@
   ("X"   projectile-cleanup-known-projects "cleanup projects")
   ("z"   projectile-cache-current-file "cache current project")
 
-  ("a"   projectile-ag "ag" :column "Project")
   ("p"   projectile-switch-project "switch project" :column "Project")
 
   ("q"   nil "exit"))
