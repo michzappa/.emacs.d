@@ -20,6 +20,14 @@
   :after
   tree-sitter)
 
+;; agda proof assistant
+(use-package agda2-mode
+  :config
+  (use-package eri
+    :ensure t)
+  (use-package annotation
+    :ensure t))
+
 ;; common-lisp environemnt
 (use-package slime
   :custom
@@ -94,6 +102,9 @@
 
 ;; environment for racket, with REPL
 (use-package racket-mode)
+
+;; start language server for ruby
+(add-hook 'ruby-mode-hook 'eglot-ensure)
 
 ;; hook up rust-mode with the language server
 (use-package rust-mode
