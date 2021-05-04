@@ -23,6 +23,9 @@
 ;; agda proof assistant
 (use-package agda2-mode
   :config
+  (load-file (let ((coding-system-for-read 'utf-8))
+               (shell-command-to-string "agda-mode locate")))
+
   (use-package eri
     :ensure t)
   (use-package annotation
