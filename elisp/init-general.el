@@ -56,7 +56,7 @@
 ;; highlight the current line
 (global-hl-line-mode +1)
 
-;; highlight "TODO", "FIXME, and others in programming modes
+;; highlight "TODO", "FIXME", and others in programming modes
 (use-package hl-todo
   :ensure t
   :custom-face

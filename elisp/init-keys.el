@@ -11,6 +11,10 @@
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
 
+;; adjust line indentation
+(global-set-key (kbd "C-<") 'mz/move-line-left)
+(global-set-key (kbd "C->") 'mz/move-line-right)
+
 ;; keybinding to reload configuration
 (global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
 

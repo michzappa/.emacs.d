@@ -62,5 +62,15 @@
      (message "Copied line")
      (list (line-beginning-position) (line-beginning-position 2)))))
 
+
+;; replicate vim's <\> indentation behavior
+(defun mz/move-line-left ()
+  (interactive)
+  (indent-rigidly (line-beginning-position) (line-end-position) -2))
+
+(defun mz/move-line-right ()
+  (interactive)
+  (indent-rigidly (line-beginning-position) (line-end-position) 2))
+
 (provide 'init-functions)
 ;; init-functions ends here

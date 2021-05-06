@@ -20,16 +20,18 @@
   :after
   tree-sitter)
 
-;; agda proof assistant
+;; agda proof assistant, plus dependencies for the mode
+(use-package eri)
+(use-package annotation)
 (use-package agda2-mode
   :config
   (load-file (let ((coding-system-for-read 'utf-8))
                (shell-command-to-string "agda-mode locate")))
-
-  (use-package eri
-    :ensure t)
-  (use-package annotation
-    :ensure t))
+  (setq auto-mode-alist
+        (append
+         '(("\\.agda\\'" . agda2-mode)
+           ("\\.lagda.md\\'" . agda2-mode))
+         auto-mode-alist)))
 
 ;; common-lisp environemnt
 (use-package slime
