@@ -66,11 +66,11 @@
 ;; replicate vim's <\> indentation behavior
 (defun mz/move-line-left ()
   (interactive)
-  (indent-rigidly (line-beginning-position) (line-end-position) -2))
+  (indent-rigidly (line-beginning-position) (line-end-position) (* -1 tab-width)))
 
 (defun mz/move-line-right ()
   (interactive)
-  (indent-rigidly (line-beginning-position) (line-end-position) 2))
+  (indent-rigidly (line-beginning-position) (line-end-position) tab-width))
 
-(provide 'init-functions)
-;; init-functions ends here
+  (provide 'init-functions)
+  ;; init-functions ends here

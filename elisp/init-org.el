@@ -6,6 +6,8 @@
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode))
 
+(add-hook 'org-mode-hook 'visual-line-mode)
+
 (setq
  ;; org src blocks act more like the major mode
  org-src-fontify-natively t

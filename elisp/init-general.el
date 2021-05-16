@@ -97,18 +97,26 @@
 ;; major mode for markdown files
 (use-package markdown-mode)
 
-;; wraps visual lines
-(global-visual-line-mode)
-
 ;; basic file settings
 (setq-default
  ;; newline at end of file
  require-final-newline t
- ;; wrap lines at 80 characters
+ ;; wrap lines at 100 characters
  fill-column 100)
 
 ;; delete trailing whitespace when saving.
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; package to highlight whitespace
+(use-package whitespace
+  :hook (prog-mode . whitespace-mode)
+  :config
+  (setq-default whitespace-line-column 100
+                whitespace-style '(face
+                                   tab-mark
+                                   empty
+                                   trailing
+                                   lines-tail)))
 
 (provide 'init-general)
 ;; init-general.el ends here
