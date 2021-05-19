@@ -5,6 +5,7 @@
 (use-package hydra
   :bind
   (("C-c f" . hydra-formatting/body)
+   ("C-c k" . hydra-ime/body)
    ("C-x t" . hydra-tab-bar/body)
    ("C-c e" . hydra-eglot/body)
    ("C-c o" . hydra-org/body)
@@ -59,6 +60,15 @@
   ("a" org-agenda "agenda")
   ("p" org-projectile-project-todo-completing-read "projectile")
   ("q" nil "exit" :color blue))
+
+;; hydra to change input mode
+(defhydra hydra-ime (:color blue)
+  "input methods"
+  ("i" (lambda () (interactive) (set-input-method "ipa-praat")) "ipa" :column "misc")
+  ("a" (lambda () (interactive) (set-input-method "Agda")) "agda")
+  ("jj" (lambda () (interactive) (set-input-method "japanese")) "ipa" :column "japanese")
+  ("jk" (lambda () (interactive) (set-input-method "japanese-katakana")) "katakana")
+  ("c"  (lambda () (interactive) (set-input-method "chinese-py")) "pinyin" :column "chinese"))
 
 (provide 'init-hydra)
 ;; init-hydra.el ends here
