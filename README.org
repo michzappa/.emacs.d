@@ -290,6 +290,7 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
 
     ;; assume I want to close current buffer with ""C-x k""
     (global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
+    (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
 
     ;; shortcut to open eshell in another window. mimics that to open vterm in another window
     (global-set-key (kbd "C-M-<return>") 'mz/eshell-other-window)
@@ -298,6 +299,8 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
     (global-set-key (kbd "C-.") 'mz/comment-or-uncomment-region-or-line)
 
     (global-set-key (kbd "M-F") 'find-file-at-point)
+
+    (global-set-key (kbd "C-c d") 'dired-jump)
   #+end_src
 * Hydra
   #+begin_src emacs-lisp
@@ -562,6 +565,9 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
              '(("\\.agda\\'" . agda2-mode)
                ("\\.lagda.md\\'" . agda2-mode))
              auto-mode-alist)))
+
+    ;; nix
+    (use-package nix-mode)
 
     ;; common-lisp environemnt
     (use-package slime
