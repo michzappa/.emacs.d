@@ -531,28 +531,10 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
       :config
       (projectile-mode +1))
   #+end_src
-* TODO Programming Languages
+* Programming Languages
   #+begin_src emacs-lisp
-    ;; TODO yas-snippet
-    ;; TODO figure out lsp-mode configuration, making ui stuff less prominent
-    (use-package lsp-mode
-      :custom
-      (lsp-keymap-prefix "C-c l") ;; TODO replace this with hydra
-      :hook
-      (rust-mode . lsp) ;; TODO add other languages
-      (python-mode . lsp)
-      (ruby-mode . lsp)
-      (lsp-mode . lsp-enable-which-key-integration))
-
-    (use-package dap-mode)
-    (use-package lsp-ui :commands lsp-ui-mode)
-    (use-package helm-lsp :commands helm-lsp-workspace-symbol)
-    (use-package lsp-origami)
-    (use-package yasnippet)
-    (use-package yasnippet-snippets)
-
     ;; eglot is a more minimal lsp client
-    ;; (use-package eglot)
+    (use-package eglot)
 
     ;; this is sometimes needed for a strange bug where 'project-root' is not defined
     ;; (defun project-root (project)
@@ -560,37 +542,37 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
 
     ;; LSP for C
     (add-hook 'c-mode-hook 'eglot-ensure)
-    ;; (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
+    (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
     ;; use '//' comments instead of '/* */' comments in C-mode
     (add-hook 'c-mode-hook (lambda () (c-toggle-comment-style -1)))
 
     ;; treesitter parser - yet to properly use
-    ;; (use-package tree-sitter)
+    (use-package tree-sitter)
 
-    ;; (use-package tree-sitter-langs
-      ;; :after
-      ;; tree-sitter)
+    (use-package tree-sitter-langs
+      :after
+      tree-sitter)
 
     ;; agda proof assistant, plus dependencies for the mode
-    ;; (use-package eri)
-    ;; (use-package annotation)
-    ;; (use-package agda2-mode
-      ;; :config
-      ;; (load-file (let ((coding-system-for-read 'utf-8))
-                   ;; (shell-command-to-string "agda-mode locate")))
-      ;; (setq auto-mode-alist
-            ;; (append
-             ;; '(("\\.agda\\'" . agda2-mode)
-               ;; ("\\.lagda.md\\'" . agda2-mode))
-             ;; auto-mode-alist)))
+    (use-package eri)
+    (use-package annotation)
+    (use-package agda2-mode
+      :config
+      (load-file (let ((coding-system-for-read 'utf-8))
+                   (shell-command-to-string "agda-mode locate")))
+      (setq auto-mode-alist
+            (append
+             '(("\\.agda\\'" . agda2-mode)
+               ("\\.lagda.md\\'" . agda2-mode))
+             auto-mode-alist)))
 
     ;; nix
     (use-package nix-mode)
 
     ;; common-lisp environemnt
-    ;; (use-package slime
-      ;; :custom
-      ;; (inferior-lisp-program "sbcl"))
+    (use-package slime
+      :custom
+      (inferior-lisp-program "sbcl"))
 
     ;; help for emacs-lisp functions
     (use-package eldoc
@@ -599,8 +581,7 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
 
     ;; elixir major mode hooked up to lsp
     (use-package elixir-mode
-      ;; :hook (elixir-mode . eglot-ensure)
-      )
+      :hook (elixir-mode . eglot-ensure))
 
     ;; minor mode for mix commands
     (use-package mix
@@ -608,13 +589,11 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
 
     ;; haskell major mode
     (use-package haskell-mode
-      ;; :hook (haskell-mode . eglot-ensure)
-      )
+      :hook (haskell-mode . eglot-ensure))
 
     ;; ocaml major mode
     (use-package tuareg
-      ;; :hook (tuareg-mode . eglot-ensure)
-      )
+      :hook (tuareg-mode . eglot-ensure))
 
     ;; dune integration, don't know how to use
     (use-package dune)
@@ -650,13 +629,13 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
 
     ;; options for python-mode
     (use-package python
-      ;; :hook
-      ;; (python-mode . eglot-ensure)
+      :hook
+      (python-mode . eglot-ensure)
       :custom
       (python-indent-offset 4)
       :config
       ;; i use pyright as python lsp
-      ;; (add-to-list 'eglot-server-programs '(python-mode "pyright-langserver" "--stdio"))
+      (add-to-list 'eglot-server-programs '(python-mode "pyright-langserver" "--stdio"))
       (cond
        ;; i use python3
        ((executable-find "python3")
@@ -666,15 +645,14 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
     (use-package racket-mode)
 
     ;; start language server for ruby
-    ;; (add-hook 'ruby-mode-hook 'eglot-ensure)
+    (add-hook 'ruby-mode-hook 'eglot-ensure)
 
     ;; hook up rust-mode with the language server
     (use-package rust-mode
-      ;; :hook (rust-mode . eglot-ensure)
+      :hook (rust-mode . eglot-ensure)
       :config
       ;; tell eglot to use the rust-analyzer binary as the language server
-      ;; (add-to-list 'eglot-server-programs '(rust-mode "rust-analyzer"))
-      )
+      (add-to-list 'eglot-server-programs '(rust-mode "rust-analyzer")))
 
     ;; cargo minor mode for cargo keybindings
     (use-package cargo
@@ -848,11 +826,8 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
       (vterm-buffer-name-string "vterm %s")
       :config
       ;; if the fish shell or zsh are installed use them for vterm's shell
-      ;; (when (executable-find "fish")
-      ;; (setq vterm-shell (executable-find "fish")))
-      (when (executable-find "zsh")
-        (setq vterm-shell (executable-find "zsh")))
-      )
+      (when (executable-find "fish")
+          (setq vterm-shell (executable-find "fish"))))
   #+end_src
 * Utilities
   #+begin_src emacs-lisp
