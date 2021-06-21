@@ -547,24 +547,24 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
     (add-hook 'c-mode-hook (lambda () (c-toggle-comment-style -1)))
 
     ;; treesitter parser - yet to properly use
-    (use-package tree-sitter)
+    ;; (use-package tree-sitter)
 
-    (use-package tree-sitter-langs
-      :after
-      tree-sitter)
+    ;; (use-package tree-sitter-langs
+      ;; :after
+      ;; tree-sitter)
 
     ;; agda proof assistant, plus dependencies for the mode
-    (use-package eri)
-    (use-package annotation)
-    (use-package agda2-mode
-      :config
-      (load-file (let ((coding-system-for-read 'utf-8))
-                   (shell-command-to-string "agda-mode locate")))
-      (setq auto-mode-alist
-            (append
-             '(("\\.agda\\'" . agda2-mode)
-               ("\\.lagda.md\\'" . agda2-mode))
-             auto-mode-alist)))
+    ;; (use-package eri)
+    ;; (use-package annotation)
+    ;; (use-package agda2-mode
+      ;; :config
+      ;; (load-file (let ((coding-system-for-read 'utf-8))
+                   ;; (shell-command-to-string "agda-mode locate")))
+      ;; (setq auto-mode-alist
+            ;; (append
+             ;; '(("\\.agda\\'" . agda2-mode)
+               ;; ("\\.lagda.md\\'" . agda2-mode))
+             ;; auto-mode-alist)))
 
     ;; nix
     (use-package nix-mode)
@@ -826,8 +826,8 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
       (vterm-buffer-name-string "vterm %s")
       :config
       ;; if the fish shell or zsh are installed use them for vterm's shell
-      (when (executable-find "fish")
-          (setq vterm-shell (executable-find "fish"))))
+      (when (executable-find "zsh")
+          (setq vterm-shell (executable-find "zsh"))))
   #+end_src
 * Utilities
   #+begin_src emacs-lisp
