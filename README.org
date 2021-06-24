@@ -4,8 +4,8 @@
 
 Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and might not even be).
 
-* TODO big cleanup and reduce
 * Things to Install
+** TODO put in nix?
 ** Apt Packages (or equivalent)
 - clangd (C lsp)
 - texlive-latex-extra, texlive-extra-utils, texlive-fonts-extra, texlive-xetex (latex)
@@ -30,9 +30,9 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
           abbrev-file-name     "~/.emacs.d/abbrev_defs"
 
           user-full-name       "Michael Zappa"
-          user-mail-address    "michzappa@protonmail.com")
+          user-mail-address    "michzappa31@gmail.com")
   #+end_src
-* Packages
+* Package Management
   #+begin_src emacs-lisp
     ;; errors getting archives in Debian 10 for some emacs 26.x errors.
     (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
@@ -60,9 +60,8 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
     (unless package-archive-contents
       (package-refresh-contents))
 
-    (require 'use-package-ensure)
     (setq
-     ;; ensure use-package by default
+     ;; install packages in use-package by default
      use-package-always-ensure t
      ;; use newest version of packages
      load-prefer-newer t)
@@ -86,14 +85,6 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
       (forward-line 1)
       (transpose-lines 1)
       (forward-line -1))
-
-    ;; utility function for opening eshell in another window
-    (defun mz/eshell-other-window ()
-      "Open 'eshell' in a new window."
-      (interactive)
-      (let ((buf (eshell)))
-        (switch-to-buffer (other-buffer buf))
-        (switch-to-buffer-other-window buf)))
 
     ;; utility to reverse the result of fill-paragraph
     (defun mz/unfill-paragraph ()
@@ -135,13 +126,12 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
          (message "Copied line")
          (list (line-beginning-position) (line-beginning-position 2)))))
 
-
     ;; replicate vim's <\> indentation behavior
-    (defun mz/move-line-left ()
+    (defun mz/shift-line-left ()
       (interactive)
       (indent-rigidly (line-beginning-position) (line-end-position) (* -1 tab-width)))
 
-    (defun mz/move-line-right ()
+    (defun mz/shift-line-right ()
       (interactive)
       (indent-rigidly (line-beginning-position) (line-end-position) tab-width))
   #+end_src
@@ -203,67 +193,10 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
     ;; highlight the current line
     (global-hl-line-mode +1)
 
-    ;; highlight "TODO", "FIXME", and others in programming modes
-    (use-package hl-todo
-      :ensure t
-      :custom-face
-      (hl-toto ((t (:inherit hl-todo :italic t))))
-      :hook
-      (prog-mode . hl-todo-mode))
-
-    ;; "colors" hex codes or color words
-    (use-package rainbow-mode
-      :hook
-      (emacs-lisp-mode . rainbow-mode))
-
-    ;; TODO possible re-evaluate how I deal with inserting double delimiters
-    ;; insert pairs of delimiters
-    (electric-pair-mode)
-    ;; prevent <> when trying to make a src block in org mode
-    (add-hook 'org-mode-hook
-              (lambda () (setq-local electric-pair-inhibit-predicate
-                                (lambda (c)
-                                  (if (eq c ?\<)
-                                      t
-                                    (electric-pair-inhibit-predicate c))))))
-
-    ;; enhanced paren management, currently just using to highlight the match of the paren under the point
-    (use-package smartparens
+    ;; gives emacs info about your shell PATH
+    (use-package exec-path-from-shell
       :config
-      (require 'smartparens-config)
-      (show-smartparens-global-mode))
-
-    ;; colors matching delimiters
-    (use-package rainbow-delimiters
-      :hook
-      ((prog-mode) . rainbow-delimiters-mode))
-
-    ;; assumes default format tool based off major mode
-    (use-package format-all)
-
-    ;; major mode for markdown files
-    (use-package markdown-mode)
-
-    ;; basic file settings
-    (setq-default
-     ;; newline at end of file
-     require-final-newline t
-     ;; wrap lines at 100 characters
-     fill-column 100)
-
-    ;; delete trailing whitespace when saving.
-    (add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-    ;; package to highlight whitespace
-    (use-package whitespace
-      :hook (prog-mode . whitespace-mode)
-      :config
-      (setq-default whitespace-line-column 100
-                    whitespace-style '(face
-                                       tab-mark
-                                       empty
-                                       trailing
-                                       lines-tail)))
+      (exec-path-from-shell-initialize))
   #+end_src
 * Keybindings
   #+begin_src emacs-lisp
@@ -279,8 +212,8 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
     (global-set-key (kbd "C--") 'text-scale-decrease)
 
     ;; adjust line indentation
-    (global-set-key (kbd "C-<") 'mz/move-line-left)
-    (global-set-key (kbd "C->") 'mz/move-line-right)
+    (global-set-key (kbd "C-<") 'mz/shift-line-left)
+    (global-set-key (kbd "C->") 'mz/shift-line-right)
 
     ;; keybinding to reload configuration
     (global-set-key (kbd "C-c m") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
@@ -288,18 +221,16 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
     ;; keybinding to open configuration file (this file)
     (global-set-key (kbd "C-c n") (lambda ()  (interactive) (find-file "~/.emacs.d/README.org")))
 
-    ;; assume I want to close current buffer with ""C-x k""
+    ;; assumptions for common buffer keybindings
     (global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
     (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
-
-    ;; shortcut to open eshell in another window. mimics that to open vterm in another window
-    (global-set-key (kbd "C-M-<return>") 'mz/eshell-other-window)
 
     ;; toggle comment of current line
     (global-set-key (kbd "C-.") 'mz/comment-or-uncomment-region-or-line)
 
     (global-set-key (kbd "M-F") 'find-file-at-point)
 
+    ;; open dired for dir of current buffer
     (global-set-key (kbd "C-c d") 'dired-jump)
   #+end_src
 * Hydra
@@ -389,11 +320,6 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
       :config
       (global-company-mode))
 
-    ;; gives emacs info about your shell PATH
-    (use-package exec-path-from-shell
-      :config
-      (exec-path-from-shell-initialize))
-
     ;; window-based completion and narrowing framework
     (use-package helm
       :init (helm-mode t)
@@ -412,7 +338,7 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
       :bind
       ("C-s" . helm-swoop))
 
-    ;; self-explanatory
+    ;; enable use of multiple cursors, don't really use
     (use-package multiple-cursors)
 
     ;; opens a new scratch buffer with the same mode as the current one
@@ -508,6 +434,67 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
     (column-number-mode t)
     (size-indication-mode t)
   #+end_src
+* Text Files
+  #+begin_src emacs-lisp
+    ;; highlight "TODO", "FIXME", and others in programming modes
+    (use-package hl-todo
+      :ensure t
+      :custom-face
+      (hl-toto ((t (:inherit hl-todo :italic t))))
+      :hook
+      (prog-mode . hl-todo-mode))
+
+    ;; "colors" hex codes or color words
+    (use-package rainbow-mode
+      :hook
+      (emacs-lisp-mode . rainbow-mode))
+
+    ;; paired delimiter management/navigation
+    (use-package smartparens
+      :config
+      (require 'smartparens-config)
+      ;; make a proper block with curly brakets
+      ;; (with-eval-after-load 'smartparens
+        (sp-with-modes
+            '(prog-mode)
+          (sp-local-pair "{" nil :post-handlers '(:add ("||\n[i]" "RET"))))
+        ;; )
+      :hook
+      (prog-mode . smartparens-mode))
+      ;; (show-smartparens-global-mode))
+
+    ;; colors matching delimiters
+    (use-package rainbow-delimiters
+      :hook
+      ((prog-mode) . rainbow-delimiters-mode))
+
+    ;; assumes default format tool based off major mode
+    (use-package format-all)
+
+    ;; major mode for markdown files
+    (use-package markdown-mode)
+
+    ;; package to highlight whitespace
+    (use-package whitespace
+      :hook (prog-mode . whitespace-mode)
+      :config
+      (setq-default whitespace-line-column 100
+                    whitespace-style '(face
+                                       tab-mark
+                                       empty
+                                       trailing
+                                       lines-tail)))
+
+    ;; basic file settings
+    (setq-default
+     ;; newline at end of file
+     require-final-newline t
+     ;; wrap lines at 100 characters
+     fill-column 100)
+
+    ;; delete trailing whitespace when saving.
+    (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  #+end_src
 * Project Management
   #+begin_src emacs-lisp
     ;; keyboard-driven interface for git
@@ -533,6 +520,17 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
   #+end_src
 * Programming Languages
   #+begin_src emacs-lisp
+    ;; help for emacs-lisp functions
+    (use-package eldoc
+      :hook
+      ((emacs-lisp-mode lisp-interaction-mode ielm-mode) . eldoc-mode))
+
+    ;; treesitter parser - yet to properly use
+    ;; (use-package tree-sitter)
+    ;; (use-package tree-sitter-langs
+    ;; :after
+    ;; tree-sitter)
+
     ;; eglot is a more minimal lsp client
     (use-package eglot)
 
@@ -542,90 +540,10 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
 
     ;; LSP for C
     (add-hook 'c-mode-hook 'eglot-ensure)
-    (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
+    ;; currently using ccls
+    ;; (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
     ;; use '//' comments instead of '/* */' comments in C-mode
     (add-hook 'c-mode-hook (lambda () (c-toggle-comment-style -1)))
-
-    ;; treesitter parser - yet to properly use
-    ;; (use-package tree-sitter)
-
-    ;; (use-package tree-sitter-langs
-      ;; :after
-      ;; tree-sitter)
-
-    ;; agda proof assistant, plus dependencies for the mode
-    ;; (use-package eri)
-    ;; (use-package annotation)
-    ;; (use-package agda2-mode
-      ;; :config
-      ;; (load-file (let ((coding-system-for-read 'utf-8))
-                   ;; (shell-command-to-string "agda-mode locate")))
-      ;; (setq auto-mode-alist
-            ;; (append
-             ;; '(("\\.agda\\'" . agda2-mode)
-               ;; ("\\.lagda.md\\'" . agda2-mode))
-             ;; auto-mode-alist)))
-
-    ;; nix
-    (use-package nix-mode)
-
-    ;; common-lisp environemnt
-    (use-package slime
-      :custom
-      (inferior-lisp-program "sbcl"))
-
-    ;; help for emacs-lisp functions
-    (use-package eldoc
-      :hook
-      ((emacs-lisp-mode lisp-interaction-mode ielm-mode) . eldoc-mode))
-
-    ;; elixir major mode hooked up to lsp
-    (use-package elixir-mode
-      :hook (elixir-mode . eglot-ensure))
-
-    ;; minor mode for mix commands
-    (use-package mix
-      :hook (elixir-mode mix-minor-mode))
-
-    ;; haskell major mode
-    (use-package haskell-mode
-      :hook (haskell-mode . eglot-ensure))
-
-    ;; ocaml major mode
-    (use-package tuareg
-      :hook (tuareg-mode . eglot-ensure))
-
-    ;; dune integration, don't know how to use
-    (use-package dune)
-
-    ;; function to build jar from maven project
-    (defun mz/mvn-jar ()
-      "Packages the maven project into a jar."
-      (interactive)
-      (mvn "package"))
-
-    ;; function to run the main class defined for the maven project
-    (defun mz/mvn-run ()
-      "Run the maven project using the exec plugin."
-      (interactive)
-      (mvn "compile exec:java"))
-
-    ;; function to test all test classes
-    (defun mz/mvn-test-all ()
-      "Run all test classes in the maven project."
-      (interactive)
-      (mvn "test"))
-
-    ;; maven minor mode
-    (use-package mvn
-      :bind
-      (:map java-mode-map
-            (("C-c M" . mvn)
-             ("C-c m r" . mz/mvn-run)
-             ("C-c m c" . mvn-compile)
-             ("C-c m T" . mvn-test) ;; asks for specific test class to run
-             ("C-c m t" . mz/mvn-test-all)
-             ("C-c m j" . mz/mvn-jar))))
 
     ;; options for python-mode
     (use-package python
@@ -657,6 +575,79 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
     ;; cargo minor mode for cargo keybindings
     (use-package cargo
       :hook (rust-mode . cargo-minor-mode))
+
+    ;; agda proof assistant, plus dependencies for the mode
+    ;; don't have agda on all machines
+    (when (executable-find "agda")
+      (progn
+        (use-package eri)
+        (use-package annotation)
+        (use-package agda2-mode
+          :config
+          (load-file (let ((coding-system-for-read 'utf-8))
+                       (shell-command-to-string "agda-mode locate")))
+          (setq auto-mode-alist
+                (append
+                 '(("\\.agda\\'" . agda2-mode)
+                   ("\\.lagda.md\\'" . agda2-mode))
+                 auto-mode-alist)))))
+
+    ;; nix
+    (use-package nix-mode)
+
+    ;; common-lisp environemnt
+    (use-package slime
+      :custom
+      (inferior-lisp-program "sbcl"))
+
+    ;; elixir major mode hooked up to lsp
+    (use-package elixir-mode
+      :hook (elixir-mode . eglot-ensure))
+
+    ;; minor mode for mix commands
+    (use-package mix
+      :hook (elixir-mode mix-minor-mode))
+
+    ;; haskell major mode
+    (use-package haskell-mode
+      :hook (haskell-mode . eglot-ensure))
+
+    ;; ocaml major mode
+    (use-package tuareg
+      :hook (tuareg-mode . eglot-ensure))
+
+    ;; dune integration, don't know how to use
+    (use-package dune)
+
+    ;; wouldn't use emacs for java but have these anyways:
+    ;; function to build jar from maven project
+    (defun mz/mvn-jar ()
+      "Packages the maven project into a jar."
+      (interactive)
+      (mvn "package"))
+
+    ;; function to run the main class defined for the maven project
+    (defun mz/mvn-run ()
+      "Run the maven project using the exec plugin."
+      (interactive)
+      (mvn "compile exec:java"))
+
+    ;; function to test all test classes
+    (defun mz/mvn-test-all ()
+      "Run all test classes in the maven project."
+      (interactive)
+      (mvn "test"))
+
+    ;; maven minor mode
+    (use-package mvn
+      :bind
+      (:map java-mode-map
+            (("C-c M" . mvn)
+             ("C-c m r" . mz/mvn-run)
+             ("C-c m c" . mvn-compile)
+             ("C-c m T" . mvn-test) ;; asks for specific test class to run
+             ("C-c m t" . mz/mvn-test-all)
+             ("C-c m j" . mz/mvn-jar))))
   #+end_src
 * LaTeX
   #+begin_src emacs-lisp
@@ -711,10 +702,6 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
     ;; for the "old-school" <s-<tab> to make src blocks
     (require 'org-tempo)
     (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-
-    ;; change tabs from org-mode
-    (with-eval-after-load 'org
-      (define-key org-mode-map [(control tab)] 'tab-bar-switch-to-next-tab))
 
     ;; select the current cell of an org mode table
     (defun mz/org-table-select-cell ()
@@ -783,8 +770,6 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
   #+end_src
 * Tramp
   #+begin_src emacs-lisp
-    (require 'tramp)
-
     (setq tramp-default-method "ssh")
 
     ;; helper function to sudo a file
@@ -796,7 +781,7 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
          (concat "/sudo:root@localhost:"
                  buffer-file-name))))
 
-    ;; attempt to speed things up
+    ;; attempt to speed things up by reducing projectile's processing
     (defadvice projectile-project-root (around ignore-remote first activate)
       (unless (file-remote-p default-directory) ad-do-it))
     (setq remote-file-name-inhibit-cache nil)
@@ -930,6 +915,7 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
 
          ;; general app launcher
          ;; got rid of counsel
+         ;; exwm not really viable unless I find an alternative
          ;; ([?\s-/] . (lambda ()
          ;; (interactive)
          ;; (counsel-linux-app)))
