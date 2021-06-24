@@ -155,6 +155,8 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
      save-interprogram-paste-before-kill t
      ;; add newline at end of files by default, required by some modes
      mode-require-final-newline 'visit-save
+     ;; turn off warnings for ad-handle-definition
+     ad-redefinition-action 'accept
      ;; limit number of items recentf stores
      recentf-max-menu-items 25
      recentf-max-saved-items 25
@@ -195,6 +197,9 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
 
     ;; gives emacs info about your shell PATH
     (use-package exec-path-from-shell
+      :custom
+      ;; suppress warning about setting environment variables in .bashrc/.zshrc
+      (exec-path-from-shell-check-startup-files nil)
       :config
       (exec-path-from-shell-initialize))
   #+end_src
@@ -830,6 +835,8 @@ Emacs 27.x. Only tested on PopOS, that should only be relevant for EXWM (and mig
       (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
       :hook
       (nov-mode . visual-line-mode))
+
+    ;; TODO there is a calibre package, is it worth it?
 
     ;; a different wrapper for package.el that can also take packages from source
     (use-package quelpa)
